@@ -1,0 +1,29 @@
+{
+    "story": "You enter the ancient forest of Elowen, where the trees whisper secrets and the air is thick with magic. As you traverse the winding paths, you come across an old mage named Eldrin, who invites you to sit by his campfire. He speaks of a hidden treasure guarded by a fierce beast. He offers to help you find it, but only if you prove your worth. 'Show me your skill,' he says, 'and I shall gift you a potion to aid in your quest.'",
+    "choices": [
+        {
+            "text": "Show Eldrin your skill with magic.",
+            "status": {
+                "MP": 30,
+                "Intelligence": 15
+            },
+            "gold": 0,
+            "next_type": "story"
+        },
+        {
+            "text": "Show Eldrin your prowess with your weapon.",
+            "status": {
+                "Strength": 20,
+                "Skill": 10
+            },
+            "gold": 0,
+            "next_type": "story"
+        },
+        {
+            "text": "Decline Eldrin's request and continue on your own.",
+            "status": {},
+            "gold": 0,
+            "next_type": "story"
+        }
+    ]
+}
