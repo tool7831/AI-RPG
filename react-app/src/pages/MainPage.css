@@ -1,0 +1,106 @@
+.App {
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .story {
+    width: 100%;
+    height: 200px;
+    background-color: #f0f0f0;
+    margin-bottom: 20px;
+    padding: 10px;
+  }
+  
+  .choices {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .choices button {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ccc;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffe0e0;
+    padding: 10px;
+    width: 100%;
+  }
+  
+  .status-box {
+    background-color: #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .stats {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .stats progress {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .inventory-button {
+    margin-top: 10px;
+  }
+  
+  .inventory {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    background-color: #c0ffc0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .inventory .close-btn {
+    align-self: flex-end;
+    background-color: #f00;
+    color: #fff;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .equipment {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .equipment button {
+    margin-bottom: 5px;
+  }
+  
+  .items {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .items .item {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    background-color: #ccc;
+  }
+  
