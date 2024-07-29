@@ -5,36 +5,40 @@ import './MainPage.css';
 function MainPage() {
   const [story, setStory] = useState();
   const [choices, setChoices] = useState();
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState({});
   const [inventoryVisible, setInventoryVisible] = useState(false);
   const location = useLocation();
   
-  setStory(location.state.story)
-  setChoices(location.state.choices)
-  setStatus(location.state.status)
+  useEffect(() => {
+    if (location.state) {
+      setStory(location.state.story);
+      setChoices(location.state.choices);
+      // setStatus(location.state.status);
+    }
+  }, [location.state]);
 
   const handleChoice = (choiceId) => {
+    console.log(choiceId)
     const data = {
-      choice_id: choiceId,
-      story: story,
+      story: choices[choiceId],
       status: status,
     };
+    console.log(data)
     
-    // fetch('http://localhost:8000/choice', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(data),
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     if (data.success) {
-    //       alert('Choice made: ' + choiceId);
-    //       // 필요한 경우 선택 후의 동작 추가
-    //     }
-    //   });
-    console.log(choiceId)
+    fetch('http://localhost:8000/story_gen', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Choice made: ' + choiceId);
+          // 필요한 경우 선택 후의 동작 추가
+        }
+      });
   };
 
   const handleInventoryToggle = () => {
@@ -48,10 +52,12 @@ function MainPage() {
           <p>{story}</p>
         </div>
         <div className="choices">
-          {choices && choices.map(choice => (
-            <button key={choice.id} onClick={() => handleChoice(choice.id)}>
+          {choices && choices.map((choice, index) => (
+            <button key={index} onClick={() => handleChoice(index)}>
               <p>{choice.text}</p>
-              <p>{choice.status}</p>
+              {Object.keys(choice.status).map((key) => (
+                <p key={key}>{key}: {choice.status[key]}</p>
+              ))}
               <p>{choice.gold}</p>
               <p>{choice.next_type}</p>
             </button>
@@ -62,10 +68,10 @@ function MainPage() {
             <p>Status</p>
           </div>
           <div className="stats">
-            <p>LV: {status.lv}</p>
+            {/* <p>LV: {status.lv}</p>
             <p>EXP: <progress value={status.exp} max="100"></progress></p>
             <p>HP: <progress value={status.hp} max="100"></progress></p>
-            <p>MP: <progress value={status.mp} max="100"></progress></p>
+            <p>MP: <progress value={status.mp} max="100"></progress></p> */}
           </div>
           <div className="inventory-button">
             <button onClick={handleInventoryToggle}>Inventory</button>
