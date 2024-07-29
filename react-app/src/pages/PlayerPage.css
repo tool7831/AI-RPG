@@ -1,0 +1,83 @@
+.player-status-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .player-info {
+    width: 40%;
+  }
+  
+  .player-name,
+  .player-description {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .player-description {
+    height: 150px;
+    resize: none;
+  }
+  
+  .stat-allocation {
+    width: 50%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .stat-allocation h2 {
+    text-align: center;
+  }
+  
+  .stat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .stat-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .stat-controls button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .stat-controls button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .submit-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #008CBA;
+    color: white;
+    font-size: 18px;
+  }
+  
