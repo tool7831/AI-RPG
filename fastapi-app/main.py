@@ -23,8 +23,8 @@ app.add_middleware(
 )
 
 class Input(BaseModel):
-    story: str
-    status: str
+    story: dict
+    status: dict
 
 @app.get("/")
 def read_root():
