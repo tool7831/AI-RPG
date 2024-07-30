@@ -1,12 +1,12 @@
-from Status import Status
+from status import Status
 
 class Item():
     def __init__(self, item):
-        self.name = item['Item Name']
-        self.type = item['Item Type']
-        self.description = item['Item Description']
-        self.restriction = item['Use Restriction']
-        self.effect = item['Effect']
+        self.name = item['item_name']
+        self.type = item['item_type']
+        self.description = item['item_description']
+        self.restriction = item['use_restriction']
+        self.effect = item['effect']
 
 class Inventory():
     def __init__(self, max_inv):
@@ -62,8 +62,8 @@ class Player():
         self.description = description
         self.status = Status(status)
 
-        self.equipment = Equipment()
-        self.inventory = Inventory(30)
+        # self.equipment = Equipment()
+        # self.inventory = Inventory(30)
 
     def equip(self, slot, item):
         flag = True
@@ -95,6 +95,13 @@ class Player():
     def remove_item(self, item):
         self.inventory.remove_item(item)
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "description": self.description,
+            "status": self.status.to_dict()
+        }
+    
     def print(self):
         print(vars(self))
         print(vars(self.status))
