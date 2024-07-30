@@ -6,6 +6,7 @@ import json
 
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from player import Player
 
 app = FastAPI()
 
@@ -24,7 +25,15 @@ app.add_middleware(
 
 class Input(BaseModel):
     story: dict
-    status: dict
+
+class FirstData(BaseModel):
+    story: dict
+    player: dict
+
+
+@app.on_event("startup")
+async def startup_event():
+    app.state.player = None
 
 @app.get("/")
 def read_root():
@@ -35,7 +44,31 @@ def read_root():
 def story(input: Input):
     print(input)
     story = input.story
-    status = input.status
+    player = app.state.player
+    if player is None:
+        return JSONResponse(status_code=400, content={"message": "Player not set"})
+    
     with open('../data/sample_story.json', 'r') as f:
-        data = json.load(f)
+        story = json.load(f)
+    data = {
+        "story": story['story'],
+        "choices": story['choices'],
+        "player": player.to_dict()
+    }
     return JSONResponse(data)
+
+@app.post("/first")
+def first(input: FirstData):
+    print(input)
+    player = Player(input.player['name'],input.player['description'],input.player['status'])
+    app.state.player = player
+    with open('../data/sample_story.json', 'r') as f:
+        story = json.load(f)
+    data = {
+        "story": story['story'],
+        "choices": story['choices'],
+        "player": player.to_dict()
+    }
+    return JSONResponse(data)
+
+

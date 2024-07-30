@@ -5,7 +5,11 @@ import './MainPage.css';
 function MainPage() {
   const [story, setStory] = useState();
   const [choices, setChoices] = useState();
+  const [name, setName] =useState();
+  const [description, setDescription] = useState();
   const [status, setStatus] = useState({});
+  const [max_status, setMaxStatus] = useState({});
+  const [added_status, setAddedStatus] = useState({});
   const [inventoryVisible, setInventoryVisible] = useState(false);
   const location = useLocation();
   
@@ -13,7 +17,11 @@ function MainPage() {
     if (location.state) {
       setStory(location.state.story);
       setChoices(location.state.choices);
-      // setStatus(location.state.status);
+      setName(location.state.player.name)
+      setDescription(location.state.player.description)
+      setStatus(location.state.player.status.status);
+      setMaxStatus(location.state.player.status.max_status);
+      setAddedStatus(location.state.player.status.added_status);
     }
   }, [location.state]);
 
@@ -21,7 +29,6 @@ function MainPage() {
     console.log(choiceId)
     const data = {
       story: choices[choiceId],
-      status: status,
     };
     console.log(data)
     
@@ -34,16 +41,17 @@ function MainPage() {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.success) {
-          alert('Choice made: ' + choiceId);
-          // 필요한 경우 선택 후의 동작 추가
-        }
+        console.log(data)
       });
   };
 
   const handleInventoryToggle = () => {
     setInventoryVisible(!inventoryVisible);
   };
+
+  function formatStat(value) {
+    return value >= 0 ? `+${value}` : `${value}`;
+  }
 
   return (
     <div className="App">
@@ -66,12 +74,17 @@ function MainPage() {
         <div className="status">
           <div className="status-box">
             <p>Status</p>
+            <p>Name: {name}</p>
+            <p>Description: {description}</p>
+            {Object.keys(status).filter(key => key !== 'HP' && key !== 'MP').map((key) => (
+              <p key={key}>{key}: {status[key]} ({formatStat(added_status[key])}) / {max_status[key]}</p>
+            ))}
           </div>
           <div className="stats">
             {/* <p>LV: {status.lv}</p>
-            <p>EXP: <progress value={status.exp} max="100"></progress></p>
-            <p>HP: <progress value={status.hp} max="100"></progress></p>
-            <p>MP: <progress value={status.mp} max="100"></progress></p> */}
+            <p>EXP: <progress value={status.exp} max="100"></progress></p> */}
+            <p>HP: <progress value={status.HP} max={max_status.HP}></progress></p>
+            <p>MP: <progress value={status.MP} max={max_status.MP}></progress></p>
           </div>
           <div className="inventory-button">
             <button onClick={handleInventoryToggle}>Inventory</button>

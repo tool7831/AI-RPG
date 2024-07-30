@@ -39,14 +39,14 @@ function PlayerPage() {
   const handleSubmit = () => {
     const data = {
       story: location.state.story,
-      status: {
-        player_name: name,
-        player_description: description,
-        stats: stats
+      player: {
+        name: name,
+        description: description,
+        status: stats
       }
     }
 
-    fetch('http://localhost:8000/story_gen', {
+    fetch('http://localhost:8000/first', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
