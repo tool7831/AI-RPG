@@ -20,10 +20,10 @@
             "next_type": "story"
         },
         {
-            "text": "Decline Eldrin's request and continue on your own.",
+            "text": "Combat with Eldrin.",
             "status": {},
             "gold": 0,
-            "next_type": "story"
+            "next_type": "combat"
         }
     ]
 }
