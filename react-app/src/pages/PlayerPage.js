@@ -4,16 +4,16 @@ import './PlayerPage.css';
 
 const MAX_STAT_POINTS = 100;
 const initialStats = {
-  HP: 0,
-  MP: 0,
-  Strength: 0,
-  Dexterity: 0,
-  Intelligence: 0,
-  Luck: 0,
-  Defense: 0,
-  Speed: 0,
-  Concentration: 0,
-  Reaction: 0,
+  HP: 100,
+  MP: 100,
+  Strength: 10,
+  Dexterity: 10,
+  Intelligence: 10,
+  Luck: 10,
+  Defense: 10,
+  Speed: 10,
+  Concentration: 10,
+  Reaction: 10,
   HP_Regeneration: 0,
   MP_Regeneration: 0,
 };
@@ -22,17 +22,38 @@ function PlayerPage() {
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [stats, setStats] = useState(initialStats);
-  const [remainingPoints, setRemainingPoints] = useState(MAX_STAT_POINTS);
+  const [remainingPoints, setRemainingPoints] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
 
   const handleStatChange = (stat, increment) => {
     if (increment && remainingPoints > 0) {
-      setStats({ ...stats, [stat]: stats[stat] + 1 });
-      setRemainingPoints(remainingPoints - 1);
+      if (stat === "HP" || stat === "MP") {
+        setStats({ ...stats, [stat]: stats[stat] + 10 });
+        setRemainingPoints(remainingPoints - 1);
+      }
+      else if (stat === "HP_Regeneration" || stat === "MP_Regeneration"){
+        setStats({ ...stats, [stat]: stats[stat] + 1 });
+        setRemainingPoints(remainingPoints - 10);
+      }
+      else {
+        setStats({ ...stats, [stat]: stats[stat] + 1 });
+        setRemainingPoints(remainingPoints - 1);
+      }
+      
     } else if (!increment && stats[stat] > 0) {
-      setStats({ ...stats, [stat]: stats[stat] - 1 });
-      setRemainingPoints(remainingPoints + 1);
+      if (stat === "HP" || stat === "MP") {
+        setStats({ ...stats, [stat]: stats[stat] - 10 });
+        setRemainingPoints(remainingPoints + 1);
+      }
+      else if (stat === "HP_Regeneration" || stat === "MP_Regeneration"){
+        setStats({ ...stats, [stat]: stats[stat] - 1 });
+        setRemainingPoints(remainingPoints + 10);
+      }
+      else {
+        setStats({ ...stats, [stat]: stats[stat] - 1 });
+        setRemainingPoints(remainingPoints + 1);
+      }
     }
   };
 
