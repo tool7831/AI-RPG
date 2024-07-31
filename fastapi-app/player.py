@@ -62,8 +62,8 @@ class Player():
         self.description = description
         self.status = Status(status)
 
-        # self.equipment = Equipment()
-        # self.inventory = Inventory(30)
+        self.equipment = Equipment()
+        self.inventory = Inventory(30)
 
     def equip(self, slot, item):
         flag = True
@@ -102,8 +102,3 @@ class Player():
             "status": self.status.to_dict()
         }
     
-    def print(self):
-        print(vars(self))
-        print(vars(self.status))
-        print(vars(self.equipment))
-        print(vars(self.inventory))

@@ -31,10 +31,6 @@ class FirstData(BaseModel):
     player: dict
 
 
-@app.on_event("startup")
-async def startup_event():
-    app.state.player = None
-
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
