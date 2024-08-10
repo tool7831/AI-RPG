@@ -1,4 +1,5 @@
-import { Status } from './status';
+import { Status, StatusData } from './status.ts';
+import { Attack, Defend, AttackData, DefendData } from './skill.ts'
 
 interface ItemData {
     item_name: string;
@@ -99,19 +100,29 @@ class Equipment {
     }
 }
 
-class Player {
-    name: string;
-    description: string;
-    status: Status;
-    equipment: Equipment;
-    inventory: Inventory;
+export class Player {
+    public name: string;
+    public description: string;
+    public status: Status;
+    public equipment: Equipment;
+    public inventory: Inventory;
+    public attack: Attack[];
+    public defend: Defend[];
 
-    constructor(name: string, description: string, statusData: Record<string, number>) {
+    constructor(name: string, description: string, statusData: StatusData) {
         this.name = name;
         this.description = description;
         this.status = new Status(statusData);
         this.equipment = new Equipment();
         this.inventory = new Inventory(30);
+    }
+
+    doAttack(idx:number): Record<string,any> {
+        return this.attack[idx].doAttack(this.status.status); 
+    }
+
+    doDefend(idx:number): Record<string,any> {
+        return this.defend[idx].doDefend(this.status.status); 
     }
 
     equip(slot: string, item: Item): void {
@@ -164,5 +175,9 @@ class Player {
             description: this.description,
             status: this.status.toDict()
         };
+    }
+
+    static fromJSON(json: { name: string; description: string; status: StatusData }) {
+        return new Player(json.name, json.description, json.status);
     }
 }

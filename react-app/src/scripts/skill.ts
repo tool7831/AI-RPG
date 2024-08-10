@@ -37,7 +37,7 @@ class StatusEffect {
     }
 }
 
-interface AttackData {
+export interface AttackData {
     name: string;
     type: string;
     defaultDamage:number;
@@ -76,7 +76,7 @@ export class Attack {
         this.curCooldown = 0;
     }
 
-    getAttack(stats: Record<string, any>): Record<string, any> {
+    doAttack(stats: Record<string, any>): Record<string, any> {
         let totalDamage = this.defaultDamage;
 
         for (const [key, value] of Object.entries(this.coef)){
@@ -119,7 +119,65 @@ export class Attack {
     }
 }
 
+export interface DefendData {
+    name: string;
+    type: string;
+    defaultValue:number;
+    coef: Record<string, number>;
+    duration: number;
+    cooldown: number;
+    curCooldown: number;
+}
 
 export class Defend {
+    name: string;
+    type: string; // defense up, shield, dodge
+    defaultValue:number;
+    coef: Record<string, number>;
+    duration: number;
+    cooldown: number;
     
+    private curCooldown: number;
+
+    constructor(data: DefendData) {
+        this.name = data.name;
+        this.type = data.type;
+        this.defaultValue = data.defaultValue;
+        this.coef = data.coef;
+        this.duration = data.duration;
+        this.cooldown = data.cooldown;
+        this.curCooldown = 0;
+    }
+
+    doDefend(stats: Record<string, any>): Record<string, any> {
+        let totalValue = this.defaultValue;
+        for (const [key, value] of Object.entries(this.coef)) {
+            totalValue += stats[key] * value;
+        }
+        this.curCooldown += this.cooldown;
+        return {
+            type: this.type,
+            value: totalValue,
+        };
+    }
+
+    isAvailable(): boolean {
+        return this.curCooldown === 0;
+    }
+
+    reduceCooldown(value: number): void {
+        this.curCooldown = this.curCooldown - value >= 0 ? this.curCooldown - value : 0;
+    }
+
+    toDict(): DefendData {
+        return {
+            name: this.name,
+            type: this.type,
+            defaultValue: this.defaultValue,
+            coef: this.coef,
+            duration: this.duration,
+            cooldown: this.cooldown,
+            curCooldown: this.curCooldown
+        };
+    }
 }

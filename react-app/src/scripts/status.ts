@@ -1,16 +1,33 @@
+
+export interface StatusData {
+    HP: number,
+    MP: number,
+    Strength: number,
+    Skill: number,
+    Dexterity: number,
+    Intelligence: number,
+    Luck: number,
+    Defense: number,
+    Speed: number,
+    Concentration: number,
+    Reaction: 0,
+    HP_Regeneration: number,
+    MP_Regeneration: number
+};
+
 interface StatusDict {
-    status: Record<string, number>;
-    max_status: Record<string, number>;
-    added_status: Record<string, number>;
+    status: StatusData;
+    max_status: StatusData;
+    added_status: StatusData;
 }
 
 export class Status {
-    public status: Record<string, number>;
-    public max_status: Record<string, number>;
-    public added_status: Record<string, number>;
+    public status: StatusData;
+    public max_status: StatusData;
+    public added_status: StatusData;
     public durable: any[];
 
-    constructor(status: Record<string, number>) {
+    constructor(status: StatusData) {
         this.status = status;
         this.max_status = { ...status };
         this.added_status = {
@@ -38,7 +55,7 @@ export class Status {
         }
     }
 
-    getStatus(): Record<string, number> {
+    getStatus(): StatusData {
         return this.status;
     }
 
