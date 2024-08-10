@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import './StoryPage.css';
 
 
 function StoryPage() {
-  const [story, setStory] = useState();
+  const [story, setStory] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const data = {session: "12312"}
+    fetch('http://localhost:8000/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        setStory(data)
+      });
+  }, [])
 
   const handleSubmit = () => {
     const data = {
@@ -21,9 +37,13 @@ function StoryPage() {
     <div className="App">
       <h1>Input</h1>
       <div>
-        <textarea value={story} onChange={(e) => setStory(e.target.value)} rows="10" cols="50" placeholder="World View" />
+        {Object.keys(story).map((key) => (
+          <div key={key}>
+            <textarea value={story[key]} onChange={(e) => setStory(e.target.value)} rows="10" cols="50" placeholder="World View" />
+            <button onClick={handleSubmit}>Submit</button>
+          </div>
+        ))}
       </div>
-      <button onClick={handleSubmit}>Submit</button>
     </div>
   );
 }

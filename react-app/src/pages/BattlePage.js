@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import './BattlePage.css';
 import { Player } from '../scripts/player.ts'
-import './MainPage.css';
-import StatusBox  from '../components/statusBox.js';
-import StoryBox from '../components/storyBox.js';
 
-
-function MainPage() {
-  const [story, setStory] = useState();
-  const [choices, setChoices] = useState();
+function BattlePage() {
   const [player, setPlayer] = useState();
-  const [inventoryVisible, setInventoryVisible] = useState(false);
-  const location = useLocation();
+  const [enemy, setEnemy] = useState();
   
   useEffect(() => {
     fetch('http://localhost:8000/load_data', {
@@ -23,43 +17,22 @@ function MainPage() {
       .then(response => response.json())
       .then(data => {
         if (Object.keys(data).includes('combat')){
-          console.log("go combat page");
+          setEnemy(data.combat);
+          setPlayer(data.player);
         }
         else {
-          console.log(data);
-          setStory(data.story)
-          setChoices(data.choices)
-          setPlayer(data.player)
+          console.log('go story page');
         }
       });
-  }, []);
+  },[]);
 
 
   const handleChoice = (choiceId) => {
     console.log(choiceId)
     const data = {
       story: choices[choiceId],
-      player: player
     };
     console.log(data)
-    
-    fetch('http://localhost:8000/story_gen', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (Object.keys(data).includes('combat')){
-          console.log("go combat page");
-        }
-        else {
-          console.log(data);
-          setPlayer(data.player)  
-        }
-      });
   };
 
   const handleInventoryToggle = () => {
@@ -72,8 +45,8 @@ function MainPage() {
 
   return (
     <div className="App">
-      <StoryBox story={story} choices={choices} handleChoice={handleChoice} />
       <div className="container">
+
         {player && (
           <div className="status">
             <div className="status-box">
@@ -124,4 +97,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default BattlePage;

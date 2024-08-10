@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import './PlayerPage.css';
 
-const MAX_STAT_POINTS = 100;
 const initialStats = {
   HP: 100,
   MP: 100,
@@ -33,8 +32,10 @@ function PlayerPage() {
         setRemainingPoints(remainingPoints - 1);
       }
       else if (stat === "HP_Regeneration" || stat === "MP_Regeneration"){
-        setStats({ ...stats, [stat]: stats[stat] + 1 });
-        setRemainingPoints(remainingPoints - 10);
+        if (remainingPoints >= 10 ) {
+          setStats({ ...stats, [stat]: stats[stat] + 1 });
+          setRemainingPoints(remainingPoints - 10);
+        }
       }
       else {
         setStats({ ...stats, [stat]: stats[stat] + 1 });
@@ -46,7 +47,7 @@ function PlayerPage() {
         setStats({ ...stats, [stat]: stats[stat] - 10 });
         setRemainingPoints(remainingPoints + 1);
       }
-      else if (stat === "HP_Regeneration" || stat === "MP_Regeneration"){
+      else if ((stat === "HP_Regeneration" || stat === "MP_Regeneration")){
         setStats({ ...stats, [stat]: stats[stat] - 1 });
         setRemainingPoints(remainingPoints + 10);
       }
@@ -56,14 +57,21 @@ function PlayerPage() {
       }
     }
   };
-
+  
   const handleSubmit = () => {
     const data = {
       story: location.state.story,
       player: {
         name: name,
         description: description,
-        status: stats
+        status: {
+          status: stats,
+          max_status: {...stats},
+          added_status: Object.keys(stats).reduce((acc, key) => {
+            acc[key] = 0;
+            return acc;
+        }, {})
+        }
       }
     }
 
@@ -76,10 +84,8 @@ function PlayerPage() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
         navigate("/main", { state: data })
       });
-    console.log(data)
   }
 
   return (
