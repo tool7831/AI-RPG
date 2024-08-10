@@ -3,9 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from gen_story import run_thread
 import json
+import os
 
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+
 from player import Player
 
 app = FastAPI()
@@ -25,46 +27,49 @@ app.add_middleware(
 
 class Input(BaseModel):
     story: dict
-
-class FirstData(BaseModel):
-    story: dict
     player: dict
 
 
-@app.get("/")
+@app.post("/")
 def read_root():
-    return {"Hello": "World"}
+    filepath = "../data/worldview"
+    data = {}
+    for file in os.listdir(filepath):
+        f = open(os.path.join(filepath,file), "r")
+        data[file] = f.read()
+    print(data)
+    return JSONResponse(data)
 
+@app.post("/first")
+def first(input: Input):
+    print(input)
+
+    with open('../data/sample_story.json', 'r') as f:
+        next = json.load(f)
+
+    data = dict({"player":input.player}, **next)
+    with open('../data/save.json','w') as f:
+        json.dump(data,f)
+    return JSONResponse(data)
 
 @app.post("/story_gen")
 def story(input: Input):
     print(input)
     story = input.story
-    player = app.state.player
-    if player is None:
-        return JSONResponse(status_code=400, content={"message": "Player not set"})
-    
-    with open('../data/sample_story.json', 'r') as f:
-        story = json.load(f)
-    data = {
-        "story": story['story'],
-        "choices": story['choices'],
-        "player": player.to_dict()
-    }
+    player = input.player
+    player['status']['added_status']['Strength'] += 1
+    with open('../data/sample_combat.json', 'r') as f:
+        next = json.load(f)
+
+    data = dict({"player":input.player}, **next)
+    with open('../data/save.json','w') as f:
+        json.dump(data,f)
     return JSONResponse(data)
 
-@app.post("/first")
-def first(input: FirstData):
-    print(input)
-    player = Player(input.player['name'],input.player['description'],input.player['status'])
-    app.state.player = player
-    with open('../data/sample_story.json', 'r') as f:
-        story = json.load(f)
-    data = {
-        "story": story['story'],
-        "choices": story['choices'],
-        "player": player.to_dict()
-    }
+@app.get("/load_data")
+def load():
+    with open('../data/save.json', 'r') as f:
+        data = json.load(f)
     return JSONResponse(data)
 
 
