@@ -1,0 +1,24 @@
+{
+    "name": "attack1",
+    "type": "type1",
+    "defaultDamage": 100,
+    "coef": {
+        "Strength": 1.5,
+        "Skill": 0.5
+    },
+    "count": 2,
+    "penetration": 10,
+    "accuracy": 90,
+    "cooldown": 2,
+    "statusEffect": {
+        "type": "Bleed",
+        "duration": 3,
+        "defaultValue": 10,
+        "coef": {
+            "Strength": 0.1,
+            "Skill": 0.2
+        },
+        "accuracy": 30
+    },
+    "curCooldown": 0
+}

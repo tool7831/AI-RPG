@@ -1,0 +1,22 @@
+{
+    "name": "attack2",
+    "type": "type2",
+    "defaultDamage": 20,
+    "coef": {
+        "Intelligence": 1.5
+    },
+    "count": 5,
+    "penetration": 40,
+    "accuracy": 50,
+    "cooldown": 4,
+    "statusEffect": {
+        "type": "Burn",
+        "duration": 3,
+        "defaultValue": 10,
+        "coef": {
+            "Intelligence": 0.1
+        },
+        "accuracy": 30
+    },
+    "curCooldown": 0
+}
