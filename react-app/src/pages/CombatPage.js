@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import './BattlePage.css';
-import { Player } from '../scripts/player.ts'
+import StatusBox from '../components/statusBox.js';
+import './CombatPage.css';
 
-function BattlePage() {
+function CombatPage() {
   const [player, setPlayer] = useState();
   const [enemy, setEnemy] = useState();
+  const [inventoryVisible, setInventoryVisible] = useState(false);
   
   useEffect(() => {
     fetch('http://localhost:8000/load_data', {
@@ -27,14 +28,6 @@ function BattlePage() {
   },[]);
 
 
-  const handleChoice = (choiceId) => {
-    console.log(choiceId)
-    const data = {
-      story: choices[choiceId],
-    };
-    console.log(data)
-  };
-
   const handleInventoryToggle = () => {
     setInventoryVisible(!inventoryVisible);
   };
@@ -46,27 +39,7 @@ function BattlePage() {
   return (
     <div className="App">
       <div className="container">
-
-        {player && (
-          <div className="status">
-            <div className="status-box">
-              <p>Status</p>
-              <p>Name: {player.name}</p>
-              <p>Description: {player.description}</p>
-              {Object.keys(player.status.status).filter(key => key !== 'HP' && key !== 'MP').map((key) => (
-                <p key={key}>{key}: {player.status.status[key]} ({formatStat(player.status.added_status[key])}) / {player.status.max_status[key]}</p>
-              ))}
-            </div>
-            <div className="stats">
-              {/* <p>LV: {status.lv}</p>
-            <p>EXP: <progress value={status.exp} max="100"></progress></p> */}
-              <p>HP: <progress value={player.status.status.HP} max={player.status.max_status.HP}></progress></p>
-              <p>MP: <progress value={player.status.status.MP} max={player.status.max_status.MP}></progress></p>
-            </div>
-            <div className="inventory-button">
-              <button onClick={handleInventoryToggle}>Inventory</button>
-            </div>
-          </div>)}
+        {player && (<StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle}/>)}
       </div>
       {inventoryVisible && (
         <div id="inventory" className="inventory">
@@ -97,4 +70,4 @@ function BattlePage() {
   );
 }
 
-export default BattlePage;
+export default CombatPage;
