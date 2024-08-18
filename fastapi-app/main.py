@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from gen_story import run_thread
 import json
 import os
+from glob import glob
 
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
@@ -70,6 +71,17 @@ def story(input: Input):
 def load():
     with open('../data/save.json', 'r') as f:
         data = json.load(f)
+    return JSONResponse(data)
+
+@app.get("/skills")
+def skills():
+    paths = glob('../data/class/**/*.json', recursive=True)
+    print(paths)
+    data = []
+    for path in paths:
+        with open(path, 'r') as f:
+            data.append(json.load(f))
+            print(data)
     return JSONResponse(data)
 
 
