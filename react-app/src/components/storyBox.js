@@ -3,7 +3,14 @@ import { Container, Typography, Button, Box } from '@mui/material';
 
 function StoryBox({ story, choices, handleChoice }) {
   return (
-    <Container maxWidth="sm">
+    <Container 
+      maxWidth="sm"
+      sx={{
+        backgroundColor: 'whitesmoke',
+        padding: 2,
+        borderRadius: 2,
+      }}
+    >
       <Box
         sx={{
           backgroundColor: '#f0f0f0',
@@ -23,15 +30,15 @@ function StoryBox({ story, choices, handleChoice }) {
           key={index}
           variant="contained"
           fullWidth
-          sx={{ mb: 2, backgroundColor: '#d3d3d3' }}
-          onClick={handleChoice(index)}
+          sx={{ mb: 2, backgroundColor: '#d3d3d3', color:'black' }}
+          onClick={() => handleChoice(index)}
         >
           <p>{choice.text}</p>
           {Object.keys(choice.status).map((key) => (
             <p key={key}>{key}: {choice.status[key]}</p>
           ))}
-          <p>{choice.gold}</p>
-          <p>{choice.next_type}</p>
+          {/* <p>{choice.gold}</p>
+          <p>{choice.next_type}</p> */}
         </Button>
       ))}
     </Container>
