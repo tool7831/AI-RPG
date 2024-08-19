@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import './PlayerPage.css';
-import { Container, TextField, Typography, Button, Box, Grid, Paper, IconButton } from '@mui/material';
+import { Container, TextField, Typography, Button, Box, Grid, Paper, IconButton, Tabs, Tab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
@@ -25,10 +25,14 @@ function PlayerPage() {
   const [description, setDescription] = useState();
   const [stats, setStats] = useState(initialStats);
   const [remainingPoints, setRemainingPoints] = useState(0);
+
+  const [skills, setSkills] = useState([]);
+  const [selectedAttacks, setSelectedAttacks] = useState([]);
+  const [selectedDefends, setSelectedDefends] = useState([]);
+  const [selectedClass, setSelectedClass] = useState(0);
+
   const location = useLocation();
   const navigate = useNavigate();
-  const [selectedSkills, setSelectedSkills] = useState([]);
-  const [skills, setSkills] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:8000/skills', {
@@ -43,8 +47,16 @@ function PlayerPage() {
       });
   }, [])
 
-  const handleSkillToggle = (skillId) => {
-    setSelectedSkills((prevSelected) =>
+  const handleAttackToggle = (skillId) => {
+    setSelectedAttacks((prevSelected) =>
+      prevSelected.includes(skillId)
+        ? prevSelected.filter((id) => id !== skillId)
+        : [...prevSelected, skillId]
+    );
+  };
+
+  const handleDefendToggle = (skillId) => {
+    setSelectedDefends((prevSelected) =>
       prevSelected.includes(skillId)
         ? prevSelected.filter((id) => id !== skillId)
         : [...prevSelected, skillId]
@@ -84,6 +96,12 @@ function PlayerPage() {
     }
   };
 
+  const handleClassChange = (event, newValue) => {
+    setSelectedClass(newValue);
+    setSelectedAttacks([]);
+    setSelectedDefends([]);
+  };
+
   const handleSubmit = () => {
     const data = {
       story: location.state.story,
@@ -98,9 +116,11 @@ function PlayerPage() {
             return acc;
           }, {})
         },
-        attacks: selectedSkills.map((idx) => skills[idx])
+        attacks: selectedAttacks.map((idx) => skills[selectedClass].attack[idx]),
+        defends: selectedDefends.map((idx) => skills[selectedClass].defend[idx])
       }
     }
+    console.log(data)
 
     fetch('http://localhost:8000/first', {
       method: 'POST',
@@ -116,26 +136,26 @@ function PlayerPage() {
   }
 
   return (
-
     <Container>
-      {/* Player Name and Description */}
-      <TextField
-        label="Player Name"
-        fullWidth
-        margin="normal"
-        onChange={setName}
-      />
-      <TextField
-        label="Player Description"
-        fullWidth
-        margin="normal"
-        multiline
-        rows={4}
-        onChange={setDescription}
-      />
-      <Grid container spacing={4}>
-        {/* Allocate Stats Section */}
+      <Grid container spacing={2}>
         <Grid item xs={6}>
+          {/* Player Name and Description */}
+          <TextField
+            label="Player Name"
+            fullWidth
+            margin="normal"
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField
+            label="Player Description"
+            fullWidth
+            margin="normal"
+            multiline
+            rows={4}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+
+          {/* Allocate Stats Section */}
           <Box mb={4}>
             <Typography variant="h6" gutterBottom>Allocate Stats</Typography>
             <Typography variant="body1">Remaining Points: {remainingPoints}</Typography>
@@ -160,27 +180,36 @@ function PlayerPage() {
           </Box>
         </Grid>
         {/* Skills Selection */}
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>
-              Skills
-            </Typography>
-            <Box display="flex" flexDirection="column" alignItems="flex-start">
-              {skills.map((skill, index) => (
+        <Grid item xs={6}>
+          <Typography variant="h6" gutterBottom>Skills</Typography>
+          <Tabs
+            value={selectedClass}
+            onChange={handleClassChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+            sx={{ mb: 2 }}
+          >
+            {skills.map((skillClass, index) => (
+              <Tab key={index} label={skillClass.class_name} />
+            ))}
+          </Tabs>
+          <Grid container spacing={2}>
+            {/* Attack Skills */}
+            <Grid item xs={12}><Typography variant="h6">Attack Skills</Typography></Grid>
+            {skills[selectedClass] && skills[selectedClass].attack.map((skill, index) => (
+              <Grid item xs={12} key={index}>
                 <Paper
                   key={index}
-                  elevation={selectedSkills.includes(index) ? 8 : 1}
+                  elevation={selectedAttacks.includes(index) ? 8 : 1}
                   sx={{
                     padding: 2,
-                    marginBottom: 2,
-                    width: '100%',
                     cursor: 'pointer',
-                    border: selectedSkills.includes(index) ? '2px solid #3f51b5' : '1px solid #ddd',
-                    boxShadow: selectedSkills.includes(index) ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
+                    border: selectedAttacks.includes(index) ? '2px solid #3f51b5' : '1px solid #ddd',
+                    boxShadow: selectedAttacks.includes(index) ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
                   }}
-                  onClick={() => handleSkillToggle(index)}
+                  onClick={() => handleAttackToggle(index)}
                 >
-
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                       <Typography variant="h6">{skill.name}</Typography>
@@ -216,13 +245,41 @@ function PlayerPage() {
                     </Grid>
                   </Grid>
                 </Paper>
-              ))}
-            </Box>
+              </Grid>
+            ))}
+            {/* Defend Skills */}
+            <Grid item xs={12} mt={4}><Typography variant="h6">Defend Skills</Typography></Grid>
+            {skills[selectedClass] && skills[selectedClass].defend.map((skill, index) => (
+              <Grid item xs={12} key={index}>
+                <Paper
+                  elevation={selectedDefends.includes(index) ? 8 : 1}
+                  sx={{
+                    padding: 2,
+                    cursor: 'pointer',
+                    border: selectedDefends.includes(index) ? '2px solid #3f51b5' : '1px solid #ddd',
+                    boxShadow: selectedDefends.includes(index) ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
+                  }}
+                  onClick={() => handleDefendToggle(index)}
+                >
+                  <Typography variant="h6">{skill.name}</Typography>
+                  <Typography variant="body2">Type: {skill.type}</Typography>
+                  <Typography variant="body2">Default Value: {skill.defaultValue}</Typography>
+                  <Typography variant="body2">
+                    Coefficient: {Object.keys(skill.coef).map((key) => `${key}: ${skill.coef[key]}`).join(', ')}
+                  </Typography>
+                  <Typography variant="body2">Duration: {skill.duration}</Typography>
+                  <Typography variant="body2">Cooldown: {skill.cooldown}</Typography>
+                  <Typography variant="body2">Current Cooldown: {skill.curCooldown}</Typography>
+                </Paper>
+              </Grid>
+            ))}
           </Grid>
         </Grid>
+
         <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
           Submit
         </Button>
+        
       </Grid>
     </Container>
   );

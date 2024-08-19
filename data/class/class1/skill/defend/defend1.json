@@ -1,0 +1,11 @@
+{
+    "name": "defend1",
+    "type": "type1",
+    "defaultValue": 20,
+    "coef": {
+        "Intelligence": 1.5
+    },
+    "duration": 5,
+    "cooldown": 4,
+    "curCooldown": 0
+}

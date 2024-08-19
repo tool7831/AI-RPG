@@ -9,8 +9,6 @@ from glob import glob
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from player import Player
-
 app = FastAPI()
 
 origins = [
@@ -75,13 +73,25 @@ def load():
 
 @app.get("/skills")
 def skills():
-    paths = glob('../data/class/**/*.json', recursive=True)
-    print(paths)
     data = []
-    for path in paths:
-        with open(path, 'r') as f:
-            data.append(json.load(f))
-            print(data)
+    class_paths = glob('../data/class/class1')
+    for class_path in class_paths:
+        attack_path = glob(os.path.join(class_path, 'skill/attack/*json'))
+        attack = []
+        for path in attack_path:
+            with open(path, 'r') as f:
+                attack.append(json.load(f))
+        defend = []
+        defend_path = glob(os.path.join(class_path, 'skill/defend/*json'))
+        for path in defend_path:
+            with open(path, 'r') as f:
+                defend.append(json.load(f))
+        data.append({
+            'class_name': 'class1',
+            'attack': attack,
+            'defend': defend,
+        })
+    print(data)
     return JSONResponse(data)
 
 
