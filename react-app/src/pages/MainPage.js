@@ -53,7 +53,7 @@ function MainPage() {
       .then(response => response.json())
       .then(data => {
         if (Object.keys(data).includes('combat')){
-          console.log("go combat page");
+          navigate('/combat')
         }
         else {
           console.log(data);

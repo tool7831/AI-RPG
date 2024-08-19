@@ -1,6 +1,14 @@
 {
-  "lv": 1,
-  "exp": 50,
-  "hp": 80,
-  "mp": 30
+  "HP": 100,
+  "MP": 100,
+  "Strength": 10,
+  "Dexterity": 10,
+  "Intelligence": 10,
+  "Luck": 10,
+  "Defense": 10,
+  "Speed": 10,
+  "Concentration": 10,
+  "Reaction": 10,
+  "HP_Regeneration": 0,
+  "MP_Regeneration": 0
 }

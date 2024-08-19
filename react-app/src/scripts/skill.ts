@@ -26,6 +26,19 @@ class StatusEffect {
         this.duration = data.duration;
     }
 
+    doAttack(stats: Record<string, any>): Record<string, any> {
+        let totalValue = this.defaultValue;
+        for (const [key, value] of Object.entries(this.coef)){
+            totalValue += stats[key] * value;
+        }
+        return {
+            type: this.type,
+            duration: this.duration,
+            value: totalValue, 
+            accuracy: this.accuracy
+        }
+    }
+
     toDict(): StatusEffectData {
         return {
             type: this.type,
@@ -91,7 +104,7 @@ export class Attack {
             count: this.count,
             penetration: this.penetration,
             accuracy: this.accuracy,
-            statusEffect: this.statusEffect,
+            statusEffect: this.statusEffect.doAttack(stats),
         };
     }
 

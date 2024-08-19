@@ -1,4 +1,4 @@
-import { Status, StatusData } from './status.ts';
+import { Status, StatusData, StatusDict } from './status.ts';
 import { Attack, Defend, AttackData, DefendData } from './skill.ts'
 
 interface ItemData {
@@ -106,23 +106,26 @@ export class Player {
     public status: Status;
     public equipment: Equipment;
     public inventory: Inventory;
-    public attack: Attack[];
-    public defend: Defend[];
+    public attacks: Attack[];
+    public defends: Defend[];
 
-    constructor(name: string, description: string, statusData: StatusData) {
+    constructor(name: string, description: string, status: StatusDict, attacks: AttackData[], defends: DefendData[]) {
         this.name = name;
         this.description = description;
-        this.status = new Status(statusData);
+        this.status = new Status(status.status, status.max_status, status.added_status);
         this.equipment = new Equipment();
         this.inventory = new Inventory(30);
+
+        this.attacks = attacks.map(atk => new Attack(atk))
+        this.defends = defends.map(def => new Defend(def))
     }
 
     doAttack(idx:number): Record<string,any> {
-        return this.attack[idx].doAttack(this.status.status); 
+        return this.attacks[idx].doAttack(this.status.status); 
     }
 
     doDefend(idx:number): Record<string,any> {
-        return this.defend[idx].doDefend(this.status.status); 
+        return this.defends[idx].doDefend(this.status.status); 
     }
 
     equip(slot: string, item: Item): void {
@@ -177,7 +180,7 @@ export class Player {
         };
     }
 
-    static fromJSON(json: { name: string; description: string; status: StatusData }) {
-        return new Player(json.name, json.description, json.status);
+    static fromJSON(json: { name: string; description: string; status: StatusDict, attacks: AttackData[], defends: DefendData[] }) {
+        return new Player(json.name, json.description, json.status, json.attacks, json.defends);
     }
 }
