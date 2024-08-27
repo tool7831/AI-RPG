@@ -3,6 +3,9 @@ import { useLocation } from 'react-router-dom';
 import StatusBox from '../components/statusBox.js';
 import './CombatPage.css';
 
+import { Player } from '../scripts/player.ts';
+import { Button } from '@mui/material';
+
 function CombatPage() {
   const [player, setPlayer] = useState();
   const [enemy, setEnemy] = useState();
@@ -19,7 +22,7 @@ function CombatPage() {
       .then(data => {
         if (Object.keys(data).includes('combat')){
           setEnemy(data.combat);
-          setPlayer(data.player);
+          setPlayer(Player.fromJSON(data.player));
         }
         else {
           console.log('go story page');
@@ -27,6 +30,19 @@ function CombatPage() {
       });
   },[]);
 
+  const handleAttack = (index) => {
+    console.log(player.doAttack(index))
+    battle(player.doAttack(index))
+  }
+
+  const handleDefend = (index) => {
+    console.log(player.doDefend(index))
+    battle(player.doDefend(index))
+  }
+
+  const battle = (action) => {
+
+  }
 
   const handleInventoryToggle = () => {
     setInventoryVisible(!inventoryVisible);
@@ -41,31 +57,8 @@ function CombatPage() {
       <div className="container">
         {player && (<StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle}/>)}
       </div>
-      {inventoryVisible && (
-        <div id="inventory" className="inventory">
-          <button className="close-btn" onClick={handleInventoryToggle}>X</button>
-          <p>Inventory</p>
-          <div className="equipment">
-            <button>helmet</button>
-            <button>armor</button>
-            <button>pants</button>
-            <button>shoes</button>
-            <button>gloves</button>
-            <button>right hand</button>
-            <button>left hand</button>
-            <button>ring1</button>
-            <button>ring2</button>
-            <button>earring1</button>
-            <button>earring2</button>
-            <button>necklace</button>
-          </div>
-          <div className="items">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <button key={i} className="item"></button>
-            ))}
-          </div>
-        </div>
-      )}
+      <Button onClick={() => handleAttack(1)}>attack</Button>
+      <Button onClick={() => handleDefend(0)}>defend</Button>
     </div>
   );
 }

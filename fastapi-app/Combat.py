@@ -8,7 +8,6 @@ def combat(json):
 #   'status': {'HP': 300,
 #    'MP': 50,
 #    'Strength': 40,
-#    'Skill': 25,
 #    'Dexterity': 10,
 #    'Intelligence': 20,
 #    'Luck': 5,
