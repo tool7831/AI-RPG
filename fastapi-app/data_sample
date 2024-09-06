@@ -1,0 +1,62 @@
+# {'Combat': {'Monster Name': 'Rogue Demon',
+#   'Monster Description': 'A malevolent creature with burning red eyes and charred wings, cloaked in dark mist. It preys on travelers, disrupting the natural balance of Blackwood Forest.',
+#   'status': {'HP': 300,
+#    'MP': 50,
+#    'Strength': 40,
+#    'Dexterity': 10,
+#    'Intelligence': 20,
+#    'Luck': 5,
+#    'Defense': 20,
+#    'Speed': 10,
+#    'Concentration': 15,
+#    'Reaction': 10,
+#    'MP Regeneration': 1,
+#    'HP Regeneration': 1}},
+#  'Reward': {'gold': 200, 'exp': 150},
+#  'Item': {'Item types': 'Weapon',
+#   'Item Name': 'Demon Slasher',
+#   'Item Description': 'A cursed sword forged in the Underworld. It is exceptionally efficient against demonic beings.',
+#   'Use Restriction': {'Strength': 25},
+#   'Effect': {'Strength': 25, 'Luck': -5}}}
+
+# {'공격 타입':['물리', '마법']}
+# {'물리 공격 방식': ['배기', '찌르기', '타격']}
+# {'마법 공격 방식': ['배기', '찌르기', '타격', '폭발']}
+# {'관통' : ['방어력 관통': "%", '마법 방어력 관통': "%"]}
+# {'명중력': ''}
+# {'상태이상': ['출혈', '독', '화상', '기절', '빙결', '마비', '수면', '침묵', '혼란', '실명', '매혹', '공포', '둔화', '속박', '약화']}
+# {'출혈, 독, 화상, 빙결': {'데미지 계수', '지속 시간'}}
+# {'기절, 마비, 수면, 침묵, 혼란, 실명, 매혹, 공포, 속박': {'지속시간'}}
+# {'둔화, 약화': {'%', '지속시간'}}
+# {'데미지': {'Status', 'Coef', 'Count'}}
+
+
+
+# {
+#     "Attack_Type": ["Physical", "Magical"],
+#     "Physical_Attack_Method": ["Slash", "Stab", "Strike"],
+#     "Magical_Attack_Method": ["Slash", "Stab", "Strike", "Explosion"],
+#     "Penetration": {
+#         "Physical_Defense_Penetration": "%",
+#         "Magical_Defense_Penetration": "%"
+#     },
+#     "Accuracy": "%",
+#     "Status_Effect": ["Bleed", "Poison", "Burn", "Stun", "Freeze", "Paralysis", "Sleep", "Silence", "Confusion", "Blindness", "Charm", "Fear", "Slow", "Root", "Weaken"],
+#     "Bleed_Poison_Burn_Freeze": {
+#         "Status": "",
+#         "Coefficient": "",
+#         "Duration": ""
+#     },
+#     "Stun_Paralysis_Sleep_Silence_Confusion_Blindness_Charm_Fear_Root": {
+#         "Duration": ""
+#     },
+#     "Slow_Weaken": {
+#         "Effect_Percentage": "",
+#         "Duration": ""
+#     },
+#     "Damage": {
+#         "Status": "",
+#         "Coefficient": "",
+#         "Count": ""
+#     }
+# }
