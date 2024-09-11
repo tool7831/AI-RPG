@@ -50,6 +50,7 @@ class StatusEffect {
     }
 }
 
+
 export interface AttackData {
     name: string;
     type: string;

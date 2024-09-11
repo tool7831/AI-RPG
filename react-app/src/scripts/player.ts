@@ -1,5 +1,5 @@
 import { Status, StatusData, StatusDict } from './status.ts';
-import { Attack, Defend, AttackData, DefendData } from './skill.ts'
+import { Attack, Defend, Smite, AttackData, DefendData, SmiteData } from './skill.ts'
 
 interface ItemData {
     item_name: string;
@@ -100,6 +100,10 @@ class Equipment {
     }
 }
 
+function rand(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export class Player {
     public name: string;
     public description: string;
@@ -108,24 +112,31 @@ export class Player {
     public inventory: Inventory;
     public attacks: Attack[];
     public defends: Defend[];
+    public smites: Smite[];
 
     constructor(name: string, description: string, status: StatusDict, attacks: AttackData[], defends: DefendData[]) {
         this.name = name;
         this.description = description;
-        this.status = new Status(status.status, status.max_status, status.added_status);
+        this.status = new Status(status.origin_status, status.added_status);
         this.equipment = new Equipment();
         this.inventory = new Inventory(30);
 
         this.attacks = attacks.map(atk => new Attack(atk))
         this.defends = defends.map(def => new Defend(def))
+        this.smites = []
     }
 
     doAction(action:number, skill_idx:number):Record<string,any> {
+        this.reduceCoolDown(1)
+        this.status.updateStatusEffects()
+        this.status.updateBuffs()
         if (action === 0)
             return this.doAttack(skill_idx)
         else if (action === 1)
             return this.doDefend(skill_idx)
-        return this.doDefend(skill_idx)
+        else if (action === 2)
+            return this.doSmite(skill_idx)
+        return {name: 'skip'}
     }
 
     doAttack(idx:number): Record<string,any> {
@@ -136,41 +147,68 @@ export class Player {
         return this.defends[idx].doDefend(this.status.status); 
     }
 
-    equip(slot: string, item: Item): void {
-        let flag = true;
-        for (const [key, value] of Object.entries(item.restriction)) {
-            if (this.status.max_status[key] < value) {
-                flag = false;
-                break;
-            }
-        }
+    doSmite(idx: number): Record<string, any> {
+        return this.smites[idx].doSmite(this.status.status);
+    }
 
-        if (flag) {
-            const prev = this.equipment.equip(slot, item);
-            if (prev !== null) {
-                this.inventory.addItem(prev);
-                for (const [key, value] of Object.entries(prev.effect)) {
-                    this.status.changeAddedValue(key, -value);
+    damaged(skill) {
+        for(let i = 0; i < skill.count; i++){
+            const attack_rand = rand(0,99)
+            if (attack_rand < skill.accuracy) {
+                console.log('damage')
+                this.status.damaged(skill.damage)
+                const effect_rand = rand(0,99)
+                if (effect_rand < skill.statusEffect.accuracy) {
+                    const statusEffect = {name: skill.name, type: skill.statusEffect.type, value: skill.statusEffect.value, duration : skill.statusEffect.duration}
+                    this.status.addStatusEffect(statusEffect)
                 }
             }
-
-            for (const [key, value] of Object.entries(item.effect)) {
-                this.status.changeAddedValue(key, value);
+            else {
+                console.log('miss')
             }
-
-            this.inventory.removeItem(item);
         }
     }
 
-    unequip(slot: string): void {
-        const item = this.equipment.unequip(slot);
-        if (item !== null) {
-            for (const [key, value] of Object.entries(item.effect)) {
-                this.status.changeAddedValue(key, -value);
-            }
-            this.inventory.addItem(item);
-        }
+    reduceCoolDown(value: number) {
+        this.attacks.forEach((atk) => atk.reduceCooldown(value))
+        this.defends.forEach((def) => def.reduceCooldown(value))
+        this.smites.forEach((smi) => smi.reduceCooldown(value))
     }
+    // equip(slot: string, item: Item): void {
+    //     let flag = true;
+    //     for (const [key, value] of Object.entries(item.restriction)) {
+    //         if (this.status.origin_status[key] < value) {
+    //             flag = false;
+    //             break;
+    //         }
+    //     }
+
+    //     if (flag) {
+    //         const prev = this.equipment.equip(slot, item);
+    //         if (prev !== null) {
+    //             this.inventory.addItem(prev);
+    //             for (const [key, value] of Object.entries(prev.effect)) {
+    //                 this.status.changeAddedValue(key, -value);
+    //             }
+    //         }
+
+    //         for (const [key, value] of Object.entries(item.effect)) {
+    //             this.status.changeAddedValue(key, value);
+    //         }
+
+    //         this.inventory.removeItem(item);
+    //     }
+    // }
+
+    // unequip(slot: string): void {
+    //     const item = this.equipment.unequip(slot);
+    //     if (item !== null) {
+    //         for (const [key, value] of Object.entries(item.effect)) {
+    //             this.status.changeAddedValue(key, -value);
+    //         }
+    //         this.inventory.addItem(item);
+    //     }
+    // }
 
     addItem(item: Item): void {
         this.inventory.addItem(item);

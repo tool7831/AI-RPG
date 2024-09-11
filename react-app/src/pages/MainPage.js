@@ -67,25 +67,14 @@ function MainPage() {
     setInventoryVisible(!inventoryVisible);
   };
 
-  function formatStat(value) {
-    return value >= 0 ? `+${value}` : `${value}`;
-  }
+
 
   return (
     <div className="App">
       <Container sx={{border: 'solid'}}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center', // Center horizontally
-            width: '100%', // Ensures that the content doesn't overflow the container
-          }}
-        >
+        <Box sx={{display: 'flex',flexDirection: 'column',alignItems: 'center', width: '100%'}}>
           <StoryBox story={story} choices={choices} handleChoice={handleChoice} />
-          {player && (
-            <StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle} />
-          )}
+          {player && ( <StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle} isPlayer={true}/>)}
         </Box>
       </Container>
       {inventoryVisible && (
