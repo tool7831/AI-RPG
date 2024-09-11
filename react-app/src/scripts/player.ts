@@ -120,6 +120,14 @@ export class Player {
         this.defends = defends.map(def => new Defend(def))
     }
 
+    doAction(action:number, skill_idx:number):Record<string,any> {
+        if (action === 0)
+            return this.doAttack(skill_idx)
+        else if (action === 1)
+            return this.doDefend(skill_idx)
+        return this.doDefend(skill_idx)
+    }
+
     doAttack(idx:number): Record<string,any> {
         return this.attacks[idx].doAttack(this.status.status); 
     }

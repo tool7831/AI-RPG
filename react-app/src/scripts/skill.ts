@@ -99,6 +99,7 @@ export class Attack {
         this.curCooldown += this.cooldown;
 
         return {
+            name: this.name,
             type: this.type,
             damage: totalDamage,
             count: this.count,
@@ -169,8 +170,10 @@ export class Defend {
         }
         this.curCooldown += this.cooldown;
         return {
+            name: this.name,
             type: this.type,
             value: totalValue,
+            duration: this.duration,
         };
     }
 
@@ -194,3 +197,69 @@ export class Defend {
         };
     }
 }
+
+export interface SmiteData {
+    name: string;
+    type: string;
+    defaultValue:number;
+    coef: Record<string, number>;
+    duration: number;
+    cooldown: number;
+    curCooldown: number;
+}
+
+export class Smite {
+    name: string;
+    type: string; // hp_scailing, damage, stun
+    defaultValue:number;
+    coef: Record<string, number>;
+    duration: number;
+    cooldown: number;
+    
+    private curCooldown: number;
+
+    constructor(data: SmiteData) {
+        this.name = data.name;
+        this.type = data.type;
+        this.defaultValue = data.defaultValue;
+        this.coef = data.coef;
+        this.duration = data.duration;
+        this.cooldown = data.cooldown;
+        this.curCooldown = 0;
+    }
+
+    doSmite(stats: Record<string, any>): Record<string, any> {
+        let totalValue = this.defaultValue;
+        for (const [key, value] of Object.entries(this.coef)) {
+            totalValue += stats[key] * value;
+        }
+        this.curCooldown += this.cooldown;
+        return {
+            name: this.name,
+            type: this.type,
+            value: totalValue,
+            duration: this.duration,
+        };
+    }
+
+    isAvailable(): boolean {
+        return this.curCooldown === 0;
+    }
+
+    reduceCooldown(value: number): void {
+        this.curCooldown = this.curCooldown - value >= 0 ? this.curCooldown - value : 0;
+    }
+
+    toDict(): SmiteData {
+        return {
+            name: this.name,
+            type: this.type,
+            defaultValue: this.defaultValue,
+            coef: this.coef,
+            duration: this.duration,
+            cooldown: this.cooldown,
+            curCooldown: this.curCooldown
+        };
+    }
+}
+
