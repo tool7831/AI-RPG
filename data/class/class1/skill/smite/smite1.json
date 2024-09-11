@@ -1,0 +1,11 @@
+{
+    "name": "smite1",
+    "type": "hp_scaling",
+    "defaultValue": 15,
+    "coef": {
+        "Strength": 0.01
+    },
+    "duration": 0,
+    "cooldown": 4,
+    "curCooldown": 0
+}

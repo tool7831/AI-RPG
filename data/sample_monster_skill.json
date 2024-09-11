@@ -1,21 +1,4 @@
 {
-  "combat": {
-    "monster_name": "Rogue Demon",
-    "monster_description": "A malevolent creature with burning red eyes and charred wings, cloaked in dark mist. It preys on travelers, disrupting the natural balance of Blackwood Forest.",
-    "status": {
-      "HP": 300,
-      "MP": 50,
-      "Strength": 40,
-      "Dexterity": 10,
-      "Intelligence": 20,
-      "Luck": 5,
-      "Defense": 20,
-      "Speed": 10,
-      "Concentration": 15,
-      "Reaction": 10,
-      "MP_Regeneration": 1,
-      "HP_Regeneration": 1
-    },
     "attacks": [
       {
         "name": "Savage Slash",
@@ -127,21 +110,4 @@
         10
       ]
     }
-  },
-  "reward": {
-    "gold": 200,
-    "exp": 150
-  },
-  "item": {
-    "item_type": "Weapon",
-    "item_name": "Demon Slasher",
-    "item_description": "A cursed sword forged in the Underworld. It is exceptionally efficient against demonic beings.",
-    "use_restriction": {
-      "Strength": 25
-    },
-    "effect": {
-      "Strength": 25,
-      "Luck": -5
-    }
   }
-}

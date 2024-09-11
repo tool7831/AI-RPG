@@ -1,7 +1,5 @@
 {
     "player": {
-        "name": "\u3141\u3147\u3141\u3134\u3147\u3147",
-        "description": "\u3147\u3147\u3147\u3147\u3147\u3147\u3147",
         "status": {
             "status": {
                 "HP": 100,
@@ -48,6 +46,29 @@
         },
         "attacks": [
             {
+                "name": "attack1",
+                "type": "type1",
+                "defaultDamage": 100,
+                "coef": {
+                    "Strength": 1.5,
+                    "Concentration": 0.5
+                },
+                "count": 2,
+                "penetration": 10,
+                "accuracy": 90,
+                "cooldown": 2,
+                "statusEffect": {
+                    "type": "Bleed",
+                    "duration": 3,
+                    "defaultValue": 10,
+                    "coef": {
+                        "Strength": 0.1
+                    },
+                    "accuracy": 30
+                },
+                "curCooldown": 0
+            },
+            {
                 "name": "attack2",
                 "type": "type2",
                 "defaultDamage": 20,
@@ -68,29 +89,6 @@
                     "accuracy": 30
                 },
                 "curCooldown": 0
-            },
-            {
-                "name": "attack1",
-                "type": "type1",
-                "defaultDamage": 100,
-                "coef": {
-                    "Strength": 2.5,
-                    "Concentration":0.5
-                },
-                "count": 2,
-                "penetration": 10,
-                "accuracy": 90,
-                "cooldown": 2,
-                "statusEffect": {
-                    "type": "Bleed",
-                    "duration": 3,
-                    "defaultValue": 10,
-                    "coef": {
-                        "Strength": 0.1
-                    },
-                    "accuracy": 30
-                },
-                "curCooldown": 0
             }
         ],
         "defends": [
@@ -104,6 +102,18 @@
                 "duration": 5,
                 "cooldown": 4,
                 "curCooldown": 0
+            },
+            {
+                "name": "defend2",
+                "type": "type2",
+                "defaultValue": 100,
+                "coef": {
+                    "Intelligence": 1.5,
+                    "Strength": 0.5
+                },
+                "duration": 3,
+                "cooldown": 4,
+                "curCooldown": 0
             }
         ]
     },
@@ -114,7 +124,6 @@
             "HP": 300,
             "MP": 50,
             "Strength": 40,
-            "Skill": 25,
             "Dexterity": 10,
             "Intelligence": 20,
             "Luck": 5,
@@ -122,24 +131,135 @@
             "Speed": 10,
             "Concentration": 15,
             "Reaction": 10,
-            "MP Regeneration": 1,
-            "HP Regeneration": 1
+            "MP_Regeneration": 1,
+            "HP_Regeneration": 1
         },
-        "reward": {
-            "gold": 200,
-            "exp": 150
-        },
-        "item": {
-            "item_type": "Weapon",
-            "item_name": "Demon Slasher",
-            "item_description": "A cursed sword forged in the Underworld. It is exceptionally efficient against demonic beings.",
-            "use_restriction": {
-                "Strength": 25
+        "attacks": [
+            {
+                "name": "Savage Slash",
+                "type": "melee",
+                "defaultDamage": 25,
+                "coef": {
+                    "Strength": 1.2,
+                    "Dexterity": 0.4
+                },
+                "count": 1,
+                "penetration": 5,
+                "accuracy": 85,
+                "cooldown": 2,
+                "statusEffect": {
+                    "type": "Bleed",
+                    "duration": 3,
+                    "defaultValue": 5,
+                    "coef": {
+                        "Strength": 0.2
+                    },
+                    "accuracy": 40
+                },
+                "curCooldown": 0
             },
-            "effect": {
-                "Strength": 25,
-                "Luck": -5
+            {
+                "name": "Poison Dart",
+                "type": "magic",
+                "defaultDamage": 15,
+                "coef": {
+                    "Intelligence": 0.5
+                },
+                "count": 1,
+                "penetration": 0,
+                "accuracy": 75,
+                "cooldown": 3,
+                "statusEffect": {
+                    "type": "Poison",
+                    "duration": 4,
+                    "defaultValue": 4,
+                    "coef": {
+                        "Intelligence": 0.3
+                    },
+                    "accuracy": 50
+                },
+                "curCooldown": 0
             }
+        ],
+        "defends": [
+            {
+                "name": "Shadow Veil",
+                "type": "dodge",
+                "defaultValue": 30,
+                "coef": {
+                    "Speed": 1.5,
+                    "Dexterity": 1
+                },
+                "duration": 2,
+                "cooldown": 5,
+                "curCooldown": 0
+            },
+            {
+                "name": "Goblin Shield",
+                "type": "barrier",
+                "defaultValue": 20,
+                "coef": {
+                    "Defense": 1.2,
+                    "Concentration": 0.5
+                },
+                "duration": 3,
+                "cooldown": 6,
+                "curCooldown": 0
+            }
+        ],
+        "smites": [
+            {
+                "name": "Rage Attack",
+                "type": "damage",
+                "defaultValue": 40,
+                "coef": {
+                    "Strength": 1,
+                    "Reaction": 0.3
+                },
+                "cooldown": 8,
+                "curCooldown": 0
+            },
+            {
+                "name": "Crippling Fear",
+                "type": "stun",
+                "coef": {
+                    "Intelligence": 0.5,
+                    "Luck": 0.3
+                },
+                "duration": 2,
+                "cooldown": 7,
+                "curCooldown": 0
+            }
+        ],
+        "frequency": {
+            "attacks": [
+                40,
+                30
+            ],
+            "defends": [
+                15,
+                10
+            ],
+            "smites": [
+                5,
+                10
+            ]
+        }
+    },
+    "reward": {
+        "gold": 200,
+        "exp": 150
+    },
+    "item": {
+        "item_type": "Weapon",
+        "item_name": "Demon Slasher",
+        "item_description": "A cursed sword forged in the Underworld. It is exceptionally efficient against demonic beings.",
+        "use_restriction": {
+            "Strength": 25
+        },
+        "effect": {
+            "Strength": 25,
+            "Luck": -5
         }
     }
 }
