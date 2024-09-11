@@ -3,26 +3,9 @@ import { Container, Typography, Button, Box } from '@mui/material';
 
 function StoryBox({ story, choices, handleChoice }) {
   return (
-    <Container 
-      maxWidth="sm"
-      sx={{
-        backgroundColor: 'whitesmoke',
-        padding: 2,
-        borderRadius: 2,
-      }}
-    >
-      <Box
-        sx={{
-          backgroundColor: '#f0f0f0',
-          padding: 2,
-          borderRadius: 2,
-          textAlign: 'left',
-          mb: 3,
-        }}
-      >
-        <Typography variant="h6" gutterBottom sx={{}}>
-          Story
-        </Typography>
+    <Container maxWidth="sm" sx={{ backgroundColor: 'whitesmoke', padding: 2, borderRadius: 2,}}>
+      <Box sx={{ backgroundColor: '#f0f0f0', padding: 2, borderRadius: 2, textAlign: 'left', mb: 3, }}>
+        <Typography variant="h6" gutterBottom sx={{}}> Story </Typography>
         <Typography variant="body1">{story}</Typography>
       </Box>
       {choices && choices.map((choice, index) => (

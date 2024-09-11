@@ -1,12 +1,12 @@
 import React from 'react';
 import {Typography, Grid, LinearProgress, Box, Button, Container } from '@mui/material';
 
-function StatusBox({ status, handleInventoryToggle }) {
+function StatusBox({ status, handleInventoryToggle, maxWidth= 'sm', isPlayer}) {
   return (
-    <Container maxWidth="sm" sx={{margin:2, padding:2, backgroundColor:"whitesmoke"}}>
+    <Container maxWidth={maxWidth} sx={{padding:2, backgroundColor:"whitesmoke"}}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Status</Typography>
-        <Button variant="contained" sx={{ borderRadius: 2 }} onClick={handleInventoryToggle} >Inventory</Button>
+        {isPlayer && <Button variant="contained" sx={{ borderRadius: 2 }} onClick={handleInventoryToggle} >Inventory</Button>}
       </Box>
       <Grid container spacing={2}>
         <Grid item xs={6}>
@@ -25,8 +25,8 @@ function StatusBox({ status, handleInventoryToggle }) {
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" flexDirection="column" alignItems="flex-end">
-            <Typography variant="body2">EXP:{status.status.EXP} / {status.max_status.EXP}</Typography>
-            <LinearProgress variant="determinate" value={status.status.EXP * 100 / status.max_status.EXP} sx={{ width: '100%', height: 10, borderRadius: 5 }} color="success" />
+            {isPlayer && <Typography variant="body2">EXP:{status.status.EXP} / {status.max_status.EXP}</Typography>}
+            {isPlayer && <LinearProgress variant="determinate" value={status.status.EXP * 100 / status.max_status.EXP} sx={{ width: '100%', height: 10, borderRadius: 5 }} color="success" />}
             <Typography variant="body2" mt={1}>HP:{status.status.HP} / {status.max_status.HP}</Typography>
             <LinearProgress variant="determinate" value={status.status.HP * 100 / status.max_status.HP} sx={{ width: '100%', height: 10, borderRadius: 5 }} color="error" />
             <Typography variant="body2" mt={1}>MP:{status.status.MP} / {status.max_status.MP}</Typography>
