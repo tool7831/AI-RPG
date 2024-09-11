@@ -2,7 +2,6 @@ from openai import OpenAI
 import os
 import json
 import time
-import Combat
 
 client = OpenAI(api_key = os.environ['OPENAI_API_KEY'])
 

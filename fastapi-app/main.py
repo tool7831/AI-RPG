@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from gen_story import run_thread
+# from gen_story import run_thread
 import json
 import os
 from glob import glob
