@@ -1,6 +1,6 @@
 {
     "name": "defend1",
-    "type": "type1",
+    "type": "parry",
     "defaultValue": 20,
     "coef": {
         "Intelligence": 1.5

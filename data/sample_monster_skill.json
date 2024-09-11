@@ -61,7 +61,7 @@
       },
       {
         "name": "Goblin Shield",
-        "type": "barrier",
+        "type": "shield",
         "defaultValue": 20,
         "coef": {
           "Defense": 1.2,

@@ -1,6 +1,6 @@
 {
     "name": "attack1",
-    "type": "type1",
+    "type": "melee",
     "defaultDamage": 100,
     "coef": {
         "Strength": 1.5,

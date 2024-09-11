@@ -8,6 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 const initialStats = {
   HP: 100,
   MP: 100,
+  shield: 0,
   Strength: 10,
   Dexterity: 10,
   Intelligence: 10,
@@ -65,7 +66,7 @@ function PlayerPage() {
 
   const handleStatChange = (stat, increment) => {
     if (increment && remainingPoints > 0) {
-      if (stat === "HP" || stat === "MP") {
+      if (stat === "HP" || stat === "MP" || stat === "shield") {
         setStats({ ...stats, [stat]: stats[stat] + 10 });
         setRemainingPoints(remainingPoints - 1);
       }
@@ -110,7 +111,7 @@ function PlayerPage() {
         description: description,
         status: {
           status: stats,
-          max_status: { ...stats },
+          origin_status: { ...stats },
           added_status: Object.keys(stats).reduce((acc, key) => {
             acc[key] = 0;
             return acc;

@@ -1,6 +1,6 @@
 {
     "name": "defend2",
-    "type": "type2",
+    "type": "shield",
     "defaultValue": 100,
     "coef": {
         "Intelligence": 1.5,

@@ -5,6 +5,7 @@
     "status": {
       "HP": 300,
       "MP": 50,
+      "shield": 0,
       "Strength": 40,
       "Dexterity": 10,
       "Intelligence": 20,
@@ -78,7 +79,7 @@
       },
       {
         "name": "Goblin Shield",
-        "type": "barrier",
+        "type": "shield",
         "defaultValue": 20,
         "coef": {
           "Defense": 1.2,

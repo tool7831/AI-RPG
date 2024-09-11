@@ -1,6 +1,6 @@
 {
     "name": "attack2",
-    "type": "type2",
+    "type": "magic",
     "defaultDamage": 20,
     "coef": {
         "Intelligence": 1.5
