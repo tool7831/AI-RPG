@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MainPage.css';
-import StatusBox  from '../components/statusBox.js';
+import StatusBox from '../components/statusBox.js';
 import StoryBox from '../components/storyBox.js';
+import { Container, Box } from '@mui/material';
 
 
 function MainPage() {
@@ -11,7 +12,7 @@ function MainPage() {
   const [player, setPlayer] = useState();
   const [inventoryVisible, setInventoryVisible] = useState(false);
   const navigate = useNavigate()
-  
+
   useEffect(() => {
     fetch('http://localhost:8000/load_data', {
       method: 'GET',
@@ -21,7 +22,7 @@ function MainPage() {
     })
       .then(response => response.json())
       .then(data => {
-        if (Object.keys(data).includes('combat')){
+        if (Object.keys(data).includes('combat')) {
           console.log("go combat page");
           navigate('/combat')
         }
@@ -42,7 +43,7 @@ function MainPage() {
       player: player
     };
     console.log(data)
-    
+
     fetch('http://localhost:8000/story_gen', {
       method: 'POST',
       headers: {
@@ -52,12 +53,12 @@ function MainPage() {
     })
       .then(response => response.json())
       .then(data => {
-        if (Object.keys(data).includes('combat')){
+        if (Object.keys(data).includes('combat')) {
           navigate('/combat')
         }
         else {
           console.log(data);
-          setPlayer(data.player)  
+          setPlayer(data.player)
         }
       });
   };
@@ -72,10 +73,21 @@ function MainPage() {
 
   return (
     <div className="App">
-      <StoryBox story={story} choices={choices} handleChoice={handleChoice} />
-      <div className="container">
-        {player && (<StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle}/>)}
-      </div>
+      <Container sx={{border: 'solid'}}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center', // Center horizontally
+            width: '100%', // Ensures that the content doesn't overflow the container
+          }}
+        >
+          <StoryBox story={story} choices={choices} handleChoice={handleChoice} />
+          {player && (
+            <StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle} />
+          )}
+        </Box>
+      </Container>
       {inventoryVisible && (
         <div id="inventory" className="inventory">
           <button className="close-btn" onClick={handleInventoryToggle}>X</button>
@@ -102,6 +114,7 @@ function MainPage() {
         </div>
       )}
     </div>
+
   );
 }
 

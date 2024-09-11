@@ -140,41 +140,19 @@ function PlayerPage() {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           {/* Player Name and Description */}
-          <TextField
-            label="Player Name"
-            fullWidth
-            margin="normal"
-            onChange={(e) => setName(e.target.value)}
-          />
-          <TextField
-            label="Player Description"
-            fullWidth
-            margin="normal"
-            multiline
-            rows={4}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <TextField label="Player Name" fullWidth margin="normal" onChange={(e) => setName(e.target.value)}/>
+          <TextField label="Player Description" fullWidth margin="normal" multiline rows={4} onChange={(e) => setDescription(e.target.value)} />
 
           {/* Allocate Stats Section */}
-          <Box mb={4}>
+          <Box mb={4}> 
             <Typography variant="h6" gutterBottom>Allocate Stats</Typography>
             <Typography variant="body1">Remaining Points: {remainingPoints}</Typography>
             {Object.keys(stats).map((stat) => (
               <Box display="flex" alignItems="center" key={stat} mb={2}>
                 <Typography variant="body2" sx={{ flexGrow: 1 }}>{stat}</Typography>
-                <IconButton
-                  onClick={() => handleStatChange(stat, false)}
-                  disabled={stats[stat] <= 0}
-                >
-                  <RemoveIcon />
-                </IconButton>
+                <IconButton onClick={() => handleStatChange(stat, false)} disabled={stats[stat] <= 0} > <RemoveIcon /> </IconButton>
                 <Typography variant="body2" sx={{ width: 30, textAlign: 'center' }}>{stats[stat]}</Typography>
-                <IconButton
-                  onClick={() => handleStatChange(stat, true)}
-                  disabled={remainingPoints <= 0}
-                >
-                  <AddIcon />
-                </IconButton>
+                <IconButton onClick={() => handleStatChange(stat, true)} disabled={remainingPoints <= 0}> <AddIcon /> </IconButton>
               </Box>
             ))}
           </Box>
@@ -182,14 +160,7 @@ function PlayerPage() {
         {/* Skills Selection */}
         <Grid item xs={6}>
           <Typography variant="h6" gutterBottom>Skills</Typography>
-          <Tabs
-            value={selectedClass}
-            onChange={handleClassChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="fullWidth"
-            sx={{ mb: 2 }}
-          >
+          <Tabs value={selectedClass} onChange={handleClassChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2 }} >
             {skills.map((skillClass, index) => (
               <Tab key={index} label={skillClass.class_name} />
             ))}
