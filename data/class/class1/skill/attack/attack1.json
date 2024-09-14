@@ -3,8 +3,8 @@
     "type": "melee",
     "defaultDamage": 100,
     "coef": {
-        "Strength": 1.5,
-        "Concentration":0.5
+        "strength": 1.5,
+        "concentration":0.5
     },
     "count": 2,
     "penetration": 10,
@@ -15,7 +15,7 @@
         "duration": 3,
         "defaultValue": 10,
         "coef": {
-            "Strength": 0.1
+            "strength": 0.1
         },
         "accuracy": 30
     },

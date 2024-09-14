@@ -5,8 +5,8 @@
         "type": "melee",
         "defaultDamage": 25,
         "coef": {
-          "Strength": 1.2,
-          "Dexterity": 0.4
+          "strength": 1.2,
+          "dexterity": 0.4
         },
         "count": 1,
         "penetration": 5,
@@ -17,7 +17,7 @@
           "duration": 3,
           "defaultValue": 5,
           "coef": {
-            "Strength": 0.2
+            "strength": 0.2
           },
           "accuracy": 40
         },
@@ -28,7 +28,7 @@
         "type": "magic",
         "defaultDamage": 15,
         "coef": {
-          "Intelligence": 0.5
+          "intelligence": 0.5
         },
         "count": 1,
         "penetration": 0,
@@ -39,7 +39,7 @@
           "duration": 4,
           "defaultValue": 4,
           "coef": {
-            "Intelligence": 0.3
+            "intelligence": 0.3
           },
           "accuracy": 50
         },
@@ -52,8 +52,8 @@
         "type": "dodge",
         "defaultValue": 30,
         "coef": {
-          "Speed": 1.5,
-          "Dexterity": 1
+          "speed": 1.5,
+          "dexterity": 1
         },
         "duration": 2,
         "cooldown": 5,
@@ -64,8 +64,8 @@
         "type": "shield",
         "defaultValue": 20,
         "coef": {
-          "Defense": 1.2,
-          "Concentration": 0.5
+          "defense": 1.2,
+          "concentration": 0.5
         },
         "duration": 3,
         "cooldown": 6,
@@ -78,8 +78,8 @@
         "type": "damage",
         "defaultValue": 40,
         "coef": {
-          "Strength": 1,
-          "Reaction": 0.3
+          "strength": 1,
+          "reaction": 0.3
         },
         "cooldown": 8,
         "curCooldown": 0
@@ -88,8 +88,8 @@
         "name": "Crippling Fear",
         "type": "stun",
         "coef": {
-          "Intelligence": 0.5,
-          "Luck": 0.3
+          "intelligence": 0.5,
+          "luck": 0.3
         },
         "duration": 2,
         "cooldown": 7,

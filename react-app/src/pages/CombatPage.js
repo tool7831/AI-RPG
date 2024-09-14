@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import StatusBox from '../components/statusBox.js';
-import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, duration } from '@mui/material';
+import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Paper, Backdrop } from '@mui/material';
 import './CombatPage.css';
 import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
@@ -10,14 +10,26 @@ import { AttackBox, DefendBox } from '../components/skillBox.js';
 function rand(min, max ) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 function CombatPage() {
   const [player, setPlayer] = useState();
   const [enemy, setEnemy] = useState();
-  const [inventoryVisible, setInventoryVisible] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedAction, setSeletedAction] = useState(0);
   const [reRender,setReRender] = useState(0);
+  const [victoryModal,setVictoryModal] = useState(false);
+  const [defeatModal, setDefeatModal] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetch('http://localhost:8000/load_data', {
@@ -51,12 +63,33 @@ function CombatPage() {
       setSelectedSkill(null);
     }
   };
-  const handleInventoryToggle = () => {
-    setInventoryVisible(!inventoryVisible);
-  };
   const handleCancel = () => {
     setSelectedSkill(null);
   };
+
+  const handleVictory = () => {
+    setVictoryModal(!victoryModal)
+    const data = {
+      player: player.toDict(),
+      story:{text:'win'}
+    }
+    fetch('http://localhost:8000/story_gen', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          navigate('/main')
+        }
+        else {
+          console.log(data.success);
+        }
+      });
+  }
 
   const battle = (player_action) => {
     const e = enemy.doAction();
@@ -227,6 +260,11 @@ function CombatPage() {
     console.log('Enemy:',enemy.status.curStatusEffects)
     if (enemy.isDead()) {
       console.log('dead')
+      setVictoryModal(true)
+    }
+    else if (player.isDead()) {
+      console.log('player dead')
+      setDefeatModal(true)
     }
     // Battle logic here
   };
@@ -285,10 +323,22 @@ function CombatPage() {
             </Box>
           </Grid>
           <Grid item xs={6}>
-            {player && (<StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle} isPlayer={true}/>)}
+            {player && (<StatusBox status={player.status} isPlayer={true} />)}
           </Grid>
         </Grid>
       </Box>
+
+
+      <Modal aria-labelledby="transition-modal-title" aria-describedby="transition-modal-description" open={victoryModal} closeAfterTransition slots={{backdrop:Backdrop}} slotProps={{backdrop: {timeout: 500,},}}>
+        <Fade in={victoryModal}>
+          <Box sx={style}>
+            <Button contained sx={{position:'absolute', bottom:'0%', right:'0%'}} onClick={handleVictory} >next</Button>
+            <Typography id="transition-modal-title" variant="h6" component="h2" border={'solid'} >Victory</Typography>
+          </Box>  
+        </Fade>
+      </Modal>
+
+
     </Container>
   );
 }

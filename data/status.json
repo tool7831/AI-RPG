@@ -1,15 +1,15 @@
 {
-  "HP": 100,
-  "MP": 100,
+  "hp": 100,
+  "mp": 100,
   "shield":0,
-  "Strength": 10,
-  "Dexterity": 10,
-  "Intelligence": 10,
-  "Luck": 10,
-  "Defense": 10,
-  "Speed": 10,
-  "Concentration": 10,
-  "Reaction": 10,
-  "HP_Regeneration": 0,
-  "MP_Regeneration": 0
+  "strength": 10,
+  "dexterity": 10,
+  "intelligence": 10,
+  "luck": 10,
+  "defense": 10,
+  "speed": 10,
+  "concentration": 10,
+  "reaction": 10,
+  "hp_regeneration": 0,
+  "mp_regeneration": 0
 }

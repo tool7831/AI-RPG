@@ -3,7 +3,7 @@
     "type": "magic",
     "defaultDamage": 20,
     "coef": {
-        "Intelligence": 1.5
+        "intelligence": 1.5
     },
     "count": 5,
     "penetration": 40,
@@ -14,7 +14,7 @@
         "duration": 3,
         "defaultValue": 10,
         "coef": {
-            "Intelligence": 0.1
+            "intelligence": 0.1
         },
         "accuracy": 30
     },

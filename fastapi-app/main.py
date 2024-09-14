@@ -49,21 +49,21 @@ def first(input: Input):
     data = dict({"player":input.player}, **next)
     with open('../data/save.json','w') as f:
         json.dump(data,f)
-    return JSONResponse(data)
+    return JSONResponse({"success":True})
 
 @app.post("/story_gen")
 def story(input: Input):
     print(input)
     story = input.story
     player = input.player
-    player['status']['added_status']['Strength'] += 1
+    player['status']['added_status']['strength'] += 1
     with open('../data/sample_combat.json', 'r') as f:
         next = json.load(f)
 
     data = dict({"player":input.player}, **next)
     with open('../data/save.json','w') as f:
         json.dump(data,f)
-    return JSONResponse(data)
+    return JSONResponse({"success":True})
 
 @app.get("/load_data")
 def load():

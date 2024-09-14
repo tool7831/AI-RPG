@@ -6,19 +6,19 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 const initialStats = {
-  HP: 100,
-  MP: 100,
+  hp: 100,
+  mp: 100,
   shield: 0,
-  Strength: 10,
-  Dexterity: 10,
-  Intelligence: 10,
-  Luck: 10,
-  Defense: 10,
-  Speed: 10,
-  Concentration: 10,
-  Reaction: 10,
-  HP_Regeneration: 0,
-  MP_Regeneration: 0,
+  strength: 10,
+  dexterity: 10,
+  intelligence: 10,
+  luck: 10,
+  defense: 10,
+  speed: 10,
+  concentration: 10,
+  reaction: 10,
+  hp_regeneration: 0,
+  mp_regeneration: 0,
 };
 
 function PlayerPage() {
@@ -66,11 +66,11 @@ function PlayerPage() {
 
   const handleStatChange = (stat, increment) => {
     if (increment && remainingPoints > 0) {
-      if (stat === "HP" || stat === "MP" || stat === "shield") {
+      if (stat === "hp" || stat === "mp" || stat === "shield") {
         setStats({ ...stats, [stat]: stats[stat] + 10 });
         setRemainingPoints(remainingPoints - 1);
       }
-      else if (stat === "HP_Regeneration" || stat === "MP_Regeneration") {
+      else if (stat === "hp_regeneration" || stat === "mp_regeneration") {
         if (remainingPoints >= 10) {
           setStats({ ...stats, [stat]: stats[stat] + 1 });
           setRemainingPoints(remainingPoints - 10);
@@ -82,11 +82,11 @@ function PlayerPage() {
       }
 
     } else if (!increment && stats[stat] > 0) {
-      if (stat === "HP" || stat === "MP") {
+      if (stat === "hp" || stat === "mp") {
         setStats({ ...stats, [stat]: stats[stat] - 10 });
         setRemainingPoints(remainingPoints + 1);
       }
-      else if ((stat === "HP_Regeneration" || stat === "MP_Regeneration")) {
+      else if ((stat === "hp_regeneration" || stat === "mp_regeneration")) {
         setStats({ ...stats, [stat]: stats[stat] - 1 });
         setRemainingPoints(remainingPoints + 10);
       }

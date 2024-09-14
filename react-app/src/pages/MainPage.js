@@ -10,7 +10,7 @@ function MainPage() {
   const [story, setStory] = useState();
   const [choices, setChoices] = useState();
   const [player, setPlayer] = useState();
-  const [inventoryVisible, setInventoryVisible] = useState(false);
+ 
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -63,45 +63,15 @@ function MainPage() {
       });
   };
 
-  const handleInventoryToggle = () => {
-    setInventoryVisible(!inventoryVisible);
-  };
-
-
 
   return (
     <div className="App">
       <Container sx={{border: 'solid'}}>
         <Box sx={{display: 'flex',flexDirection: 'column',alignItems: 'center', width: '100%'}}>
           <StoryBox story={story} choices={choices} handleChoice={handleChoice} />
-          {player && ( <StatusBox status={player.status} handleInventoryToggle={handleInventoryToggle} isPlayer={true}/>)}
+          {player && ( <StatusBox status={player.status} isPlayer={true}/>)}
         </Box>
       </Container>
-      {inventoryVisible && (
-        <div id="inventory" className="inventory">
-          <button className="close-btn" onClick={handleInventoryToggle}>X</button>
-          <p>Inventory</p>
-          <div className="equipment">
-            <button>helmet</button>
-            <button>armor</button>
-            <button>pants</button>
-            <button>shoes</button>
-            <button>gloves</button>
-            <button>right hand</button>
-            <button>left hand</button>
-            <button>ring1</button>
-            <button>ring2</button>
-            <button>earring1</button>
-            <button>earring2</button>
-            <button>necklace</button>
-          </div>
-          <div className="items">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <button key={i} className="item"></button>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
 
   );
