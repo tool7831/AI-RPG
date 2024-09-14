@@ -1,18 +1,18 @@
 
 export interface StatusData {
-    HP: number,
-    MP: number,
+    hp: number,
+    mp: number,
     shield: number,
-    Strength: number,
-    Dexterity: number,
-    Intelligence: number,
-    Luck: number,
-    Defense: number,
-    Speed: number,
-    Concentration: number,
-    Reaction: number,
-    HP_Regeneration: number,
-    MP_Regeneration: number
+    strength: number,
+    dexterity: number,
+    intelligence: number,
+    luck: number,
+    defense: number,
+    speed: number,
+    concentration: number,
+    reaction: number,
+    hp_regeneration: number,
+    mp_regeneration: number
 };
 
 export interface StatusDict {
@@ -99,10 +99,10 @@ export class Status {
     // HP 변경 시 status에 따른 최대 HP를 자동으로 반영
     changeHP(value: number): void {
         value = Math.floor(value)
-        this.added_status['HP'] += value;
+        this.added_status.hp += value;
         let currentStatus = this.status; // 계산된 상태
-        if (this.origin_status['HP'] < currentStatus['HP']) {
-            this.added_status['HP'] = 0;
+        if (this.origin_status.hp < currentStatus.hp) {
+            this.added_status.hp = 0;
         }
     }
 
@@ -128,12 +128,12 @@ export class Status {
         } else {
             // 기존 상태 효과가 없으면 새로운 상태 효과 추가
             if (statusEffect.type === StatusEffectType.Charm) {
-                statusEffect.value = -statusEffect.value * this.origin_status.Defense
-                this.changeAddedValue('Defense', statusEffect.value)
+                statusEffect.value = -statusEffect.value * this.origin_status.defense
+                this.changeAddedValue('defense', statusEffect.value)
             }
             else if (statusEffect.type === StatusEffectType.Weaken) {
-                statusEffect.value = -statusEffect.value * this.origin_status.Strength
-                this.changeAddedValue('Strength', statusEffect.value)
+                statusEffect.value = -statusEffect.value * this.origin_status.strength
+                this.changeAddedValue('strength', statusEffect.value)
             }
             this.curStatusEffects.push(statusEffect);
         }
@@ -264,21 +264,25 @@ export class Status {
         };
     }
 
+    isDead(): boolean {
+        return this.status.hp <= 0;
+    }
+
     static init(status: StatusData) {
         return new Status({ ...status }, {
-            HP: 0,
-            MP: 0,
+            hp: 0,
+            mp: 0,
             shield: 0,
-            Strength: 0,
-            Dexterity: 0,
-            Intelligence: 0,
-            Luck: 0,
-            Defense: 0,
-            Speed: 0,
-            Concentration: 0,
-            Reaction: 0,
-            HP_Regeneration: 0,
-            MP_Regeneration: 0
+            strength: 0,
+            dexterity: 0,
+            intelligence: 0,
+            luck: 0,
+            defense: 0,
+            speed: 0,
+            concentration: 0,
+            reaction: 0,
+            hp_regeneration: 0,
+            mp_regeneration: 0
         })
     }
 }

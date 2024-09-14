@@ -161,7 +161,7 @@ export default class Enemy {
     }
 
     isDead(): boolean {
-        return this.status.status.HP <= 0
+        return this.status.isDead()
     }
 
     toDict(): Record<string, any> {
