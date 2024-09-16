@@ -3,7 +3,7 @@
     "type": "hp_scaling",
     "defaultValue": 15,
     "coef": {
-        "Strength": 0.01
+        "strength": 0.01
     },
     "duration": 0,
     "cooldown": 4,
