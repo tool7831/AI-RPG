@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatusBox from '../components/statusBox.js';
-import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Paper, Backdrop } from '@mui/material';
+import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Paper, Backdrop, Card, CardContent } from '@mui/material';
 
 import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
@@ -26,6 +26,7 @@ function CombatPage() {
   const [enemy, setEnemy] = useState();
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedAction, setSeletedAction] = useState(0);
+  const [rewards, setRewards] = useState(null);
   const [reRender,setReRender] = useState(0);
   const [victoryModal,setVictoryModal] = useState(false);
   const [defeatModal, setDefeatModal] = useState(false);
@@ -43,6 +44,7 @@ function CombatPage() {
         if (Object.keys(data).includes('combat')) {
           setEnemy(Enemy.fromJSON(data.combat));
           setPlayer(Player.fromJSON(data.player));
+          setRewards(data.rewards)
         } else {
           console.log('go story page');
         }
@@ -68,7 +70,8 @@ function CombatPage() {
   };
 
   const handleVictory = () => {
-    setVictoryModal(!victoryModal)
+    setVictoryModal(!victoryModal);
+    player.getRewards(rewards);
     const data = {
       player: player.toDict(),
       story:{text:'win'}
@@ -339,8 +342,21 @@ function CombatPage() {
       <Modal aria-labelledby="transition-modal-title" aria-describedby="transition-modal-description" open={victoryModal} closeAfterTransition slots={{backdrop:Backdrop}} slotProps={{backdrop: {timeout: 500,},}}>
         <Fade in={victoryModal}>
           <Box sx={style}>
-            <Button sx={{position:'absolute', bottom:'0%', right:'0%'}} onClick={handleVictory} >next</Button>
             <Typography id="transition-modal-title" variant="h6" component="h2" border={'solid'} >Victory</Typography>
+            <Typography>Exp: {rewards?.exp}</Typography>
+            <Typography>Gold: {rewards?.gold}</Typography>
+            {rewards?.items.map((item)=> {
+              return (
+              <CardContent>
+                <Typography variant="h6">{item?.name}</Typography>
+                <Typography>{item?.description}</Typography>
+                {item && Object.keys(item?.effects).map((stat) =>
+                  <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
+                )}
+              </CardContent>
+              )
+            })}
+            <Button sx={{position:'absolute', bottom:'0%', right:'0%'}} onClick={handleVictory} >next</Button>
           </Box>  
         </Fade>
       </Modal>

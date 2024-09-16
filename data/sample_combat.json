@@ -1,7 +1,7 @@
 {
   "combat": {
-    "monster_name": "Rogue Demon",
-    "monster_description": "A malevolent creature with burning red eyes and charred wings, cloaked in dark mist. It preys on travelers, disrupting the natural balance of Blackwood Forest.",
+    "name": "Rogue Demon",
+    "description": "A malevolent creature with burning red eyes and charred wings, cloaked in dark mist. It preys on travelers, disrupting the natural balance of Blackwood Forest.",
     "status": {
       "hp": 300,
       "mp": 50,
@@ -129,20 +129,20 @@
       ]
     }
   },
-  "reward": {
+  "rewards": {
     "gold": 200,
-    "exp": 150
-  },
-  "item": {
-    "item_type": "Weapon",
-    "item_name": "Demon Slasher",
-    "item_description": "A cursed sword forged in the Underworld. It is exceptionally efficient against demonic beings.",
-    "use_restriction": {
-      "strength": 25
-    },
-    "effect": {
-      "strength": 25,
-      "luck": -5
-    }
+    "exp": 150,
+    "items": [{
+      "type": "rightHand",
+      "name": "Demon Slasher",
+      "description": "A cursed sword forged in the Underworld. It is exceptionally efficient against demonic beings.",
+      "use_restriction": {
+        "strength": 25
+      },
+      "effects": {
+        "strength": 25,
+        "luck": -5
+      }
+    }]
   }
 }

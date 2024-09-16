@@ -15,6 +15,7 @@ export class Player {
   public exp: number;
   public nextExp: number;
   public statPoints: number;
+  public gold: number;
 
   public status: Status;
   public inventory: Inventory;
@@ -40,7 +41,7 @@ export class Player {
     this.smites = smites.map(smi => new Smite(smi))
   }
 
-  gainExp(value: number) {
+  gainExp(value: number): void {
     this.exp += value;
     if (this.exp > this.nextExp) {
       console.log('Level up!');
@@ -49,6 +50,14 @@ export class Player {
       this.nextExp += 100;
       this.statPoints += 5;
     }
+  }
+
+  getRewards(json): void {
+    this.gainExp(json.exp);
+    this.gold += json.gold;
+    json.items.forEach((item) => {
+      this.addItem(Item.fromJSON(item));
+    }) 
   }
 
   doAction(action: number, skill_idx: number): Record<string, any> {
@@ -149,6 +158,10 @@ export class Player {
     return {
       name: this.name,
       description: this.description,
+      level: this.level,
+      exp: this.exp,
+      nextExp: this.nextExp,
+      statPoints: this.statPoints,
       inventory: this.inventory.toDict(),
       status: this.status.toDict(),
       attacks: this.attacks.map((atk)=>atk.toDict()),
