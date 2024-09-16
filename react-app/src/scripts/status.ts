@@ -108,10 +108,13 @@ export class Status {
 
     damaged(value: number): void {
         value = Math.floor(value)
-        let remain = this.status.shield - value;
-        this.changeAddedValue('shield', -value);
-        if (remain < 0) {
-            this.changeHP(remain);
+        const total_damage = value - this.status.defense
+        if (total_damage > 0) {
+            let remain = this.status.shield - total_damage;
+            this.changeAddedValue('shield', -total_damage);
+            if (remain < 0) {
+                this.changeHP(remain);
+            }
         }
     }
 

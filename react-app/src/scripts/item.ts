@@ -1,5 +1,9 @@
 import { StatusData } from "./status";
 
+export interface InventoryData {
+  items: ItemData[],
+  equipments: EquipmentsData,
+}
 
 export enum ItemType {
   Helmet = 'helmet',
@@ -68,30 +72,20 @@ export class Item {
       use_restriction: this.use_restriction,
     }
   }
+  static fromJSON(json) {
+    return new Item(json.name, json.type, json.description, json.effects, json.use_restriction)
+  }
 }
 
 
 export class Inventory {
-  protected items: Item[];
-  protected equiments: EquipmentsData;
+  public items: Item[];
+  public equipments: EquipmentsData;
   protected max_size: number;
 
-  constructor() {
-    this.equiments = {
-      helmet: null,
-      armor: null,
-      pants: null,
-      shoes: null,
-      gloves: null,
-      rightHand: null,
-      leftHand: null,
-      ring1: null,
-      ring2: null,
-      earring1: null,
-      earring2: null,
-      necklace: null,
-    };
-    this.items = [];
+  constructor(items: Item[], equipments: EquipmentsData) {
+    this.equipments = equipments;
+    this.items = items
     this.max_size = 30;
   }
 
@@ -115,42 +109,49 @@ export class Inventory {
     return item;
   }
 
-  equip(idx: number): Record<string,Item>{
+  equip(idx: number): Record<string,Item|null>{
     const item = this.removeItem(idx);
     const beforeItem = this.unequip(item.type)
-    this.equiments[item.type] = item;
+    this.equipments[item.type] = item;
     return {
-      after: this.equiments[item.type],
+      after: this.equipments[item.type],
       before: beforeItem,
     }
   }
 
-  unequip(type: ItemType) {
-    const item = this.equiments[type];
+  unequip(type: ItemType): Item | null {
+    const item = this.equipments[type];
     if(item !== null && this.addItem(item)) {
-      this.equiments[type] = null;
+      this.equipments[type] = null;
       return item
     }
     return null
   }
 
-  get_item(idx: number) {
-    return this.items[idx]
-  }
-
-  get_items(){
-    return this.items;
-  }
 
   toDict() {
     return {
       items: this.items.map((i)=>i.toDict()),
-      equiments: Object.fromEntries(
-        Object.entries(this.equiments).map(([key, item]) => [
+      equipments: Object.fromEntries(
+        Object.entries(this.equipments).map(([key, item]) => [
           key,
           item ? item.toDict() : null
         ])
       ),
     }
+  }
+
+  static fromJSON(json: {items: ItemData[], equipments: EquipmentsData}) {
+    const items = json.items.map((item)=>Item.fromJSON(item));
+    const equipments = Object.keys(json.equipments).reduce((acc,key) => {
+      if (json.equipments[key]) {
+        acc[key] = Item.fromJSON(json.equipments[key]);
+      }
+      else {
+        acc[key] = null
+      }
+      return acc;
+    }, {})
+    return new Inventory(items, equipments as EquipmentsData)
   }
 }

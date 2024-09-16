@@ -4,7 +4,7 @@ import './MainPage.css';
 import StatusBox from '../components/statusBox.js';
 import StoryBox from '../components/storyBox.js';
 import { Container, Box } from '@mui/material';
-
+import { Player } from '../scripts/player.ts';
 
 function MainPage() {
   const [story, setStory] = useState();
@@ -30,7 +30,7 @@ function MainPage() {
           console.log(data);
           setStory(data.story)
           setChoices(data.choices)
-          setPlayer(data.player)
+          setPlayer(Player.fromJSON(data.player))
         }
       });
   }, []);
@@ -40,7 +40,7 @@ function MainPage() {
     console.log(choiceId)
     const data = {
       story: choices[choiceId],
-      player: player
+      player: player.toDict()
     };
     console.log(data)
 
@@ -58,7 +58,7 @@ function MainPage() {
         }
         else {
           console.log(data);
-          setPlayer(data.player)
+          setPlayer(Player.fromJSON(data.player))
         }
       });
   };
@@ -69,7 +69,7 @@ function MainPage() {
       <Container sx={{border: 'solid'}}>
         <Box sx={{display: 'flex',flexDirection: 'column',alignItems: 'center', width: '100%'}}>
           <StoryBox story={story} choices={choices} handleChoice={handleChoice} />
-          {player && ( <StatusBox status={player.status} isPlayer={true}/>)}
+          {player && ( <StatusBox actor={player} isPlayer={true}/>)}
         </Box>
       </Container>
     </div>

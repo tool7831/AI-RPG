@@ -5,7 +5,7 @@ import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, T
 import './CombatPage.css';
 import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
-import { AttackBox, DefendBox } from '../components/skillBox.js';
+import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 
 function rand(min, max ) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -96,8 +96,8 @@ function CombatPage() {
     const enemy_action = e.action
     const enemy_skill = e.skill
     const player_skill = player.doAction(player_action, selectedSkill)
-    console.log(e)
-    console.log(player_skill)
+    console.log('Enemy:', e)
+    console.log('Player:', player_action, player_skill)
     if (player_action === 0 && enemy_action === 0) {
       // 둘다 공격
       player.damaged(enemy_skill)
@@ -123,7 +123,7 @@ function CombatPage() {
           }
         }
       }
-      else if (enemy_skill === 'dodge') {
+      else if (enemy_skill.type === 'dodge') {
         for (let i = 0; i < player_skill.count; i++) {
           const dodge_rand = rand(0,99)
           const dodge = {...player_skill, 'count': 1}
@@ -161,7 +161,7 @@ function CombatPage() {
           }
         }
       }
-      else if (player_skill === 'dodge') {
+      else if (player_skill.type === 'dodge') {
         for (let i = 0; i < enemy_skill.count; i++) {
           const dodge_rand = rand(0,99)
           const attack = {...enemy_skill, 'count': 1}
@@ -203,7 +203,7 @@ function CombatPage() {
     else if (player_action === 2 && enemy_action === 1) {
       // 강타 숭
       if (player_skill.type === 'hp_scailing'){
-        enemy.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
+        enemy.damaged(enemy.status.origin_status.HP * player_skill.value / 100)
       }
       else if (enemy_skill.type === 'damage'){
         enemy.damaged(player_skill.value)
@@ -293,13 +293,20 @@ function CombatPage() {
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
       )}
+      {selectedSkill !== null && selectedAction === 2 && (
+        <Box sx={{ mt: 2 }}>
+          <SmiteBox skill={player.smites[selectedSkill]} />
+          <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
+          <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
+        </Box>
+      )}
     </Box>
   );
 
   return (
     <Container>
       <Box sx={{ display:'flex', flexDirection:'column', alignItems:'center', border: 'solid', marginBottom:'100px'}}> 
-        {enemy && (<StatusBox status={enemy.status.toDict()}/>)}
+        {enemy && (<StatusBox actor={enemy}/>)}
         <img src='monster_sample.png' width={400} height={400}/>
       </Box>
 
@@ -323,7 +330,7 @@ function CombatPage() {
             </Box>
           </Grid>
           <Grid item xs={6}>
-            {player && (<StatusBox status={player.status} isPlayer={true} />)}
+            {player && (<StatusBox actor={player} isPlayer={true} />)}
           </Grid>
         </Grid>
       </Box>
@@ -332,7 +339,7 @@ function CombatPage() {
       <Modal aria-labelledby="transition-modal-title" aria-describedby="transition-modal-description" open={victoryModal} closeAfterTransition slots={{backdrop:Backdrop}} slotProps={{backdrop: {timeout: 500,},}}>
         <Fade in={victoryModal}>
           <Box sx={style}>
-            <Button contained sx={{position:'absolute', bottom:'0%', right:'0%'}} onClick={handleVictory} >next</Button>
+            <Button sx={{position:'absolute', bottom:'0%', right:'0%'}} onClick={handleVictory} >next</Button>
             <Typography id="transition-modal-title" variant="h6" component="h2" border={'solid'} >Victory</Typography>
           </Box>  
         </Fade>

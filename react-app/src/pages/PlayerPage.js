@@ -4,6 +4,8 @@ import './PlayerPage.css';
 import { Container, TextField, Typography, Button, Box, Grid, Paper, IconButton, Tabs, Tab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox';
+import Inventory from '../components/inventory';
 
 const initialStats = {
   hp: 100,
@@ -28,8 +30,10 @@ function PlayerPage() {
   const [remainingPoints, setRemainingPoints] = useState(0);
 
   const [skills, setSkills] = useState([]);
+  const [selectedSkillType, setSelectedSkillType] = useState(0);
   const [selectedAttacks, setSelectedAttacks] = useState([]);
   const [selectedDefends, setSelectedDefends] = useState([]);
+  const [selectedSmites, setSelectedSmites] = useState([]);
   const [selectedClass, setSelectedClass] = useState(0);
 
   const location = useLocation();
@@ -64,6 +68,14 @@ function PlayerPage() {
     );
   };
 
+  const handleSmiteToggle = (skillId) => {
+    setSelectedSmites((prevSelected) =>
+      prevSelected.includes(skillId)
+        ? prevSelected.filter((id) => id !== skillId)
+        : [...prevSelected, skillId]
+    );
+  };
+
   const handleStatChange = (stat, increment) => {
     if (increment && remainingPoints > 0) {
       if (stat === "hp" || stat === "mp" || stat === "shield") {
@@ -82,7 +94,7 @@ function PlayerPage() {
       }
 
     } else if (!increment && stats[stat] > 0) {
-      if (stat === "hp" || stat === "mp") {
+      if (stat === "hp" || stat === "mp" || stat === "shield") {
         setStats({ ...stats, [stat]: stats[stat] - 10 });
         setRemainingPoints(remainingPoints + 1);
       }
@@ -101,6 +113,7 @@ function PlayerPage() {
     setSelectedClass(newValue);
     setSelectedAttacks([]);
     setSelectedDefends([]);
+    setSelectedSmites([]);
   };
 
   const handleSubmit = () => {
@@ -117,8 +130,26 @@ function PlayerPage() {
             return acc;
           }, {})
         },
-        attacks: selectedAttacks.map((idx) => skills[selectedClass].attack[idx]),
-        defends: selectedDefends.map((idx) => skills[selectedClass].defend[idx])
+        attacks: selectedAttacks.map((idx) => skills[selectedClass].attacks[idx]),
+        defends: selectedDefends.map((idx) => skills[selectedClass].defends[idx]),
+        smites: selectedSmites.map((idx) => skills[selectedClass].smites[idx]),
+        inventory: {
+          items: [],
+          equipments: {
+            helmet: null,
+            armor: null,
+            pants: null,
+            shoes: null,
+            gloves: null,
+            rightHand: null,
+            leftHand: null,
+            ring1: null,
+            ring2: null,
+            earring1: null,
+            earring2: null,
+            necklace: null,
+          },
+        },
       }
     }
     console.log(data)
@@ -169,7 +200,7 @@ function PlayerPage() {
           <Grid container spacing={2}>
             {/* Attack Skills */}
             <Grid item xs={12}><Typography variant="h6">Attack Skills</Typography></Grid>
-            {skills[selectedClass] && skills[selectedClass].attack.map((skill, index) => (
+            {skills[selectedClass] && skills[selectedClass].attacks.map((skill, index) => (
               <Grid item xs={12} key={index}>
                 <Paper
                   key={index}
@@ -182,46 +213,13 @@ function PlayerPage() {
                   }}
                   onClick={() => handleAttackToggle(index)}
                 >
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Typography variant="h6">{skill.name}</Typography>
-                      <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                          <Typography variant="body2">Type: {skill.type}</Typography>
-                          <Typography variant="body2">Default Damage: {skill.defaultDamage}</Typography>
-                          <Typography variant="body2">
-                            Coefficient: {Object.keys(skill.coef).map((key) => `${key}: ${skill.coef[key]}`).join(', ')}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Typography variant="body2">Count: {skill.count}</Typography>
-                          <Typography variant="body2">Penetration: {skill.penetration}</Typography>
-                          <Typography variant="body2">Accuracy: {skill.accuracy}</Typography>
-                          <Typography variant="body2">Cooldown: {skill.cooldown}</Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={6}>
-                      {skill.statusEffect && (
-                        <>
-                          <Typography variant="h6" gutterBottom>Status Effect</Typography>
-                          <Typography variant="body2">Type: {skill.statusEffect.type}</Typography>
-                          <Typography variant="body2">Duration: {skill.statusEffect.duration}</Typography>
-                          <Typography variant="body2">Default Value: {skill.statusEffect.defaultValue}</Typography>
-                          <Typography variant="body2">
-                            Coefficient: {Object.keys(skill.statusEffect.coef).map((key) => `${key}: ${skill.statusEffect.coef[key]}`).join(', ')}
-                          </Typography>
-                          <Typography variant="body2">Accuracy: {skill.statusEffect.accuracy}</Typography>
-                        </>
-                      )}
-                    </Grid>
-                  </Grid>
+                  <AttackBox skill={skill}></AttackBox>
                 </Paper>
               </Grid>
             ))}
             {/* Defend Skills */}
             <Grid item xs={12} mt={4}><Typography variant="h6">Defend Skills</Typography></Grid>
-            {skills[selectedClass] && skills[selectedClass].defend.map((skill, index) => (
+            {skills[selectedClass] && skills[selectedClass].defends.map((skill, index) => (
               <Grid item xs={12} key={index}>
                 <Paper
                   elevation={selectedDefends.includes(index) ? 8 : 1}
@@ -233,20 +231,33 @@ function PlayerPage() {
                   }}
                   onClick={() => handleDefendToggle(index)}
                 >
-                  <Typography variant="h6">{skill.name}</Typography>
-                  <Typography variant="body2">Type: {skill.type}</Typography>
-                  <Typography variant="body2">Default Value: {skill.defaultValue}</Typography>
-                  <Typography variant="body2">
-                    Coefficient: {Object.keys(skill.coef).map((key) => `${key}: ${skill.coef[key]}`).join(', ')}
-                  </Typography>
-                  <Typography variant="body2">Duration: {skill.duration}</Typography>
-                  <Typography variant="body2">Cooldown: {skill.cooldown}</Typography>
-                  <Typography variant="body2">Current Cooldown: {skill.curCooldown}</Typography>
+                  <DefendBox skill={skill}/>
                 </Paper>
               </Grid>
             ))}
+
+            <Grid item xs={12} mt={4}><Typography variant="h6">Smite Skills</Typography></Grid>
+            {skills[selectedClass] && skills[selectedClass].smites.map((skill, index) => (
+              <Grid item xs={12} key={index}>
+                <Paper
+                  elevation={selectedSmites.includes(index) ? 8 : 1}
+                  sx={{
+                    padding: 2,
+                    cursor: 'pointer',
+                    border: selectedSmites.includes(index) ? '2px solid #3f51b5' : '1px solid #ddd',
+                    boxShadow: selectedSmites.includes(index) ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
+                  }}
+                  onClick={() => handleSmiteToggle(index)}
+                >
+                  <SmiteBox skill={skill}/>
+                </Paper>
+              </Grid>
+            ))}
+
           </Grid>
         </Grid>
+
+        
 
         <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
           Submit

@@ -57,3 +57,21 @@ export function DefendBox({ skill }) {
     </Grid>
   )
 }
+
+export function SmiteBox({ skill }) {
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="h6">{skill.name}</Typography>
+        <Typography variant="body2">Type: {skill.type}</Typography>
+        <Typography variant="body2">Default Value: {skill.defaultValue}</Typography>
+        <Typography variant="body2">
+          Coefficient: {Object.keys(skill.coef).map((key) => `${key}: ${skill.coef[key]}`).join(', ')}
+        </Typography>
+        <Typography variant="body2">Duration: {skill.duration}</Typography>
+        <Typography variant="body2">Cooldown: {skill.cooldown}</Typography>
+        <Typography variant="body2">Current Cooldown: {skill.curCooldown}</Typography>
+      </Grid>
+    </Grid>
+  )
+}

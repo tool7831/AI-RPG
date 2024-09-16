@@ -1,104 +1,7 @@
 import { Status, StatusData, StatusDict } from './status.ts';
 import { Attack, Defend, Smite, AttackData, DefendData, SmiteData } from './skill.ts'
-import { Item, Inventory, ItemType } from './item.ts';
-// interface ItemData {
-//     item_name: string;
-//     item_type: string;
-//     item_description: string;
-//     use_restriction: Record<string, number>;
-//     effect: Record<string, number>;
-// }
+import { Item, Inventory, ItemType, InventoryData } from './item.ts';
 
-// class Item {
-//     name: string;
-//     type: string;
-//     description: string;
-//     restriction: Record<string, number>;
-//     effect: Record<string, number>;
-
-//     constructor(item: ItemData) {
-//         this.name = item.item_name;
-//         this.type = item.item_type;
-//         this.description = item.item_description;
-//         this.restriction = item.use_restriction;
-//         this.effect = item.effect;
-//     }
-// }
-
-// class Inventory {
-//     inventory: Item[];
-//     max_inv: number;
-
-//     constructor(maxInv: number) {
-//         this.inventory = [];
-//         this.max_inv = maxInv;
-//     }
-
-//     addItem(item: Item): void {
-//         if (this.inventory.length < this.max_inv) {
-//             this.inventory.push(item);
-//         } else {
-//             console.log('max_inv');
-//         }
-//     }
-
-//     removeItem(item: Item): void {
-//         const index = this.inventory.indexOf(item);
-//         if (index !== -1) {
-//             this.inventory.splice(index, 1);
-//         }
-//     }
-
-//     addMaxInv(value: number): void {
-//         this.max_inv = Math.max(this.max_inv + value, 0);
-//     }
-
-//     isFull(): boolean {
-//         return this.inventory.length < this.max_inv;
-//     }
-// }
-
-// class Equipment {
-//     helmet: Item | null;
-//     armor: Item | null;
-//     pants: Item | null;
-//     gloves: Item | null;
-//     shoes: Item | null;
-//     ring1: Item | null;
-//     ring2: Item | null;
-//     earring1: Item | null;
-//     earring2: Item | null;
-//     necklace: Item | null;
-//     rightHand: Item | null;
-//     leftHand: Item | null;
-
-//     constructor() {
-//         this.helmet = null;
-//         this.armor = null;
-//         this.pants = null;
-//         this.gloves = null;
-//         this.shoes = null;
-//         this.ring1 = null;
-//         this.ring2 = null;
-//         this.earring1 = null;
-//         this.earring2 = null;
-//         this.necklace = null;
-//         this.rightHand = null;
-//         this.leftHand = null;
-//     }
-
-//     equip(slot: string, item: Item): Item | null {
-//         const prev = (this as any)[slot];
-//         (this as any)[slot] = item;
-//         return prev;
-//     }
-
-//     unequip(slot: string): Item | null {
-//         const item = (this as any)[slot];
-//         (this as any)[slot] = null;
-//         return item;
-//     }
-// }
 
 function rand(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -113,15 +16,15 @@ export class Player {
   public defends: Defend[];
   public smites: Smite[];
 
-  constructor(name: string, description: string, status: StatusDict, attacks: AttackData[], defends: DefendData[]) {
+  constructor(name: string, description: string, status: StatusDict, attacks: AttackData[], defends: DefendData[], smites:SmiteData[], inventory:InventoryData) {
     this.name = name;
     this.description = description;
     this.status = new Status(status.origin_status, status.added_status);
-    this.inventory = new Inventory();
+    this.inventory = Inventory.fromJSON(inventory);
 
     this.attacks = attacks.map(atk => new Attack(atk))
     this.defends = defends.map(def => new Defend(def))
-    this.smites = []
+    this.smites = smites.map(smi => new Smite(smi))
   }
 
   doAction(action: number, skill_idx: number): Record<string, any> {
@@ -175,7 +78,7 @@ export class Player {
 
   equip(idx: number): void {
     let flag = true;
-    const item = this.inventory.get_item(idx)
+    const item = this.inventory.items[idx]
     for (const [key, value] of Object.entries(item.use_restriction)) {
       if (this.status.origin_status[key] < value) {
         flag = false;
@@ -199,7 +102,12 @@ export class Player {
   }
 
   unequip(type: ItemType): void {
-    this.inventory.unequip(type)
+    const item = this.inventory.unequip(type);
+    if(item !== null){
+      for (const [key, value] of Object.entries(item.effects)) {
+        this.status.changeAddedValue(key as keyof StatusData, -value);
+      }
+    }
   }
 
   addItem(item: Item): void {
@@ -218,11 +126,14 @@ export class Player {
       name: this.name,
       description: this.description,
       inventory: this.inventory.toDict(),
-      status: this.status.toDict()
+      status: this.status.toDict(),
+      attacks: this.attacks.map((atk)=>atk.toDict()),
+      defends: this.defends.map((def)=>def.toDict()),
+      smites: this.smites.map((smi)=>smi.toDict()),
     };
   }
 
-  static fromJSON(json: { name: string; description: string; status: StatusDict, attacks: AttackData[], defends: DefendData[] }) {
-    return new Player(json.name, json.description, json.status, json.attacks, json.defends);
+  static fromJSON(json: { name: string; description: string; status: StatusDict, attacks: AttackData[], defends: DefendData[], smites:SmiteData[], inventory:InventoryData}) {
+    return new Player(json.name, json.description, json.status, json.attacks, json.defends, json.smites, json.inventory);
   }
 }
