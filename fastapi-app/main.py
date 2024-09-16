@@ -60,10 +60,10 @@ def story(input: Input):
     with open('../data/sample_combat.json', 'r') as f:
         next = json.load(f)
 
-    data = dict({"player":input.player}, **next)
+    data = dict({"success":True, "player":input.player}, **next)
     with open('../data/save.json','w') as f:
         json.dump(data,f)
-    return JSONResponse({"success":True})
+    return JSONResponse(data)
 
 @app.get("/load_data")
 def load():
@@ -76,20 +76,26 @@ def skills():
     data = []
     class_paths = glob('../data/class/class1')
     for class_path in class_paths:
-        attack_path = glob(os.path.join(class_path, 'skill/attack/*json'))
-        attack = []
+        attack_path = glob(os.path.join(class_path, 'skill/attacks/*json'))
+        attacks = []
         for path in attack_path:
             with open(path, 'r') as f:
-                attack.append(json.load(f))
-        defend = []
-        defend_path = glob(os.path.join(class_path, 'skill/defend/*json'))
+                attacks.append(json.load(f))
+        defends = []
+        defend_path = glob(os.path.join(class_path, 'skill/defends/*json'))
         for path in defend_path:
             with open(path, 'r') as f:
-                defend.append(json.load(f))
+                defends.append(json.load(f))
+        smite_path = glob(os.path.join(class_path, 'skill/smites/*json'))
+        smites = []
+        for path in smite_path:
+            with open(path, 'r') as f:
+                smites.append(json.load(f))
         data.append({
-            'class_name': 'class1',
-            'attack': attack,
-            'defend': defend,
+            'class_name': os.path.basename(class_path),
+            'attacks': attacks,
+            'defends': defends,
+            'smites': smites,
         })
     print(data)
     return JSONResponse(data)

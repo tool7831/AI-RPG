@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Grid, Typography, Card, CardContent, Tooltip, Button, Dialog, DialogTitle, DialogActions, DialogContent, Container } from '@mui/material';
 import { Item } from '../scripts/item.ts';
 const itemStyle = {
@@ -23,11 +23,6 @@ const Inventory = ({ actor, handleInventoryToggle }) => {
   const [selectedSlot, setSelectedSlot] = useState(null); // 선택한 장비 슬롯
   const [render, setRender] = useState(0);
 
-  useEffect(()=>{
-    // inventory.items = inventoryItems
-    // inventory.equipments = equippedItems
-    console.log('update')
-  },[equippedItems, inventoryItems])
   // 아이템 클릭 핸들러
   const handleItemClick = (item) => {
     setSelectedItem(item);

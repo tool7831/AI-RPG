@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import './PlayerPage.css';
+
 import { Container, TextField, Typography, Button, Box, Grid, Paper, IconButton, Tabs, Tab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox';
-import Inventory from '../components/inventory';
+
 
 const initialStats = {
   hp: 100,
@@ -122,6 +122,10 @@ function PlayerPage() {
       player: {
         name: name,
         description: description,
+        level:1,
+        exp:0,
+        nextExp:100,
+        statPoints:0,
         status: {
           status: stats,
           origin_status: { ...stats },

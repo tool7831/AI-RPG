@@ -10,21 +10,45 @@ function rand(min: number, max: number) {
 export class Player {
   public name: string;
   public description: string;
+
+  public level: number;
+  public exp: number;
+  public nextExp: number;
+  public statPoints: number;
+
   public status: Status;
   public inventory: Inventory;
+
   public attacks: Attack[];
   public defends: Defend[];
   public smites: Smite[];
 
-  constructor(name: string, description: string, status: StatusDict, attacks: AttackData[], defends: DefendData[], smites:SmiteData[], inventory:InventoryData) {
+  constructor(name: string, description: string, level:number, exp:number, nextExp:number, statPoints:number, status: StatusDict, attacks: AttackData[], defends: DefendData[], smites:SmiteData[], inventory:InventoryData) {
     this.name = name;
     this.description = description;
+
+    this.level = level;
+    this.exp = exp;
+    this.nextExp = nextExp;
+    this.statPoints = statPoints;
+
     this.status = new Status(status.origin_status, status.added_status);
     this.inventory = Inventory.fromJSON(inventory);
 
     this.attacks = attacks.map(atk => new Attack(atk))
     this.defends = defends.map(def => new Defend(def))
     this.smites = smites.map(smi => new Smite(smi))
+  }
+
+  gainExp(value: number) {
+    this.exp += value;
+    if (this.exp > this.nextExp) {
+      console.log('Level up!');
+      this.level += 1;
+      this.exp -= this.nextExp;
+      this.nextExp += 100;
+      this.statPoints += 5;
+    }
   }
 
   doAction(action: number, skill_idx: number): Record<string, any> {
@@ -133,7 +157,7 @@ export class Player {
     };
   }
 
-  static fromJSON(json: { name: string; description: string; status: StatusDict, attacks: AttackData[], defends: DefendData[], smites:SmiteData[], inventory:InventoryData}) {
-    return new Player(json.name, json.description, json.status, json.attacks, json.defends, json.smites, json.inventory);
+  static fromJSON(json: { name: string, description: string, level:number, exp:number, nextExp:number, statPoints:number, status: StatusDict, attacks: AttackData[], defends: DefendData[], smites:SmiteData[], inventory:InventoryData}) {
+    return new Player(json.name, json.description, json.level, json.exp, json.nextExp, json.statPoints, json.status, json.attacks, json.defends, json.smites, json.inventory);
   }
 }
