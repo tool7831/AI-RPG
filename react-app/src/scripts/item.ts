@@ -112,6 +112,7 @@ export class Inventory {
   equip(idx: number): Record<string,Item|null>{
     const item = this.removeItem(idx);
     const beforeItem = this.unequip(item.type)
+
     this.equipments[item.type] = item;
     return {
       after: this.equipments[item.type],

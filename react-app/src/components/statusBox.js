@@ -31,7 +31,6 @@ function formatStat(value) {
   return value >= 0 ? `+${value}` : `${value}`;
 }
 
-
 function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
 
   const handleInventoryToggle = () => {
@@ -51,18 +50,18 @@ function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
       </Box>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Typography variant="body2">Strength: {actor.status.status.strength} ({actor.status.added_status.strength})</Typography>
-          <Typography variant="body2">Speed: {actor.status.status.speed} ({actor.status.added_status.speed})</Typography>
-          <Typography variant="body2">Dexterity: {actor.status.status.dexterity} ({actor.status.added_status.dexterity})</Typography>
-          <Typography variant="body2">Concentration: {actor.status.status.concentration} ({actor.status.added_status.concentration})</Typography>
-          <Typography variant="body2">Intelligence: {actor.status.status.intelligence} ({actor.status.added_status.intelligence})</Typography>
+          <Typography variant="body2">Strength: {actor.status.status.strength} ({formatStat(actor.status.added_status.strength)})</Typography>
+          <Typography variant="body2">Speed: {actor.status.status.speed} ({formatStat(actor.status.added_status.speed)})</Typography>
+          <Typography variant="body2">Dexterity: {actor.status.status.dexterity} ({formatStat(actor.status.added_status.dexterity)})</Typography>
+          <Typography variant="body2">Concentration: {actor.status.status.concentration} ({formatStat(actor.status.added_status.concentration)})</Typography>
+          <Typography variant="body2">Intelligence: {actor.status.status.intelligence} ({formatStat(actor.status.added_status.intelligence)})</Typography>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="body2">Reaction: {actor.status.status.reaction} ({actor.status.added_status.reaction})</Typography>
-          <Typography variant="body2">Luck: {actor.status.status.luck} ({actor.status.added_status.luck})</Typography>
-          <Typography variant="body2">Defense: {actor.status.status.defense} ({actor.status.added_status.defense})</Typography>
-          <Typography variant="body2">HP Regeneration: {actor.status.status.hp_regeneration} ({actor.status.added_status.hp_regeneration})</Typography>
-          <Typography variant="body2">MP Regeneration: {actor.status.status.mp_regeneration} ({actor.status.added_status.mp_regeneration})</Typography>
+          <Typography variant="body2">Reaction: {actor.status.status.reaction} ({formatStat(actor.status.added_status.reaction)})</Typography>
+          <Typography variant="body2">Luck: {actor.status.status.luck} ({formatStat(actor.status.added_status.luck)})</Typography>
+          <Typography variant="body2">Defense: {actor.status.status.defense} ({formatStat(actor.status.added_status.defense)})</Typography>
+          <Typography variant="body2">HP Regeneration: {actor.status.status.hp_regeneration} ({formatStat(actor.status.added_status.hp_regeneration)})</Typography>
+          <Typography variant="body2">MP Regeneration: {actor.status.status.mp_regeneration} ({formatStat(actor.status.added_status.mp_regeneration)})</Typography>
         </Grid>
         <Grid item xs={12}>
           <Box display="flex" flexDirection="column" alignItems="flex-end">

@@ -74,6 +74,9 @@ export class Status {
         for (let key in this.added_status) {
             if (this.added_status.hasOwnProperty(key)) {
                 computedStatus[key] += this.added_status[key];
+                if (computedStatus[key] < 0) {
+                    computedStatus[key] = 0;
+                }
             }
         }
         return computedStatus;
@@ -90,9 +93,6 @@ export class Status {
         value = Math.floor(value)
         if (this.added_status.hasOwnProperty(name)) {
             this.added_status[name] += value 
-            if (this.added_status[name] + this.origin_status[name] < 0 )
-                this.added_status[name] =  -this.origin_status[name];
-
         }
     }
 
