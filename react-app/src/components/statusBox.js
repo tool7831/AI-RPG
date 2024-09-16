@@ -43,7 +43,10 @@ function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
   return (
     <Container maxWidth={maxWidth} sx={{ padding: 2, backgroundColor: "whitesmoke" }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h6">Status</Typography>
+        <Box>
+          <Typography variant="h6">Status</Typography>
+          {isPlayer && <Typography>Level: {actor.level}</Typography>}
+        </Box>
         {isPlayer && <Button variant="contained" sx={{ borderRadius: 2 }} onClick={handleInventoryToggle} >Inventory</Button>}
       </Box>
       <Grid container spacing={2}>
@@ -64,8 +67,8 @@ function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
         <Grid item xs={12}>
           <Box display="flex" flexDirection="column" alignItems="flex-end">
             <ThemeProvider theme={theme}>
-              {/* {isPlayer && <Typography variant="body2">EXP:{actor.status.status.EXP} / {actor.status.origin_status.EXP}</Typography>}
-            {isPlayer && <LinearProgress variant="determinate" value={actor.status.status.EXP * 100 / actor.status.origin_status.EXP} sx={{ width: '100%', height: 10, borderRadius: 5 }} color="success" />} */}
+              {isPlayer && <Typography variant="body2">EXP:{actor.exp} / {actor.nextExp}</Typography>}
+              {isPlayer && <LinearProgress variant="determinate" value={actor.exp * 100 / actor.nextExp} sx={{ width: '100%', height: 10, borderRadius: 5 }} color="success" />}
               {actor.status.status.shield !== 0 && <Typography variant="body2" mt={1}>Shield:{actor.status.status.shield} / {actor.status.origin_status.shield}</Typography>}
               {actor.status.status.shield !== 0 && <LinearProgress variant="determinate" value={actor.status.status.shield * 100 / actor.status.origin_status.shield} sx={{ width: '100%', height: 10, borderRadius: 5 }} color='gray' />}
               <Typography variant="body2" mt={1}>HP:{actor.status.status.hp} / {actor.status.origin_status.hp}</Typography>

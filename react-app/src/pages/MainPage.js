@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './MainPage.css';
+
 import StatusBox from '../components/statusBox.js';
 import StoryBox from '../components/storyBox.js';
 import { Container, Box } from '@mui/material';
