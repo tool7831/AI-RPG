@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Typography, Grid, LinearProgress, Box, Button, Container, Modal } from '@mui/material';
+import { Typography, Grid, LinearProgress, Box, Button, Container, Modal, Tab, Tabs } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Inventory from './inventory';
+import Status from './status';
 
 const theme = createTheme({
   palette: {
@@ -33,9 +34,16 @@ function formatStat(value) {
 
 function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
 
+  const [selectedTab, setSelectedTab] = useState(0);
+  
   const handleInventoryToggle = () => {
     setInventoryVisible(!inventoryVisible);
+    setSelectedTab(0);
   };
+
+  const handleTabChange= (event, value) => {
+    setSelectedTab(value);
+  }
 
   const [inventoryVisible, setInventoryVisible] = useState(false);
 
@@ -78,11 +86,20 @@ function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
           </Box>
         </Grid>
       </Grid>
+
+
       {isPlayer && (<Modal open={inventoryVisible}>
         <div style={style}>
-          <Inventory actor={actor} handleInventoryToggle={handleInventoryToggle}/>
+          <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
+            <Tab value={0} label='Inventory'/>
+            <Tab value={1} label='Status'/>
+          </Tabs>
+
+          {selectedTab === 0 && <Inventory actor={actor} handleInventoryToggle={handleInventoryToggle}/>}
+          {selectedTab === 1 && <Status actor={actor}/>}
         </div>
       </Modal>)}
+
 
     </Container>
   );

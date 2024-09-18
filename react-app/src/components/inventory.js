@@ -1,5 +1,5 @@
-import React, { act, useState } from 'react';
-import { Box, Grid, Typography, Card, CardContent, Tooltip, Button, Dialog, DialogTitle, DialogActions, DialogContent, Container, Popover } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Grid, Typography, Card, CardContent, Button, Container, Popover } from '@mui/material';
 import { Item, ItemType } from '../scripts/item.ts';
 const itemStyle = {
   width: 70, height: 70, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid grey', cursor: 'pointer'
@@ -21,7 +21,6 @@ const Inventory = ({ actor, handleInventoryToggle }) => {
   const [inventoryItems, setInventoryItems] = useState(actor.inventory.items); // 플레이어의 인벤토리 아이템들
   const [selectedItem, setSelectedItem] = useState(null); // 클릭한 아이템
   const [selectedItemIdx, setSelectedItemIdx] = useState(null)
-  const [openDialog, setOpenDialog] = useState(false); // 팝업 열림 상태
   const [selectedSlot, setSelectedSlot] = useState(null); // 선택한 장비 슬롯
   const [anchorEl, setAnchorEl] = useState(null);
   const [render, setRender] = useState(0);
