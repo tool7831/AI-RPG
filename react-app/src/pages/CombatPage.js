@@ -343,18 +343,18 @@ function CombatPage() {
         <Fade in={victoryModal}>
           <Box sx={style}>
             <Typography variant="h6" component="h2">Victory</Typography>
-            <ListItem>
+            <ListItem sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography>Exp: {rewards?.exp}</Typography>
               <Typography>Gold: {rewards?.gold}</Typography>
               {rewards?.items.map((item) => {
                 return (
-                  <CardContent>
-                    <Typography variant="h6">{item?.name}</Typography>
-                    <Typography>{item?.description}</Typography>
+                  <div>
+                    <Typography>{item?.name}</Typography>
+                    {/* <Typography>{item?.description}</Typography>
                     {item && Object.keys(item?.effects).map((stat) =>
                       <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
-                    )}
-                  </CardContent>
+                    )} */}
+                  </div>
                 )
               })}
             </ListItem>

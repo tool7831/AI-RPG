@@ -16,7 +16,7 @@ const items = [
 ];
 
 
-const Inventory = ({ actor, handleInventoryToggle }) => {
+const Inventory = ({ actor }) => {
   const [equippedItems, setEquippedItems] = useState(actor.inventory.equipments); // 플레이어의 장착된 아이템들
   const [inventoryItems, setInventoryItems] = useState(actor.inventory.items); // 플레이어의 인벤토리 아이템들
   const [selectedItem, setSelectedItem] = useState(null); // 클릭한 아이템
@@ -109,7 +109,6 @@ const Inventory = ({ actor, handleInventoryToggle }) => {
   }
   return (
     <Container>
-      <Button variant='contained' onClick={handleInventoryToggle}>Close</Button>
       <Button onClick={addItem}>Add</Button>
       <Button onClick={clear}>Clear</Button>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
@@ -165,10 +164,15 @@ const Inventory = ({ actor, handleInventoryToggle }) => {
           }}
         >
           <CardContent>
-            <Typography variant="h6">{selectedItem?.name}</Typography>
+            <Typography variant="h5">{selectedItem?.name}</Typography>
             <Typography>{selectedItem?.description}</Typography>
+            <Typography variant='h6'>Effects</Typography>
             {selectedItem && Object.keys(selectedItem?.effects).map((stat) =>
               <Typography color="textSecondary" key={stat}>{stat}: {selectedItem?.effects[stat]}</Typography>
+            )}
+            <Typography variant='h6'>Use Restriction</Typography>
+            {selectedItem && Object.keys(selectedItem?.use_restriction).map((stat) =>
+              <Typography color="textSecondary" key={stat}>{stat}: {selectedItem?.use_restriction[stat]}</Typography>
             )}
             
             {selectedItem && (<Button onClick={handleClose}>Cancel</Button>)}

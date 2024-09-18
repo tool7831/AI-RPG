@@ -94,8 +94,8 @@ function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
             <Tab value={0} label='Inventory'/>
             <Tab value={1} label='Status'/>
           </Tabs>
-
-          {selectedTab === 0 && <Inventory actor={actor} handleInventoryToggle={handleInventoryToggle}/>}
+          <Button variant='contained' onClick={handleInventoryToggle} sx={{position:' absolute', top:"0%", right:"0%"}}>Close</Button>
+          {selectedTab === 0 && <Inventory actor={actor}/>}
           {selectedTab === 1 && <Status actor={actor}/>}
         </div>
       </Modal>)}
