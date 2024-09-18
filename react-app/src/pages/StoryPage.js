@@ -1,13 +1,15 @@
+import { Container, Paper, Typography, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 
 function StoryPage() {
   const [story, setStory] = useState({});
-  const navigate = useNavigate();
+  const [selectedStory, setSelectedStory] = useState();
 
+  const navigate = useNavigate();
   useEffect(() => {
-    const data = {session: "12312"}
+    const data = { session: "12312" }
     fetch('http://localhost:8000/', {
       method: 'POST',
       headers: {
@@ -25,24 +27,41 @@ function StoryPage() {
   const handleSubmit = () => {
     const data = {
       story: {
-        text: story
+        text: story[selectedStory]
       }
     };
-    navigate("/player", {state: data})
+    navigate("/player", { state: data })
     console.log(data)
   };
-
+  const handleStoryToggle = (key) => {
+    setSelectedStory(key)
+  }
   return (
     <div className="App">
-      <h1>Input</h1>
-      <div>
-        {Object.keys(story).map((key) => (
-          <div key={key}>
-            <textarea value={story[key]} onChange={(e) => setStory(e.target.value)} rows="10" cols="50" placeholder="World View" />
-            <button onClick={handleSubmit}>Submit</button>
-          </div>
-        ))}
-      </div>
+      <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <h1>Story</h1>
+        <div>
+          {Object.keys(story).map((key) => (
+            <Paper
+              key={key}
+              elevation={selectedStory===key ? 8 : 1}
+              sx={{
+                padding: 2,
+                margin: 2,
+                cursor: 'pointer',
+                border: selectedStory === key ? '2px solid #3f51b5' : '1px solid #ddd',
+                boxShadow: selectedStory === key ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
+              }}
+              onClick={() => handleStoryToggle(key)}
+            >
+              <Typography variant='h5'>{key}</Typography>
+              <Typography>{story[key]}</Typography>
+            </Paper>
+          ))}
+          <Button sx={{margin:2}} variant='contained' onClick={handleSubmit}>Submit</Button>
+        </div>
+      </Container>
+
     </div>
   );
 }

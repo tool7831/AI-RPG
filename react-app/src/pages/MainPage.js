@@ -68,7 +68,7 @@ function MainPage() {
     <div className="App">
       <Container sx={{border: 'solid'}}>
         <Box sx={{display: 'flex',flexDirection: 'column',alignItems: 'center', width: '100%'}}>
-          <StoryBox story={story} choices={choices} handleChoice={handleChoice} />
+          <div style={{margin:'10px'}}><StoryBox story={story} choices={choices} handleChoice={handleChoice}/></div>
           {player && ( <StatusBox actor={player} isPlayer={true}/>)}
         </Box>
       </Container>

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatusBox from '../components/statusBox.js';
-import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Paper, Backdrop, Card, CardContent } from '@mui/material';
+import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Paper, Backdrop, Card, CardContent, ListItem } from '@mui/material';
 
 import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 
-function rand(min, max ) {
+function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 const style = {
@@ -27,8 +27,8 @@ function CombatPage() {
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedAction, setSeletedAction] = useState(0);
   const [rewards, setRewards] = useState(null);
-  const [reRender,setReRender] = useState(0);
-  const [victoryModal,setVictoryModal] = useState(false);
+  const [reRender, setReRender] = useState(0);
+  const [victoryModal, setVictoryModal] = useState(false);
   const [defeatModal, setDefeatModal] = useState(false);
   const navigate = useNavigate()
 
@@ -74,7 +74,7 @@ function CombatPage() {
     player.getRewards(rewards);
     const data = {
       player: player.toDict(),
-      story:{text:'win'}
+      story: { text: 'win' }
     }
     fetch('http://localhost:8000/story_gen', {
       method: 'POST',
@@ -114,8 +114,8 @@ function CombatPage() {
       }
       else if (enemy_skill.type === 'parry') {
         for (let i = 0; i < player_skill.count; i++) {
-          const parry_rand = rand(0,99)
-          const parry = {...player_skill, 'count': 1}
+          const parry_rand = rand(0, 99)
+          const parry = { ...player_skill, 'count': 1 }
           if (enemy_skill.value < parry_rand) {
             console.log("parry_success")
             player.damaged(parry)
@@ -128,8 +128,8 @@ function CombatPage() {
       }
       else if (enemy_skill.type === 'dodge') {
         for (let i = 0; i < player_skill.count; i++) {
-          const dodge_rand = rand(0,99)
-          const dodge = {...player_skill, 'count': 1}
+          const dodge_rand = rand(0, 99)
+          const dodge = { ...player_skill, 'count': 1 }
           if (enemy_skill.value >= dodge_rand) {
             console.log('dodge_fail')
             enemy.damaged(dodge)
@@ -152,8 +152,8 @@ function CombatPage() {
       }
       else if (player_skill.type === 'parry') {
         for (let i = 0; i < enemy_skill.count; i++) {
-          const parry_rand = rand(0,99)
-          const attack = {...enemy_skill, 'count': 1}
+          const parry_rand = rand(0, 99)
+          const attack = { ...enemy_skill, 'count': 1 }
           if (player_skill.value < parry_rand) {
             console.log("parry_success")
             enemy.damaged(attack)
@@ -166,8 +166,8 @@ function CombatPage() {
       }
       else if (player_skill.type === 'dodge') {
         for (let i = 0; i < enemy_skill.count; i++) {
-          const dodge_rand = rand(0,99)
-          const attack = {...enemy_skill, 'count': 1}
+          const dodge_rand = rand(0, 99)
+          const attack = { ...enemy_skill, 'count': 1 }
           if (player_skill.value >= dodge_rand) {
             console.log('dodge_fail')
             player.damaged(attack)
@@ -189,14 +189,14 @@ function CombatPage() {
     }
     else if (player_action === 1 && enemy_action === 2) {
       // 방어 패
-      if (enemy_skill.type === 'hp_scailing'){
+      if (enemy_skill.type === 'hp_scailing') {
         player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
       }
-      else if (enemy_skill.type === 'damage'){
+      else if (enemy_skill.type === 'damage') {
         player.damaged(enemy_skill.value)
       }
-      else if (enemy_skill.type === 'stun'){
-        player.status.addStatusEffect({name:enemy_skill.name, type: 'Stun', value:0, duration: enemy_skill.duration})
+      else if (enemy_skill.type === 'stun') {
+        player.status.addStatusEffect({ name: enemy_skill.name, type: 'Stun', value: 0, duration: enemy_skill.duration })
       }
     }
     else if (player_action === 2 && enemy_action === 0) {
@@ -205,38 +205,38 @@ function CombatPage() {
     }
     else if (player_action === 2 && enemy_action === 1) {
       // 강타 숭
-      if (player_skill.type === 'hp_scailing'){
+      if (player_skill.type === 'hp_scailing') {
         enemy.damaged(enemy.status.origin_status.HP * player_skill.value / 100)
       }
-      else if (enemy_skill.type === 'damage'){
+      else if (enemy_skill.type === 'damage') {
         enemy.damaged(player_skill.value)
       }
-      else if (player_skill.type === 'stun'){
-        enemy.status.addStatusEffect({name:player_skill.name, type: 'Stun', value:0, duration: player_skill.duration})
+      else if (player_skill.type === 'stun') {
+        enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
       }
     }
     else if (player_action === 2 && enemy_action === 2) {
       // 스탯 강한 쪽 승
       if (player_skill.value > enemy_skill.value) {
-        if (player_skill.type === 'hp_scailing'){
+        if (player_skill.type === 'hp_scailing') {
           enemy.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
         }
-        else if (enemy_skill.type === 'damage'){
+        else if (enemy_skill.type === 'damage') {
           enemy.damaged(player_skill.value)
         }
-        else if (player_skill.type === 'stun'){
-          enemy.status.addStatusEffect({name:player_skill.name, type: 'Stun', value:0, duration: player_skill.duration})
+        else if (player_skill.type === 'stun') {
+          enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
         }
       }
-      else if (player_skill < enemy_skill){
-        if (enemy_skill.type === 'hp_scailing'){
+      else if (player_skill < enemy_skill) {
+        if (enemy_skill.type === 'hp_scailing') {
           player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
         }
-        else if (enemy_skill.type === 'damage'){
+        else if (enemy_skill.type === 'damage') {
           player.damaged(enemy_skill.value)
         }
-        else if (enemy_skill.type === 'stun'){
-          player.status.addStatusEffect({name:enemy_skill.name, type: 'Stun', value:0, duration: enemy_skill.duration})
+        else if (enemy_skill.type === 'stun') {
+          player.status.addStatusEffect({ name: enemy_skill.name, type: 'Stun', value: 0, duration: enemy_skill.duration })
         }
       }
       else {
@@ -258,9 +258,9 @@ function CombatPage() {
           player.status.addBuff(player_skill)
     }
 
-    setReRender(reRender+1)
-    console.log('Player:',player.status.curStatusEffects)
-    console.log('Enemy:',enemy.status.curStatusEffects)
+    setReRender(reRender + 1)
+    console.log('Player:', player.status.curStatusEffects)
+    console.log('Enemy:', enemy.status.curStatusEffects)
     if (enemy.isDead()) {
       console.log('dead')
       setVictoryModal(true)
@@ -273,7 +273,7 @@ function CombatPage() {
   };
 
   const renderSkills = (skills) => (
-    <Box sx={{border:'solid', padding:'10px'}}>
+    <Box sx={{ border: 'solid', padding: '10px' }}>
       <List>
         {selectedSkill === null && skills.map((skill, index) => (
           <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
@@ -308,12 +308,12 @@ function CombatPage() {
 
   return (
     <Container>
-      <Box sx={{ display:'flex', flexDirection:'column', alignItems:'center', border: 'solid', marginBottom:'100px'}}> 
-        {enemy && (<StatusBox actor={enemy}/>)}
-        <img src='monster_sample.png' width={400} height={400}/>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', border: 'solid', marginBottom: '100px' }}>
+        {enemy && (<StatusBox actor={enemy} />)}
+        <img src='monster_sample.png' width={400} height={400} />
       </Box>
 
-      <Box sx={{ border: 'solid'}}>
+      <Box sx={{ border: 'solid' }}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -324,12 +324,12 @@ function CombatPage() {
               </Tabs>
             </Box>
             <Box>
-              {selectedAction === 0 && player && renderSkills(player.attacks)} 
-              {selectedAction === 1 && player && renderSkills(player.defends)} 
-              {selectedAction === 2 && player && renderSkills(player.smites)} 
+              {selectedAction === 0 && player && renderSkills(player.attacks)}
+              {selectedAction === 1 && player && renderSkills(player.defends)}
+              {selectedAction === 2 && player && renderSkills(player.smites)}
             </Box>
             <Box>
-              <Button onClick={() => {battle(4); setSelectedSkill(null);}}>Skip</Button>
+              <Button onClick={() => { battle(4); setSelectedSkill(null); }}>Skip</Button>
             </Box>
           </Grid>
           <Grid item xs={6}>
@@ -339,25 +339,27 @@ function CombatPage() {
       </Box>
 
 
-      <Modal aria-labelledby="transition-modal-title" aria-describedby="transition-modal-description" open={victoryModal} closeAfterTransition slots={{backdrop:Backdrop}} slotProps={{backdrop: {timeout: 500,},}}>
+      <Modal open={victoryModal} closeAfterTransition slots={{ backdrop: Backdrop }} slotProps={{ backdrop: { timeout: 500, }, }}>
         <Fade in={victoryModal}>
           <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h6" component="h2" border={'solid'} >Victory</Typography>
-            <Typography>Exp: {rewards?.exp}</Typography>
-            <Typography>Gold: {rewards?.gold}</Typography>
-            {rewards?.items.map((item)=> {
-              return (
-              <CardContent>
-                <Typography variant="h6">{item?.name}</Typography>
-                <Typography>{item?.description}</Typography>
-                {item && Object.keys(item?.effects).map((stat) =>
-                  <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
-                )}
-              </CardContent>
-              )
-            })}
-            <Button sx={{position:'absolute', bottom:'0%', right:'0%'}} onClick={handleVictory} >next</Button>
-          </Box>  
+            <Typography variant="h6" component="h2">Victory</Typography>
+            <ListItem>
+              <Typography>Exp: {rewards?.exp}</Typography>
+              <Typography>Gold: {rewards?.gold}</Typography>
+              {rewards?.items.map((item) => {
+                return (
+                  <CardContent>
+                    <Typography variant="h6">{item?.name}</Typography>
+                    <Typography>{item?.description}</Typography>
+                    {item && Object.keys(item?.effects).map((stat) =>
+                      <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
+                    )}
+                  </CardContent>
+                )
+              })}
+            </ListItem>
+            <Button sx={{ position: 'absolute', bottom: '0%', right: '0%' }} onClick={handleVictory} >next</Button>
+          </Box>
         </Fade>
       </Modal>
 

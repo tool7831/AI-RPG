@@ -43,12 +43,16 @@ export class Player {
 
   gainExp(value: number): void {
     this.exp += value;
-    if (this.exp > this.nextExp) {
+    if (this.exp >= this.nextExp) {
       console.log('Level up!');
       this.level += 1;
       this.exp -= this.nextExp;
       this.nextExp += 100;
       this.statPoints += 5;
+      if (this.status.status.hp < this.status.origin_status.hp)
+        this.status.changeAddedValue('hp',-this.status.added_status.hp);
+      if (this.status.status.mp < this.status.origin_status.mp)
+        this.status.changeAddedValue('mp',-this.status.added_status.mp);
     }
   }
 
@@ -154,6 +158,7 @@ export class Player {
   isDead(): boolean {
     return this.status.isDead()
   }
+
   toDict(): Record<string, any> {
     return {
       name: this.name,
