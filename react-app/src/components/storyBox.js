@@ -1,11 +1,12 @@
 import React from 'react';
-import { Container, Typography, Button, Box } from '@mui/material';
+import { Container, Typography, Button, Box, Grid } from '@mui/material';
+import iconMapping from './statIcons.js'
 
 function StoryBox({ story, choices, handleChoice }) {
   return (
-    <Container maxWidth="sm" sx={{ backgroundColor: 'whitesmoke', padding: 2, borderRadius: 2,}}>
-      <Box sx={{ backgroundColor: '#f0f0f0', padding: 2, borderRadius: 2, textAlign: 'left', mb: 3, }}>
-        <Typography variant="h6" gutterBottom sx={{}}> Story </Typography>
+    <Container maxWidth="sm" sx={{ backgroundColor: 'whitesmoke', padding: 2, borderRadius: 2 }}>
+      <Box sx={{ backgroundColor: '#f0f0f0', padding: 2, borderRadius: 2, textAlign: 'left', mb: 3 }}>
+        <Typography variant="h6" gutterBottom> Story </Typography>
         <Typography variant="body1">{story}</Typography>
       </Box>
       {choices && choices.map((choice, index) => (
@@ -13,19 +14,25 @@ function StoryBox({ story, choices, handleChoice }) {
           key={index}
           variant="contained"
           fullWidth
-          sx={{ mb: 2, backgroundColor: '#d3d3d3', color:'black' }}
+          sx={{ mb: 2, backgroundColor: '#d3d3d3', color: 'black', textTransform:'none' }}
           onClick={() => handleChoice(index)}
         >
-          <p>{choice.text}</p>
-          {Object.keys(choice.status).map((key) => (
-            <p key={key}>{key}: {choice.status[key]}</p>
-          ))}
-          {/* <p>{choice.gold}</p>
-          <p>{choice.next_type}</p> */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+            <p>{choice.text}</p>
+
+            {/* 상태 값 아이콘 및 수치 표시 */}
+            {Object.keys(choice.status).map((key) => (
+              <Box key={key} sx={{ display: 'flex', alignItems: 'center' }}>
+                {iconMapping[key] || <Typography sx={{textTransform:'capitalize'}}>{key}: </Typography>} {/* 아이콘이 있으면 표시 */}
+                <Typography>{choice.status[key]}</Typography>
+              </Box>
+            ))}
+          </Box>
         </Button>
-      ))}
-    </Container>
+      ))
+      }
+    </Container >
   );
-};
+}
 
 export default StoryBox;

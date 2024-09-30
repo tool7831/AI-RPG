@@ -32,7 +32,7 @@ function formatStat(value) {
   return value >= 0 ? `+${value}` : `${value}`;
 }
 
-function StatusBox({ actor, maxWidth = 'sm', isPlayer }) {
+function StatusBox({ actor, isPlayer, maxWidth = 'sm'}) {
 
   const [selectedTab, setSelectedTab] = useState(0);
   

@@ -74,25 +74,28 @@ def load():
 @app.get("/skills")
 def skills():
     data = []
-    class_paths = glob('../data/class/class1')
+    class_paths = sorted(glob('../data/class/*'))
     for class_path in class_paths:
-        attack_path = glob(os.path.join(class_path, 'skill/attacks/*json'))
+        attack_path = glob(os.path.join(class_path, 'skills/attacks/*json'))
         attacks = []
         for path in attack_path:
             with open(path, 'r') as f:
                 attacks.append(json.load(f))
         defends = []
-        defend_path = glob(os.path.join(class_path, 'skill/defends/*json'))
+        defend_path = glob(os.path.join(class_path, 'skills/defends/*json'))
         for path in defend_path:
             with open(path, 'r') as f:
                 defends.append(json.load(f))
-        smite_path = glob(os.path.join(class_path, 'skill/smites/*json'))
+        smite_path = glob(os.path.join(class_path, 'skills/smites/*json'))
         smites = []
         for path in smite_path:
             with open(path, 'r') as f:
                 smites.append(json.load(f))
+        with open(os.path.join(class_path, 'stats.json'), 'r') as f:
+            stats = json.load(f) 
         data.append({
             'class_name': os.path.basename(class_path),
+            'stats': stats,
             'attacks': attacks,
             'defends': defends,
             'smites': smites,

@@ -26,10 +26,10 @@ const initialStats = {
 function PlayerPage() {
   const [name, setName] = useState();
   const [description, setDescription] = useState();
-  const [stats, setStats] = useState(initialStats);
+  const [stats, setStats] = useState({});
   const [remainingPoints, setRemainingPoints] = useState(0);
 
-  const [skills, setSkills] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [selectedSkillType, setSelectedSkillType] = useState(0);
   const [selectedAttacks, setSelectedAttacks] = useState([]);
   const [selectedDefends, setSelectedDefends] = useState([]);
@@ -48,7 +48,8 @@ function PlayerPage() {
     })
       .then(response => response.json())
       .then(data => {
-        setSkills(data);
+        setClasses(data);
+        setStats(data[0].stats)
       });
   }, [])
 
@@ -114,7 +115,14 @@ function PlayerPage() {
     setSelectedAttacks([]);
     setSelectedDefends([]);
     setSelectedSmites([]);
+    setSelectedSkillType(0);
+    setStats(classes[newValue].stats)
+    setRemainingPoints(0);
   };
+
+  const handleSkillChange = (event, newValue) => {
+    setSelectedSkillType(newValue);
+  }
 
   const handleSubmit = () => {
     const data = {
@@ -134,9 +142,9 @@ function PlayerPage() {
             return acc;
           }, {})
         },
-        attacks: selectedAttacks.map((idx) => skills[selectedClass].attacks[idx]),
-        defends: selectedDefends.map((idx) => skills[selectedClass].defends[idx]),
-        smites: selectedSmites.map((idx) => skills[selectedClass].smites[idx]),
+        attacks: selectedAttacks.map((idx) => classes[selectedClass].attacks[idx]),
+        defends: selectedDefends.map((idx) => classes[selectedClass].defends[idx]),
+        smites: selectedSmites.map((idx) => classes[selectedClass].smites[idx]),
         inventory: {
           items: [],
           equipments: {
@@ -184,7 +192,7 @@ function PlayerPage() {
             <Typography variant="h6" gutterBottom>Allocate Stats</Typography>
             <Typography variant="body1">Remaining Points: {remainingPoints}</Typography>
             {Object.keys(stats).map((stat) => (
-              <Box display="flex" alignItems="center" key={stat} mb={2}>
+              <Box display="flex" alignItems="center" key={stat} >
                 <Typography variant="body2" sx={{ flexGrow: 1 }}>{stat}</Typography>
                 <IconButton onClick={() => handleStatChange(stat, false)} disabled={stats[stat] <= 0} > <RemoveIcon /> </IconButton>
                 <Typography variant="body2" sx={{ width: 30, textAlign: 'center' }}>{stats[stat]}</Typography>
@@ -197,14 +205,20 @@ function PlayerPage() {
         <Grid item xs={6}>
           <Typography variant="h6" gutterBottom>Skills</Typography>
           <Tabs value={selectedClass} onChange={handleClassChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2 }} >
-            {skills.map((skillClass, index) => (
+            {classes.map((skillClass, index) => (
               <Tab key={index} label={skillClass.class_name} />
             ))}
           </Tabs>
+          <Tabs value={selectedSkillType} onChange={handleSkillChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2 }} >
+            <Tab key={0} label={'Attack'} />
+            <Tab key={1} label={'Defense'} />
+            <Tab key={2} label={'Smite'} />
+          </Tabs>
+
           <Grid container spacing={2}>
             {/* Attack Skills */}
-            <Grid item xs={12}><Typography variant="h6">Attack Skills</Typography></Grid>
-            {skills[selectedClass] && skills[selectedClass].attacks.map((skill, index) => (
+            {/* <Grid item xs={12}><Typography variant="h6">Attack Skills</Typography></Grid> */}
+            { selectedSkillType === 0 && classes[selectedClass] && classes[selectedClass].attacks.map((skill, index) => (
               <Grid item xs={12} key={index}>
                 <Paper
                   key={index}
@@ -222,8 +236,8 @@ function PlayerPage() {
               </Grid>
             ))}
             {/* Defend Skills */}
-            <Grid item xs={12} mt={4}><Typography variant="h6">Defend Skills</Typography></Grid>
-            {skills[selectedClass] && skills[selectedClass].defends.map((skill, index) => (
+            {/* <Grid item xs={12} mt={4}><Typography variant="h6">Defend Skills</Typography></Grid> */}
+            {selectedSkillType === 1 && classes[selectedClass] && classes[selectedClass].defends.map((skill, index) => (
               <Grid item xs={12} key={index}>
                 <Paper
                   elevation={selectedDefends.includes(index) ? 8 : 1}
@@ -240,8 +254,8 @@ function PlayerPage() {
               </Grid>
             ))}
 
-            <Grid item xs={12} mt={4}><Typography variant="h6">Smite Skills</Typography></Grid>
-            {skills[selectedClass] && skills[selectedClass].smites.map((skill, index) => (
+            {/* <Grid item xs={12} mt={4}><Typography variant="h6">Smite Skills</Typography></Grid> */}
+            {selectedSkillType === 2 && classes[selectedClass] && classes[selectedClass].smites.map((skill, index) => (
               <Grid item xs={12} key={index}>
                 <Paper
                   elevation={selectedSmites.includes(index) ? 8 : 1}
@@ -257,11 +271,8 @@ function PlayerPage() {
                 </Paper>
               </Grid>
             ))}
-
           </Grid>
         </Grid>
-
-        
 
         <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
           Submit

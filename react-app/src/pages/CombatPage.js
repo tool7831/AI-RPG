@@ -240,7 +240,7 @@ function CombatPage() {
         }
       }
       else {
-        console('draw')
+        console.log('draw')
       }
     }
     else if (player_action === 4) {
@@ -308,7 +308,7 @@ function CombatPage() {
 
   return (
     <Container>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', border: 'solid', marginBottom: '100px' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', border: 'solid', marginBottom: '100px' }}>
         {enemy && (<StatusBox actor={enemy} />)}
         <img src='monster_sample.png' width={400} height={400} />
       </Box>

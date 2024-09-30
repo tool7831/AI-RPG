@@ -61,7 +61,6 @@ function StoryPage() {
           <Button sx={{margin:2}} variant='contained' onClick={handleSubmit}>Submit</Button>
         </div>
       </Container>
-
     </div>
   );
 }
