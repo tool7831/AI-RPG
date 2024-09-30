@@ -1,0 +1,22 @@
+{
+    "name": "Arcane Missile",
+    "type": "magic",
+    "defaultDamage": 15,
+    "coef": {
+      "intelligence": 0.8
+    },
+    "count": 1,
+    "penetration": 5,
+    "accuracy": 90,
+    "cooldown": 2,
+    "statusEffect": {
+      "type": "Burn",
+      "duration": 3,
+      "defaultValue": 5,
+      "coef": {
+        "intelligence": 0.2
+      },
+      "accuracy": 50
+    },
+    "curCooldown": 0
+}

@@ -1,0 +1,11 @@
+{
+    "name": "Magic Shield",
+    "type": "shield",
+    "defaultValue": 20,
+    "coef": {
+      "intelligence": 1
+    },
+    "duration": 3,
+    "cooldown": 4,
+    "curCooldown": 0
+}

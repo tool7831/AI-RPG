@@ -4,8 +4,8 @@
         {
             "text": "Show Eldrin your skill with magic.",
             "status": {
-                "MP": 30,
-                "Intelligence": 15
+                "mp": 30,
+                "intelligence": 15
             },
             "gold": 0,
             "next_type": "story"
@@ -13,8 +13,7 @@
         {
             "text": "Show Eldrin your prowess with your weapon.",
             "status": {
-                "Strength": 20,
-                "Skill": 10
+                "strength": 20
             },
             "gold": 0,
             "next_type": "story"

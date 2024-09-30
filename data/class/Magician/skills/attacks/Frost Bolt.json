@@ -1,0 +1,22 @@
+{
+    "name": "Frost Bolt",
+    "type": "magic",
+    "defaultDamage": 10,
+    "coef": {
+      "intelligence": 0.6
+    },
+    "count": 1,
+    "penetration": 5,
+    "accuracy": 85,
+    "cooldown": 3,
+    "statusEffect": {
+      "type": "Freeze",
+      "duration": 2,
+      "defaultValue": 0,
+      "coef": {
+        "intelligence": 0.1
+      },
+      "accuracy": 40
+    },
+    "curCooldown": 0
+  }

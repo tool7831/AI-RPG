@@ -1,0 +1,10 @@
+{
+    "name": "Mana Burst",
+    "type": "damage",
+    "defaultValue": 30,
+    "coef": {
+      "intelligence": 0.5
+    },
+    "cooldown": 5,
+    "curCooldown": 0
+}
