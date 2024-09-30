@@ -52,10 +52,10 @@ function MainPage() {
 
   const handleClose = (diceResult) => {
     setDiceVisible(false)
-    nextStory(diceResult);
+    nextStory(diceResult, choiceId);
   }
 
-  const nextStory = (diceResult) => {
+  const nextStory = (diceResult, choiceId) => {
     if (diceResult >= prob)
       choices[choiceId].text = 'Success this choice. ' + choices[choiceId].text
     else 
@@ -91,7 +91,7 @@ function MainPage() {
       setDiceVisible(true);
     }
     else {
-      nextStory(20);
+      nextStory(20, choiceId);
     }
 
   };
