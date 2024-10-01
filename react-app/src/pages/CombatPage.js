@@ -6,6 +6,7 @@ import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, T
 import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
+import StatusEffectBar from '../components/statusEffectBar.js';
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -308,36 +309,43 @@ function CombatPage() {
 
   return (
     <Container>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', border: 'solid', marginBottom: '100px' }}>
-        {enemy && (<StatusBox actor={enemy} />)}
-        <img src='monster_sample.png' width={400} height={400} />
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', border: 'solid'}}>
+        <img src='monster_sample.png' width={350} height={350} />
+        {enemy && (
+          <div style={{}}>
+            <StatusBox actor={enemy} />
+            <StatusEffectBar actor={enemy} />
+          </div>
+        )}
       </Box>
 
       <Box sx={{ border: 'solid' }}>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Tabs value={selectedAction} onChange={handleActionChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
-                <Tab value={0} label='attack' />
-                <Tab value={1} label='defend' />
-                <Tab value={2} label='smite' />
-              </Tabs>
+          <Grid item xs={6} sx={{display: 'flex', flexDirection:'column', justifyContent:'space-between'}}>
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Tabs value={selectedAction} onChange={handleActionChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
+                  <Tab value={0} label='attack' />
+                  <Tab value={1} label='defend' />
+                  <Tab value={2} label='smite' />
+                </Tabs>
+              </Box>
+              <Box>
+                {selectedAction === 0 && player && renderSkills(player.attacks)}
+                {selectedAction === 1 && player && renderSkills(player.defends)}
+                {selectedAction === 2 && player && renderSkills(player.smites)}
+              </Box>
             </Box>
             <Box>
-              {selectedAction === 0 && player && renderSkills(player.attacks)}
-              {selectedAction === 1 && player && renderSkills(player.defends)}
-              {selectedAction === 2 && player && renderSkills(player.smites)}
-            </Box>
-            <Box>
-              <Button onClick={() => { battle(4); setSelectedSkill(null); }}>Skip</Button>
+              <Button variant='contained' onClick={() => { battle(4); setSelectedSkill(null); }}>Skip</Button>
             </Box>
           </Grid>
           <Grid item xs={6}>
+            {player && <StatusEffectBar actor={player} />}
             {player && (<StatusBox actor={player} isPlayer={true} />)}
           </Grid>
         </Grid>
       </Box>
-
 
       <Modal open={victoryModal} closeAfterTransition slots={{ backdrop: Backdrop }} slotProps={{ backdrop: { timeout: 500, }, }}>
         <Fade in={victoryModal}>

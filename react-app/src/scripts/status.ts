@@ -21,7 +21,7 @@ export interface StatusDict {
     added_status: StatusData;
 }
 
-enum StatusEffectType {
+export enum StatusEffectType {
     Burn = "Burn",
     Poison = "Poison",
     Bleed = "Bleed",
