@@ -48,7 +48,7 @@ function StatusBox({ actor, isPlayer, maxWidth = 'sm'}) {
   const [inventoryVisible, setInventoryVisible] = useState(false);
 
   return (
-    <Container maxWidth={maxWidth} sx={{ padding: 2, backgroundColor: "whitesmoke" }}>
+    <Container maxWidth={maxWidth} sx={{ padding: 2, backgroundColor: "whitesmoke", minWidth: '550px' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Box>
           <Typography variant="h6">Status</Typography>

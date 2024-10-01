@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography, Button, Box, Grid } from '@mui/material';
-import iconMapping from './statIcons.js'
+import {statIcons} from './icons.js'
 
 function StoryBox({ story, choices, handleChoice }) {
   return (
@@ -23,7 +23,7 @@ function StoryBox({ story, choices, handleChoice }) {
             {/* 상태 값 아이콘 및 수치 표시 */}
             {Object.keys(choice.status).map((key) => (
               <Box key={key} sx={{ display: 'flex', alignItems: 'center' }}>
-                {iconMapping[key] || <Typography sx={{textTransform:'capitalize'}}>{key}: </Typography>} {/* 아이콘이 있으면 표시 */}
+                {statIcons[key] || <Typography sx={{textTransform:'capitalize'}}>{key}: </Typography>} {/* 아이콘이 있으면 표시 */}
                 <Typography>{choice.status[key]}</Typography>
               </Box>
             ))}

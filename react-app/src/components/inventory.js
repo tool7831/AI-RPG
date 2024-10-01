@@ -15,6 +15,9 @@ const items = [
   { name: 'Cursed Ring', type: 'ring1', description: 'A cursed ring', effects: { speed: -10 }, use_restriction: {} }
 ];
 
+function formatStat(value) {
+  return value >= 0 ? `+${value}` : `${value}`;
+}
 
 const Inventory = ({ actor }) => {
   const [equippedItems, setEquippedItems] = useState(actor.inventory.equipments); // 플레이어의 장착된 아이템들
@@ -157,7 +160,7 @@ const Inventory = ({ actor }) => {
           open={open}
           anchorEl={anchorEl}
           onClose={handleClose}
-          TransitionProps={{onExit: handleExited}}
+          TransitionProps={{ onExit: handleExited }}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',
@@ -167,14 +170,27 @@ const Inventory = ({ actor }) => {
             <Typography variant="h5">{selectedItem?.name}</Typography>
             <Typography>{selectedItem?.description}</Typography>
             <Typography variant='h6'>Effects</Typography>
-            {selectedItem && Object.keys(selectedItem?.effects).map((stat) =>
-              <Typography color="textSecondary" key={stat}>{stat}: {selectedItem?.effects[stat]}</Typography>
-            )}
+            {selectedItem && Object.keys(selectedItem?.effects).map((stat) => (
+              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <Typography color="textSecondary" key={stat} sx={{ textTransform: 'capitalize' }} >{stat}: {selectedItem?.effects[stat]}</Typography>
+                {!selectedSlot && (
+                  <Typography color={(equippedItems[selectedItem?.type]?.effects[stat] ? selectedItem?.effects[stat] - equippedItems[selectedItem?.type]?.effects[stat] : selectedItem?.effects[stat]) > 0 ? "primary" : "error"}
+                    sx={{ marginLeft: '5px' }}>
+                    ({formatStat(equippedItems[selectedItem?.type]?.effects[stat] ? selectedItem?.effects[stat] - equippedItems[selectedItem?.type]?.effects[stat] : selectedItem?.effects[stat])})
+                  </Typography>)}
+              </Box>
+            ))}
             <Typography variant='h6'>Use Restriction</Typography>
-            {selectedItem && Object.keys(selectedItem?.use_restriction).map((stat) =>
-              <Typography color="textSecondary" key={stat}>{stat}: {selectedItem?.use_restriction[stat]}</Typography>
-            )}
-            
+            {selectedItem && Object.keys(selectedItem?.use_restriction).map((stat) => (
+              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <Typography color="textSecondary" key={stat} sx={{ textTransform: 'capitalize' }}>{stat}: {selectedItem?.use_restriction[stat]}</Typography>
+                {!selectedSlot && (
+                  <Typography color={selectedItem?.use_restriction[stat] <= actor.status.origin_status[stat] ? "primary" : "error"} sx={{ marginLeft: '5px' }}>
+                    ({actor.status.origin_status[stat]})
+                  </Typography>)}
+              </Box>
+            ))}
+
             {selectedItem && (<Button onClick={handleClose}>Cancel</Button>)}
             {selectedSlot && (<Button onClick={handleUnequip}>Unequip</Button>)}
             {!selectedSlot && selectedItem?.type !== ItemType.Consumable && (<Button onClick={handleEquip}>Equip</Button>)}
