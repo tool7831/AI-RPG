@@ -7,6 +7,7 @@ import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
+import { StatIcons } from '../components/icons.js';
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -278,28 +279,34 @@ function CombatPage() {
       <List>
         {selectedSkill === null && skills.map((skill, index) => (
           <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
-            <Typography>{skill.name}</Typography>
-            <Typography variant="body2" color="textSecondary"> ({skill.curCooldown})</Typography>
+            <Typography mr={1}>{skill.name}</Typography>
+            {selectedAction === 0 && <StatIcons type={skill.type === 'melee' ? 'strength' : 'intelligence'}/>}
+            {selectedAction === 0 &&<Typography ml={1}>{skill.getTotalDamage(player.status.status)}</Typography>}
+            {selectedAction === 1 && <StatIcons type={skill.type === 'melee' ? 'strength' : 'intelligence'}/>}
+            {selectedAction === 1 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
+            {selectedAction === 2 && <StatIcons type={skill.type === 'melee' ? 'strength' : 'intelligence'}/>}
+            {selectedAction === 2 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
+            <Typography ml={1} variant="body2" color="textSecondary"> ({skill.curCooldown})</Typography>
           </ListItemButton>
         ))}
       </List>
       {selectedSkill !== null && selectedAction === 0 && (
         <Box sx={{ mt: 2 }}>
-          <AttackBox skill={player.attacks[selectedSkill]} />
+          <AttackBox skill={player.attacks[selectedSkill]} status={player.status.status} />
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
       )}
       {selectedSkill !== null && selectedAction === 1 && (
         <Box sx={{ mt: 2 }}>
-          <DefendBox skill={player.defends[selectedSkill]} />
+          <DefendBox skill={player.defends[selectedSkill]} status={player.status.status}/>
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
       )}
       {selectedSkill !== null && selectedAction === 2 && (
         <Box sx={{ mt: 2 }}>
-          <SmiteBox skill={player.smites[selectedSkill]} />
+          <SmiteBox skill={player.smites[selectedSkill]} status={player.status.status}/>
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
@@ -309,6 +316,7 @@ function CombatPage() {
 
   return (
     <Container>
+      {/* 적 */ }
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', border: 'solid'}}>
         <img src='monster_sample.png' width={350} height={350} />
         {enemy && (
@@ -318,9 +326,14 @@ function CombatPage() {
           </div>
         )}
       </Box>
+      {/* 행동 */ }
+      <Box sx={{height:'100px', border:'1px solid'}}>
 
+      </Box>
+      {/* 플레이어 */ }
       <Box sx={{ border: 'solid' }}>
         <Grid container spacing={2}>
+          {/* 스킬 */ }
           <Grid item xs={6} sx={{display: 'flex', flexDirection:'column', justifyContent:'space-between'}}>
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -340,6 +353,7 @@ function CombatPage() {
               <Button variant='contained' onClick={() => { battle(4); setSelectedSkill(null); }}>Skip</Button>
             </Box>
           </Grid>
+          {/* 상태창 */ }
           <Grid item xs={6}>
             {player && <StatusEffectBar actor={player} />}
             {player && (<StatusBox actor={player} isPlayer={true} />)}

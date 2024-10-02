@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Typography, Box, Container, Popover} from '@mui/material';
-import { statusEffectIcons } from './icons';
+import { StatusEffectIcons } from './icons';
 
 function StatusEffectBar({ actor }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -25,8 +25,8 @@ function StatusEffectBar({ actor }) {
     <Container>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', height: '80px' }}>
         {actor.status.curStatusEffects.map((statusEffect) => (
-          <div onClick={(e) => handleItemClick(statusEffect, e)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid' }}>
-            {statusEffectIcons[statusEffect.type]}
+          <div key={statusEffect} onClick={(e) => handleItemClick(statusEffect, e)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid' }}>
+            <StatusEffectIcons type={statusEffect.type}/>
             <Typography>{statusEffect.duration}</Typography>
           </div>
         ))}

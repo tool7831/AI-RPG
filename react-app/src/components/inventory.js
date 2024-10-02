@@ -31,6 +31,10 @@ const Inventory = ({ actor }) => {
   const open = Boolean(anchorEl); // Popover 열림 상태 확인
   const id = open ? 'simple-popover' : undefined;
 
+  const inventoryWithEmptySlots = [...inventoryItems];
+  while (inventoryWithEmptySlots.length < actor.inventory.max_size) {
+    inventoryWithEmptySlots.push(null); // 빈칸 추가
+  }
   // 아이템 클릭 핸들러
   const handleItemClick = (item, idx, event) => {
     setAnchorEl(event.currentTarget);
@@ -144,16 +148,21 @@ const Inventory = ({ actor }) => {
 
         {/* 인벤토리 슬롯 */}
         <Typography variant="h6" align="center" sx={{ border: 'solid' }}>Inventory</Typography>
-        <Grid container sx={{ border: 'solid' }}>
-          {inventoryItems.map((item, idx) => (
-            <Grid item key={idx} sx={{ margin: '5px' }}>
-              <Card onClick={(e) => handleItemClick(item, idx, e)} sx={itemStyle}>
-                <CardContent>
-                  <Typography>{item.name}</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+        <Grid container sx={{ border: 'solid', height:'300px', overflowY:'auto' }}>
+        {inventoryWithEmptySlots.map((item, idx) => (
+          <Grid item xs={1} key={idx} sx={{ margin: '5px' }}>
+            <Card
+              onClick={(e) => item && handleItemClick(item, idx, e)} // 아이템이 있을 때만 클릭 이벤트
+              sx={{ ...itemStyle, backgroundColor: item ? 'white' : '#f0f0f0' }} // 아이템 없을 때 색 변경
+            >
+              <CardContent>
+                <Typography>
+                  {item ? item.name : ''}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
         </Grid>
 
         <Popover id={id}
@@ -197,7 +206,6 @@ const Inventory = ({ actor }) => {
             {!selectedSlot && <Button color="error" onClick={handleDestroy}>Destroy</Button>}
           </CardContent>
         </Popover>
-
       </Box>
     </Container>
   );

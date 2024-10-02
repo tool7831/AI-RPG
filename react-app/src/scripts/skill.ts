@@ -39,6 +39,14 @@ class StatusEffect {
         }
     }
 
+    getTotalValue(stats: Record<string, any>): number {
+        let totalValue = this.defaultValue;
+        for (const [key, value] of Object.entries(this.coef)){
+            totalValue += stats[key] * value;
+        }
+        return totalValue;
+    }
+
     toDict(): StatusEffectData {
         return {
             type: this.type,
@@ -108,6 +116,15 @@ export class Attack {
             accuracy: this.accuracy,
             statusEffect: this.statusEffect.doAttack(stats),
         };
+    }
+
+    getTotalDamage(stats: Record<string, any>): number {
+        let totalDamage = this.defaultDamage;
+
+        for (const [key, value] of Object.entries(this.coef)){
+            totalDamage += stats[key] * value;
+        }
+        return totalDamage;
     }
 
     isAvailable(): boolean {
@@ -186,6 +203,14 @@ export class Defend {
         this.curCooldown = this.curCooldown - value >= 0 ? this.curCooldown - value : 0;
     }
 
+    getTotalValue(stats: Record<string, any>): number {
+        let totalValue = this.defaultValue;
+        for (const [key, value] of Object.entries(this.coef)) {
+            totalValue += stats[key] * value;
+        }
+        return totalValue;
+    }
+
     toDict(): DefendData {
         return {
             name: this.name,
@@ -251,6 +276,14 @@ export class Smite {
         this.curCooldown = this.curCooldown - value >= 0 ? this.curCooldown - value : 0;
     }
 
+    getTotalValue(stats: Record<string, any>): number {
+        let totalValue = this.defaultValue;
+        for (const [key, value] of Object.entries(this.coef)) {
+            totalValue += stats[key] * value;
+        }
+        return totalValue;
+    }
+    
     toDict(): SmiteData {
         return {
             name: this.name,

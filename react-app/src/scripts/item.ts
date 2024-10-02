@@ -81,7 +81,7 @@ export class Item {
 export class Inventory {
   public items: Item[];
   public equipments: EquipmentsData;
-  protected max_size: number;
+  public max_size: number;
 
   constructor(items: Item[], equipments: EquipmentsData) {
     this.equipments = equipments;

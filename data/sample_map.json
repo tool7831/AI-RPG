@@ -1,0 +1,221 @@
+{
+    "Aeloria": [
+      "Belithor",
+      "Calthora",
+      "Darion"
+    ],
+    "Belithor": [
+      "Aeloria",
+      "Calthora",
+      "Erewan"
+    ],
+    "Calthora": [
+      "Aeloria",
+      "Belithor",
+      "Farhaven"
+    ],
+    "Darion": [
+      "Aeloria",
+      "Elandor"
+    ],
+    "Erewan": [
+      "Belithor",
+      "Galadorn"
+    ],
+    "Farhaven": [
+      "Calthora",
+      "Helmara"
+    ],
+    "Elandor": [
+      "Darion",
+      "Inverness"
+    ],
+    "Galadorn": [
+      "Erewan",
+      "Journdal"
+    ],
+    "Helmara": [
+      "Farhaven",
+      "Kelwood"
+    ],
+    "Inverness": [
+      "Elandor",
+      "Lorathian"
+    ],
+    "Journdal": [
+      "Galadorn",
+      "Mirthal"
+    ],
+    "Kelwood": [
+      "Helmara",
+      "Nalandor"
+    ],
+    "Lorathian": [
+      "Inverness",
+      "Osthaven"
+    ],
+    "Mirthal": [
+      "Journdal",
+      "Port Haven"
+    ],
+    "Nalandor": [
+      "Kelwood",
+      "Quinara"
+    ],
+    "Osthaven": [
+      "Lorathian",
+      "Rivertown"
+    ],
+    "Port Haven": [
+      "Mirthal",
+      "Silverdale"
+    ],
+    "Quinara": [
+      "Nalandor",
+      "Torthian"
+    ],
+    "Rivertown": [
+      "Osthaven",
+      "Umbria"
+    ],
+    "Silverdale": [
+      "Port Haven",
+      "Vandar"
+    ],
+    "Torthian": [
+      "Quinara",
+      "Wyrmwood"
+    ],
+    "Umbria": [
+      "Rivertown",
+      "Xalindra"
+    ],
+    "Vandar": [
+      "Silverdale",
+      "Yulara"
+    ],
+    "Wyrmwood": [
+      "Torthian",
+      "Zenith"
+    ],
+    "Xalindra": [
+      "Umbria",
+      "Aeloria"
+    ],
+    "Yulara": [
+      "Vandar",
+      "Belithor"
+    ],
+    "Zenith": [
+      "Wyrmwood",
+      "Calthora"
+    ],
+    "Auriel": [
+      "Belithor",
+      "Calthora"
+    ],
+    "Bramhill": [
+      "Auriel",
+      "Calthora"
+    ],
+    "Brighthold": [
+      "Bramhill",
+      "Helmara"
+    ],
+    "Caerdon": [
+      "Brighthold",
+      "Inverness"
+    ],
+    "Dweomer": [
+      "Caerdon",
+      "Journdal"
+    ],
+    "Eldhelm": [
+      "Dweomer",
+      "Kelwood"
+    ],
+    "Frostmere": [
+      "Eldhelm",
+      "Lorathian"
+    ],
+    "Gorin": [
+      "Frostmere",
+      "Mirthal"
+    ],
+    "Highcliff": [
+      "Gorin",
+      "Nalandor"
+    ],
+    "Indoril": [
+      "Highcliff",
+      "Osthaven"
+    ],
+    "Jorvik": [
+      "Indoril",
+      "Port Haven"
+    ],
+    "Khazad": [
+      "Jorvik",
+      "Quinara"
+    ],
+    "Linshore": [
+      "Khazad",
+      "Rivertown"
+    ],
+    "Murkmire": [
+      "Linshore",
+      "Silverdale"
+    ],
+    "Narhaven": [
+      "Murkmire",
+      "Torthian"
+    ],
+    "Ondor": [
+      "Narhaven",
+      "Umbria"
+    ],
+    "Pinehold": [
+      "Ondor",
+      "Vandar"
+    ],
+    "Quartzfield": [
+      "Pinehold",
+      "Wyrmwood"
+    ],
+    "Redruth": [
+      "Quartzfield",
+      "Xalindra"
+    ],
+    "Stonemoor": [
+      "Redruth",
+      "Yulara"
+    ],
+    "Thundertop": [
+      "Stonemoor",
+      "Zenith"
+    ],
+    "Uskadia": [
+      "Thundertop",
+      "Aeloria"
+    ],
+    "Vardel": [
+      "Uskadia",
+      "Belithor"
+    ],
+    "Westerfell": [
+      "Vardel",
+      "Calthora"
+    ],
+    "Xilthor": [
+      "Westerfell",
+      "Darion"
+    ],
+    "Yngvar": [
+      "Xilthor",
+      "Elandor"
+    ],
+    "Zandria": [
+      "Yngvar",
+      "Erewan"
+    ]
+  }
