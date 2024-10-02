@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Typography, Grid, LinearProgress, Box, Button, Container, Modal, Tab, Tabs } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Inventory from './inventory';
-import Status from './status';
+import StatusTab from './statusTab.js';
+import SkillTab from './skillTab.js';
 import { StatIcons } from './icons';
 const theme = createTheme({
   palette: {
@@ -50,7 +51,7 @@ function StatusBox({ actor, isPlayer, maxWidth = 'sm' }) {
 
 
   return (
-    <Container maxWidth={maxWidth} sx={{ padding: 2, backgroundColor: "whitesmoke", minWidth: '550px' }}>
+    <Container maxWidth={maxWidth} sx={{ padding: 2, backgroundColor: "whitesmoke"}}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Box>
           <Typography variant="h6">Status</Typography>
@@ -116,10 +117,13 @@ function StatusBox({ actor, isPlayer, maxWidth = 'sm' }) {
           <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
             <Tab value={0} label='Inventory' />
             <Tab value={1} label='Status' />
+            <Tab value={2} label='Skills' />
           </Tabs>
           <Button variant='contained' onClick={handleInventoryToggle} sx={{ position: ' absolute', top: "0%", right: "0%" }}>Close</Button>
           {selectedTab === 0 && <Inventory actor={actor} />}
-          {selectedTab === 1 && <Status actor={actor} />}
+          {selectedTab === 1 && <StatusTab actor={actor} />}
+          {selectedTab === 2 && <SkillTab actor={actor} />}
+          
         </div>
       </Modal>)}
 

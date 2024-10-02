@@ -7,7 +7,7 @@ import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
-import { StatIcons } from '../components/icons.js';
+import { StatIcons, SkillIcons } from '../components/icons.js';
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -280,11 +280,9 @@ function CombatPage() {
         {selectedSkill === null && skills.map((skill, index) => (
           <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
             <Typography mr={1}>{skill.name}</Typography>
-            {selectedAction === 0 && <StatIcons type={skill.type === 'melee' ? 'strength' : 'intelligence'}/>}
+            <SkillIcons type={skill.type} style={{width:'20px', height:'20px'}}/>
             {selectedAction === 0 &&<Typography ml={1}>{skill.getTotalDamage(player.status.status)}</Typography>}
-            {selectedAction === 1 && <StatIcons type={skill.type === 'melee' ? 'strength' : 'intelligence'}/>}
             {selectedAction === 1 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
-            {selectedAction === 2 && <StatIcons type={skill.type === 'melee' ? 'strength' : 'intelligence'}/>}
             {selectedAction === 2 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
             <Typography ml={1} variant="body2" color="textSecondary"> ({skill.curCooldown})</Typography>
           </ListItemButton>
@@ -315,7 +313,7 @@ function CombatPage() {
   );
 
   return (
-    <Container>
+    <Container sx={{backgroundColor:'whitesmoke'}}>
       {/* 적 */ }
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', border: 'solid'}}>
         <img src='monster_sample.png' width={350} height={350} />
