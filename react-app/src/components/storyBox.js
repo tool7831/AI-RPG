@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Button, Box, Grid } from '@mui/material';
+import { Container, Typography, Button, Box } from '@mui/material';
 import {StatIcons} from './icons.js'
 
 function StoryBox({ story, choices, handleChoice }) {

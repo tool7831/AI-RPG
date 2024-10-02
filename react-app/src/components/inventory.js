@@ -165,6 +165,8 @@ const Inventory = ({ actor }) => {
         ))}
         </Grid>
 
+
+        {/* 아이템 설명 */ }
         <Popover id={id}
           open={open}
           anchorEl={anchorEl}
@@ -199,10 +201,9 @@ const Inventory = ({ actor }) => {
                   </Typography>)}
               </Box>
             ))}
-
             {selectedItem && (<Button onClick={handleClose}>Cancel</Button>)}
             {selectedSlot && (<Button onClick={handleUnequip}>Unequip</Button>)}
-            {!selectedSlot && selectedItem?.type !== ItemType.Consumable && (<Button onClick={handleEquip}>Equip</Button>)}
+            {!selectedSlot && selectedItem?.type !== ItemType.Consumable ? (<Button onClick={handleEquip}>Equip</Button>) : (<Button>Use</Button>)}
             {!selectedSlot && <Button color="error" onClick={handleDestroy}>Destroy</Button>}
           </CardContent>
         </Popover>
