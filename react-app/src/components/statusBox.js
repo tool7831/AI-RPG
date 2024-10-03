@@ -19,11 +19,17 @@ function formatStat(value) {
   return value >= 0 ? `+${value}` : `${value}`;
 }
 
-function StatusBox({ actor, isPlayer, maxWidth = 'sm' }) {
+function StatusBox({ actor, isPlayer, sx={}, ...props}) {
   const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
+  const defaultSx = {
+    padding: 2,
+    backgroundColor: "whitesmoke",
+  };
+  const mergedSx = { ...defaultSx, ...sx };
+
   return (
-    <Container maxWidth={maxWidth} sx={{ padding: 2, backgroundColor: "whitesmoke" }}>
+    <Container sx={mergedSx} {...props} >
       <Box display="flex" flexDirection='row' justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Status</Typography>
         {isPlayer && <Typography>Level: {actor.level}</Typography>}

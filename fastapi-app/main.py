@@ -57,8 +57,13 @@ def story(input: Input):
     story = input.story
     player = input.player
     player['status']['added_status']['strength'] += 1
-    with open('../data/sample_combat.json', 'r') as f:
-        next = json.load(f)
+    
+    if story['text'] == 'win':
+        with open('../data/sample_story.json', 'r') as f:
+            next = json.load(f)
+    else:
+        with open('../data/sample_combat.json', 'r') as f:
+            next = json.load(f)
 
     data = dict({"success":True, "player":input.player}, **next)
     with open('../data/save.json','w') as f:

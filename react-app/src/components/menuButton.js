@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Tab, Tabs } from '@mui/material';
+import { Button, Modal, Tab, Tabs, Box } from '@mui/material';
 import Inventory from './inventory';
 import StatusTab from './statusTab.js';
 import SkillTab from './skillTab.js';
@@ -18,7 +18,7 @@ const style = {
     overFlowY: 'auto'
 };
 
-function MenuButton({actor, onClose}) {
+function MenuButton({actor, onClose, ...props}) {
     const [inventoryVisible, setInventoryVisible] = useState(false);
     const [selectedTab, setSelectedTab] = useState(0);
 
@@ -32,7 +32,7 @@ function MenuButton({actor, onClose}) {
         setSelectedTab(value);
     }
     return (
-        <div>
+        <Box {...props}>
             <Button variant="contained" sx={{ borderRadius: 2 }} onClick={handleInventoryToggle} >Inventory</Button>
             <Modal open={inventoryVisible}>
                 <div style={style}>
@@ -48,7 +48,7 @@ function MenuButton({actor, onClose}) {
 
                 </div>
             </Modal>
-        </div>
+        </Box>
     )
 }
 

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import StatusBox from '../components/statusBox.js';
-import StoryBox from '../components/storyBox.js';
 import { Container, Box, Modal } from '@mui/material';
 import { Player } from '../scripts/player.ts';
+
+import MenuButton from '../components/menuButton.js'
+import StatusBox from '../components/statusBox.js';
+import StoryBox from '../components/storyBox.js';
 import Dice from '../components/rollDice.js';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -23,6 +25,7 @@ function MainPage() {
   const [story, setStory] = useState();
   const [choices, setChoices] = useState();
   const [player, setPlayer] = useState();
+  const [render, setRender] = useState(0);
   const [diceVisible, setDiceVisible] = useState(false);
   const [choiceId, setChoiceId] = useState(null);
   const [prob, setProb] = useState(10);
@@ -110,8 +113,13 @@ function MainPage() {
     <div className="App">
       <Container sx={{border: 'solid'}}>
         <Box sx={{display: 'flex',flexDirection: 'column', alignItems: 'center', width: '100%'}}>
-          <div style={{margin:'10px'}}><StoryBox story={story} choices={choices} handleChoice={handleChoice}/></div>
-          {player && ( <StatusBox actor={player} isPlayer={true}/>)}
+          <div style={{margin:'10px', border:'1px solid'}}>
+            <StoryBox story={story} choices={choices} handleChoice={handleChoice}/>
+          </div>
+          <div style={{border:'1px solid'}}>
+            <MenuButton actor={player} onClose={()=>setRender(render+1)}/>
+            {player && ( <StatusBox actor={player} isPlayer={true} sx={{minWidth:'600px'}}/>)}
+          </div>
         </Box>
       </Container>
 
