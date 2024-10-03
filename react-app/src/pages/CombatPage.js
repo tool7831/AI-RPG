@@ -6,8 +6,10 @@ import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, T
 import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
-import StatusEffectBar from '../components/statusEffectBar.js';
 import { SkillIcons } from '../components/icons.js';
+import StatusEffectBar from '../components/statusEffectBar.js';
+import MenuButton from '../components/menuButton.js'
+
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -26,10 +28,14 @@ const style = {
 function CombatPage() {
   const [player, setPlayer] = useState();
   const [enemy, setEnemy] = useState();
+
+  const [enemyAction, setEnemyAction] = useState(null);
+  const [playerAction, setPlayerAction] = useState(null);
+
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedAction, setSeletedAction] = useState(0);
   const [rewards, setRewards] = useState(null);
-  const [reRender, setReRender] = useState(0);
+  const [render, setRender] = useState(0);
   const [victoryModal, setVictoryModal] = useState(false);
   const [defeatModal, setDefeatModal] = useState(false);
   const navigate = useNavigate()
@@ -98,9 +104,13 @@ function CombatPage() {
 
   const battle = (player_action) => {
     const e = enemy.doAction();
-    const enemy_action = e.action
-    const enemy_skill = e.skill
-    const player_skill = player.doAction(player_action, selectedSkill)
+    const enemy_action = e.action;
+    const enemy_skill = e.skill;
+    const player_skill = player.doAction(player_action, selectedSkill);
+
+    setEnemyAction(e);
+    setPlayerAction({action:player_action, skill:player_skill});
+
     console.log('Enemy:', e)
     console.log('Player:', player_action, player_skill)
     if (player_action === 0 && enemy_action === 0) {
@@ -260,7 +270,7 @@ function CombatPage() {
           player.status.addBuff(player_skill)
     }
 
-    setReRender(reRender + 1)
+    setRender(render + 1)
     console.log('Player:', player.status.curStatusEffects)
     console.log('Enemy:', enemy.status.curStatusEffects)
     if (enemy.isDead()) {
@@ -324,11 +334,17 @@ function CombatPage() {
           </div>
         )}
       </Box>
-      
-      {/* 행동 */ }
-      <Box sx={{height:'100px', border:'1px solid'}}>
 
+      {/* 행동 */ }
+      <Box sx={{display:'flex', flexDirection:'column', height:'100px', border:'1px solid'}}>
+        <Box sx={{border:'1px solid', flexGrow:'1'}}>
+          <Typography>{enemyAction?.action}</Typography>
+        </Box>
+        <Box sx={{border:'1px solid', flexGrow:'1'}}>
+          <Typography>{playerAction?.action}</Typography>
+        </Box>
       </Box>
+
       {/* 플레이어 */ }
       <Box sx={{ border: 'solid' }}>
         <Grid container spacing={2}>
@@ -354,8 +370,13 @@ function CombatPage() {
           </Grid>
           {/* 상태창 */ }
           <Grid item xs={6}>
-            {player && <StatusEffectBar actor={player} />}
-            {player && (<StatusBox actor={player} isPlayer={true} />)}
+            {player && (
+              <Box sx={{ display: 'flex', flexDirection:'row', alignItems: 'center', justifyContent: 'center' }}>
+                <StatusEffectBar actor={player}/>
+                <MenuButton actor={player} onClose={()=>setRender(render+1)}/>
+              </Box>
+            )} 
+            {player && (<StatusBox actor={player} isPlayer={true}/>)}
           </Grid>
         </Grid>
       </Box>

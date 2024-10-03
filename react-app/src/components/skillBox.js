@@ -24,9 +24,9 @@ export function AttackBox({ skill, status, ...props }) {
         <Grid item xs={12} xl={6}>
           <Typography variant="body1">
             Damage {status ? `= ${skill.getTotalDamage(status)}` : null}
-            ({skill.defaultDamage} + {Object.keys(skill.coef).map((key) => (
+            ({skill.defaultDamage} + {Object.keys(skill.coef).map((key, idx) => (
               <>
-                <StatIcons type={key} /> x {skill.coef[key]}
+                <StatIcons type={key} key={idx} /> x {skill.coef[key]}
               </>
             ))}) x {skill.count}
           </Typography>
@@ -66,9 +66,9 @@ export function DefendBox({ skill, status, ...props }) {
         <SkillIcons type={skill.type} style={iconStyle} />
       </Box>
       <Typography variant="body1">Value: {status ? `${skill.getTotalValue(status)}` : null}
-        ({skill.defaultValue} + {Object.keys(skill.coef).map((key) => (
+        ({skill.defaultValue} + {Object.keys(skill.coef).map((key, idx) => (
           <>
-            <StatIcons type={key} /> x {skill.coef[key]}
+            <StatIcons type={key} key={idx} /> x {skill.coef[key]}
           </>
         ))})
       </Typography>
@@ -86,9 +86,9 @@ export function SmiteBox({ skill, status, ...props }) {
         <SkillIcons type={skill.type} style={iconStyle} />
       </Box>
       <Typography variant="body1">Value: {status ? `${skill.getTotalValue(status)}` : null}
-        ({skill.defaultValue} + {Object.keys(skill.coef).map((key) => (
+        ({skill.defaultValue} + {Object.keys(skill.coef).map((key, idx) => (
           <>
-            <StatIcons type={key} /> x {skill.coef[key]}
+            <StatIcons type={key} key={idx}  /> x {skill.coef[key]}
           </>
         ))})
       </Typography>
