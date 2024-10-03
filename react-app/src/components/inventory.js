@@ -12,7 +12,7 @@ const items = [
   { name: 'Plate Pants', type: 'pants', description: 'A sharp blade for cutting.', effects: { defense: 10, speed: -5 }, use_restriction: { strength: 10 } },
   { name: 'Leather Gloves', type: 'gloves', description: 'A sturdy shield for defense.', effects: { defense: 2, dexterity: 3 }, use_restriction: { dexterity: 5 } },
   { name: 'Plate Gloves', type: 'gloves', description: 'A sturdy shield for defense.', effects: { defense: 5 }, use_restriction: { strength: 5 } },
-  { name: 'Cursed Ring', type: 'ring1', description: 'A cursed ring', effects: { speed: -10 }, use_restriction: {} }
+  { name: 'Cursed Ring', type: 'ring1', description: 'A cursed ring', effects: { intelligence: 10, speed: -10, strength: -10 }, use_restriction: {} }
 ];
 
 function formatStat(value) {
@@ -44,6 +44,7 @@ const Inventory = ({ actor }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setRender(render + 1)
   };
 
   const handleExited = () => {
@@ -83,9 +84,9 @@ const Inventory = ({ actor }) => {
   // 장비 슬롯 클릭 핸들러
   const handleEquipmentClick = (slot, event) => {
     if (equippedItems[slot]) {
-      setAnchorEl(event.currentTarget);
       setSelectedSlot(slot);
       setSelectedItem(equippedItems[slot])
+      setAnchorEl(event.currentTarget);
     }
   };
 
@@ -202,9 +203,9 @@ const Inventory = ({ actor }) => {
               </Box>
             ))}
             {selectedItem && (<Button onClick={handleClose}>Cancel</Button>)}
-            {selectedSlot && (<Button onClick={handleUnequip}>Unequip</Button>)}
-            {!selectedSlot && selectedItem?.type !== ItemType.Consumable ? (<Button onClick={handleEquip}>Equip</Button>) : (<Button>Use</Button>)}
-            {!selectedSlot && <Button color="error" onClick={handleDestroy}>Destroy</Button>}
+            {selectedSlot !== null && (<Button onClick={handleUnequip}>Unequip</Button>)}
+            {selectedSlot === null && (selectedItem?.type !== ItemType.Consumable ? (<Button onClick={handleEquip}>Equip</Button>) : (<Button>Use</Button>))}
+            {selectedSlot === null && <Button color="error" onClick={handleDestroy}>Destroy</Button>}
           </CardContent>
         </Popover>
       </Box>
