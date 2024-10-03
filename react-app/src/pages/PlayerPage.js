@@ -7,22 +7,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox';
 
 
-const initialStats = {
-  hp: 100,
-  mp: 100,
-  shield: 0,
-  strength: 10,
-  dexterity: 10,
-  intelligence: 10,
-  luck: 10,
-  defense: 10,
-  speed: 10,
-  concentration: 10,
-  reaction: 10,
-  hp_regeneration: 0,
-  mp_regeneration: 0,
-};
-
 function PlayerPage() {
   const [name, setName] = useState();
   const [description, setDescription] = useState();
@@ -130,10 +114,10 @@ function PlayerPage() {
       player: {
         name: name,
         description: description,
-        level:1,
-        exp:0,
-        nextExp:100,
-        statPoints:0,
+        level: 1,
+        exp: 0,
+        nextExp: 100,
+        statPoints: 0,
         status: {
           status: stats,
           origin_status: { ...stats },
@@ -180,29 +164,29 @@ function PlayerPage() {
   }
 
   return (
-    <Container>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
+    <Container sx={{ border: 'solid' }}>
+      <Grid container>
+        <Grid item xs={6} sx={{ border: '1px solid' }}>
           {/* Player Name and Description */}
-          <TextField label="Player Name" fullWidth margin="normal" onChange={(e) => setName(e.target.value)}/>
+          <TextField label="Player Name" fullWidth margin="normal" onChange={(e) => setName(e.target.value)} />
           <TextField label="Player Description" fullWidth margin="normal" multiline rows={4} onChange={(e) => setDescription(e.target.value)} />
 
           {/* Allocate Stats Section */}
-          <Box mb={4}> 
+          <Paper sx={{ border: '1px solid #ddd', padding: '10px' }}>
             <Typography variant="h6" gutterBottom>Allocate Stats</Typography>
             <Typography variant="body1">Remaining Points: {remainingPoints}</Typography>
             {Object.keys(stats).map((stat) => (
               <Box display="flex" alignItems="center" key={stat} >
-                <Typography variant="body2" sx={{ flexGrow: 1 }}>{stat}</Typography>
+                <Typography variant="body2" sx={{ flexGrow: 1, textTransform: 'capitalize' }}>{stat}</Typography>
                 <IconButton onClick={() => handleStatChange(stat, false)} disabled={stats[stat] <= 0} > <RemoveIcon /> </IconButton>
                 <Typography variant="body2" sx={{ width: 30, textAlign: 'center' }}>{stats[stat]}</Typography>
                 <IconButton onClick={() => handleStatChange(stat, true)} disabled={remainingPoints <= 0}> <AddIcon /> </IconButton>
               </Box>
             ))}
-          </Box>
+          </Paper>
         </Grid>
         {/* Skills Selection */}
-        <Grid item xs={6}>
+        <Grid item xs={6} sx={{ border: '1px solid', padding: '10px' }}>
           <Typography variant="h6" gutterBottom>Skills</Typography>
           <Tabs value={selectedClass} onChange={handleClassChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2 }} >
             {classes.map((skillClass, index) => (
@@ -217,10 +201,10 @@ function PlayerPage() {
 
           <Grid container spacing={2}>
             {/* Attack Skills */}
-            {/* <Grid item xs={12}><Typography variant="h6">Attack Skills</Typography></Grid> */}
-            { selectedSkillType === 0 && classes[selectedClass] && classes[selectedClass].attacks.map((skill, index) => (
+            {selectedSkillType === 0 && classes[selectedClass] && classes[selectedClass].attacks.map((skill, index) => (
               <Grid item xs={12} key={index}>
-                <Paper
+                <AttackBox
+                  skill={skill}
                   key={index}
                   elevation={selectedAttacks.includes(index) ? 8 : 1}
                   sx={{
@@ -229,17 +213,16 @@ function PlayerPage() {
                     border: selectedAttacks.includes(index) ? '2px solid #3f51b5' : '1px solid #ddd',
                     boxShadow: selectedAttacks.includes(index) ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
                   }}
-                  onClick={() => handleAttackToggle(index)}
-                >
-                  <AttackBox skill={skill}></AttackBox>
-                </Paper>
+                  onClick={() => handleAttackToggle(index)} 
+                />
               </Grid>
             ))}
             {/* Defend Skills */}
-            {/* <Grid item xs={12} mt={4}><Typography variant="h6">Defend Skills</Typography></Grid> */}
             {selectedSkillType === 1 && classes[selectedClass] && classes[selectedClass].defends.map((skill, index) => (
               <Grid item xs={12} key={index}>
-                <Paper
+
+                <DefendBox
+                  skill={skill}
                   elevation={selectedDefends.includes(index) ? 8 : 1}
                   sx={{
                     padding: 2,
@@ -248,16 +231,16 @@ function PlayerPage() {
                     boxShadow: selectedDefends.includes(index) ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
                   }}
                   onClick={() => handleDefendToggle(index)}
-                >
-                  <DefendBox skill={skill}/>
-                </Paper>
+                />
               </Grid>
             ))}
 
             {/* <Grid item xs={12} mt={4}><Typography variant="h6">Smite Skills</Typography></Grid> */}
             {selectedSkillType === 2 && classes[selectedClass] && classes[selectedClass].smites.map((skill, index) => (
               <Grid item xs={12} key={index}>
-                <Paper
+
+                <SmiteBox
+                  skill={skill}
                   elevation={selectedSmites.includes(index) ? 8 : 1}
                   sx={{
                     padding: 2,
@@ -265,20 +248,19 @@ function PlayerPage() {
                     border: selectedSmites.includes(index) ? '2px solid #3f51b5' : '1px solid #ddd',
                     boxShadow: selectedSmites.includes(index) ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
                   }}
-                  onClick={() => handleSmiteToggle(index)}
-                >
-                  <SmiteBox skill={skill}/>
-                </Paper>
+                  onClick={() => handleSmiteToggle(index)} 
+                />
               </Grid>
             ))}
           </Grid>
         </Grid>
-
-        <Button variant="contained" color="primary" fullWidth onClick={handleSubmit}>
+      </Grid>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
           Submit
         </Button>
-        
-      </Grid>
+      </Box>
+
     </Container>
   );
 }

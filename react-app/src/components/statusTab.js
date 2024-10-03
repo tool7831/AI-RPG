@@ -1,23 +1,8 @@
 import React, { useState } from 'react';
-import { Typography, Grid, LinearProgress, Box, Button, Container, Modal, Tab, Tabs, IconButton } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Typography, Grid, Box, Button, Container, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import StatusBox from './statusBox';
-const theme = createTheme({
-  palette: {
-    gray: {
-      main: '#DADADA',
-      light: '#F2F2F2',
-      dark: '#AEAEAE',
-      contrastText: '#242105',
-    },
-  },
-});
-
-function formatStat(value) {
-  return value >= 0 ? `+${value}` : `${value}`;
-}
 
 const initialStats = {
   hp: 0,

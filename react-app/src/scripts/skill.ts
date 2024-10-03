@@ -68,7 +68,7 @@ export interface AttackData {
     penetration: number;
     accuracy: number;
     cooldown: number;
-    statusEffect: StatusEffectData;
+    statusEffect: StatusEffectData | null;
     curCooldown: number;
 }
 
@@ -81,7 +81,7 @@ export class Attack {
     penetration: number;
     accuracy: number;
     cooldown: number;
-    statusEffect: StatusEffect;
+    statusEffect: StatusEffect | null;
     
     private curCooldown: number;
 
@@ -94,7 +94,10 @@ export class Attack {
         this.penetration = data.penetration;
         this.accuracy = data.accuracy;
         this.cooldown = data.cooldown;
-        this.statusEffect = new StatusEffect(data.statusEffect);
+        if (data.statusEffect)
+            this.statusEffect = new StatusEffect(data.statusEffect);
+        else
+            this.statusEffect = null;
         this.curCooldown = 0;
     }
 
@@ -114,7 +117,7 @@ export class Attack {
             count: this.count,
             penetration: this.penetration,
             accuracy: this.accuracy,
-            statusEffect: this.statusEffect.doAttack(stats),
+            statusEffect: this.statusEffect ? this.statusEffect.doAttack(stats) : null,
         };
     }
 
@@ -145,7 +148,7 @@ export class Attack {
             penetration: this.penetration,
             accuracy: this.accuracy,
             cooldown: this.cooldown,
-            statusEffect: this.statusEffect.toDict(),
+            statusEffect: this.statusEffect ? this.statusEffect.toDict(): null,
             curCooldown: this.curCooldown
         };
     }

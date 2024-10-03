@@ -1,0 +1,22 @@
+{
+    "name": "Quick Slash",
+    "type": "melee",
+    "defaultDamage": 80,
+    "coef": {
+      "strength": 1.1
+    },
+    "count": 1,
+    "penetration": 10,
+    "accuracy": 95,
+    "cooldown": 2,
+    "statusEffect": {
+      "type": "Bleed",
+      "duration": 2,
+      "defaultValue": 5,
+      "coef": {
+        "strength": 0.1
+      },
+      "accuracy": 25
+    },
+    "curCooldown": 0
+  }

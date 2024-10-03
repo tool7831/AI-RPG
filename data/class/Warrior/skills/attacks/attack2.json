@@ -1,0 +1,13 @@
+{
+    "name": "Power Strike",
+    "type": "melee",
+    "defaultDamage": 100,
+    "coef": {
+      "strength": 1.3
+    },
+    "count": 1,
+    "penetration": 15,
+    "accuracy": 85,
+    "cooldown": 4,
+    "curCooldown": 0
+  }

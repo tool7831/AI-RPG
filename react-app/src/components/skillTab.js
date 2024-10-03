@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Grid, List, Box, Button, Container, ListItemButton, Tab, Tabs } from '@mui/material';
-import { StatIcons, StatusEffectIcons, SkillIcons } from './icons';
+import { Typography, Grid, List, Box, ListItemButton, Tab, Tabs } from '@mui/material';
+import { SkillIcons } from './icons';
 import { AttackBox, DefendBox, SmiteBox } from './skillBox.js';
 
 function SkillTab({ actor }) {
@@ -20,12 +20,12 @@ function SkillTab({ actor }) {
     <Box sx={{ border: 'solid', padding: '10px' }}>
       <Grid container>
         <Grid item xs={12} lg={6}>
-          <List>
+          <List >
             {skills.map((skill, index) => (
-              <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
+              <ListItemButton key={index} sx={{border:'1px solid', borderRadius:'10px', marginBottom:'10px', marginRight:'10px'}} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
                 <Typography mr={1}>{skill.name}</Typography>
                 <SkillIcons type={skill.type} style={{ width: '20px', height: '20px' }} />
-                {selectedTab === 0 && <Typography ml={1}>{skill.getTotalDamage(actor.status.status)}</Typography>}
+                {selectedTab === 0 && <Typography ml={1}>{skill.getTotalDamage(actor.status.status)}x{skill.count}</Typography>}
                 {selectedTab === 1 && <Typography ml={1}>{skill.getTotalValue(actor.status.status)}</Typography>}
                 {selectedTab === 2 && <Typography ml={1}>{skill.getTotalValue(actor.status.status)}</Typography>}
                 <Typography ml={1} variant="body2" color="textSecondary"> ({skill.curCooldown})</Typography>
@@ -35,19 +35,13 @@ function SkillTab({ actor }) {
         </Grid>
         <Grid item xs={12} lg={6}>
           {selectedSkill !== null && selectedTab === 0 && (
-            <Box sx={{ mt: 2 }}>
-              <AttackBox skill={actor.attacks[selectedSkill]} status={actor.status.status} />
-            </Box>
+            <AttackBox skill={actor.attacks[selectedSkill]} status={actor.status.status} sx={{border:'1px solid #ddd', padding:'10px'}}/>
           )}
           {selectedSkill !== null && selectedTab === 1 && (
-            <Box sx={{ mt: 2 }}>
-              <DefendBox skill={actor.defends[selectedSkill]} status={actor.status.status} />
-            </Box>
+            <DefendBox skill={actor.defends[selectedSkill]} status={actor.status.status} sx={{border:'1px solid #ddd', padding:'10px'}}/>
           )}
           {selectedSkill !== null && selectedTab === 2 && (
-            <Box sx={{ mt: 2 }}>
-              <SmiteBox skill={actor.smites[selectedSkill]} status={actor.status.status} />
-            </Box>
+            <SmiteBox skill={actor.smites[selectedSkill]} status={actor.status.status} sx={{border:'1px solid #ddd', padding:'10px'}}/>
           )}
         </Grid>
 

@@ -126,10 +126,12 @@ export default class Enemy {
       if (attack_rand < skill.accuracy) {
         console.log('damage')
         this.status.damaged(skill.damage)
-        const effect_rand = rand(0, 99)
-        if (effect_rand < skill.statusEffect.accuracy) {
-          const statusEffect = { name: skill.name, type: skill.statusEffect.type, value: skill.statusEffect.value, duration: skill.statusEffect.duration }
-          this.status.addStatusEffect(statusEffect)
+        if (skill.statusEffect) {
+          const effect_rand = rand(0, 99)
+          if (effect_rand < skill.statusEffect.accuracy) {
+            const statusEffect = { name: skill.name, type: skill.statusEffect.type, value: skill.statusEffect.value, duration: skill.statusEffect.duration }
+            this.status.addStatusEffect(statusEffect)
+          }
         }
       }
       else {

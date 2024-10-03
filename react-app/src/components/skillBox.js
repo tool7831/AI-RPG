@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Grid, Box, Container } from '@mui/material';
+import { Typography, Grid, Box, Container, Paper } from '@mui/material';
 import { StatIcons, StatusEffectIcons, SkillIcons } from './icons';
 
 const iconStyle = {
@@ -13,9 +13,9 @@ const flexRow = {
   flexDirection: 'row',
 }
 
-export function AttackBox({ skill, status }) {
+export function AttackBox({ skill, status, ...props }) {
   return (
-    <Container sx={{ border: '1px solid', padding: '10px' }}>
+    <Paper {...props}>
       <Box sx={flexRow}>
         <Typography variant="h5">{skill.name}</Typography>
         <SkillIcons type={skill.type} style={iconStyle} />
@@ -54,14 +54,13 @@ export function AttackBox({ skill, status }) {
           )}
         </Grid>
       </Grid>
-
-    </Container>
+    </Paper>
   )
 }
 
-export function DefendBox({ skill, status }) {
+export function DefendBox({ skill, status, ...props }) {
   return (
-    <Container sx={{ border: '1px solid', padding: '10px' }}>
+    <Paper {...props}>
       <Box sx={flexRow}>
         <Typography variant="h5">{skill.name}</Typography>
         <SkillIcons type={skill.type} style={iconStyle} />
@@ -75,13 +74,13 @@ export function DefendBox({ skill, status }) {
       </Typography>
       <Typography variant="body1">Duration: {skill.duration}</Typography>
       <Typography variant="body1">Cooldown: {skill.cooldown}</Typography>
-    </Container>
+    </Paper>
   )
 }
 
-export function SmiteBox({ skill, status }) {
+export function SmiteBox({ skill, status, ...props }) {
   return (
-    <Container sx={{ border: '1px solid', padding: '10px' }}>
+    <Paper {...props}>
       <Box sx={flexRow}>
         <Typography variant="h5">{skill.name}</Typography>
         <SkillIcons type={skill.type} style={iconStyle} />
@@ -95,6 +94,6 @@ export function SmiteBox({ skill, status }) {
       </Typography>
       <Typography variant="body1">Duration: {skill.duration}</Typography>
       <Typography variant="body1">Cooldown: {skill.cooldown}</Typography>
-    </Container>
+    </Paper>
   )
 }

@@ -1,9 +1,9 @@
 {
     "name": "Frost Bolt",
     "type": "magic",
-    "defaultDamage": 10,
+    "defaultDamage": 80,
     "coef": {
-      "intelligence": 0.6
+      "intelligence": 1.0
     },
     "count": 1,
     "penetration": 5,

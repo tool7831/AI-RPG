@@ -1,0 +1,11 @@
+{
+    "name": "Divine Smite",
+    "type": "damage",
+    "defaultValue": 120,
+    "coef": {
+      "strength": 0.8
+    },
+    "duration": 0,
+    "cooldown": 6,
+    "curCooldown": 0
+  }

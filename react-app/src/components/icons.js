@@ -57,7 +57,7 @@ export function StatusEffectIcons({type, style={width:'40px', height:'40px'}}) {
 }
 
 export function SkillIcons({type, style={width:'40px', height:'40px'}}) {
-
+  
   return skillIcons[type] && (
     <img src={skillIcons[type]} style={style} alt={type}/>
   )

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatusBox from '../components/statusBox.js';
-import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Paper, Backdrop, Card, CardContent, ListItem } from '@mui/material';
+import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Backdrop, ListItem } from '@mui/material';
 
 import Enemy from '../scripts/enemy.ts'
 import { Player } from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
-import { StatIcons, SkillIcons } from '../components/icons.js';
+import { SkillIcons } from '../components/icons.js';
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -281,7 +281,7 @@ function CombatPage() {
           <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
             <Typography mr={1}>{skill.name}</Typography>
             <SkillIcons type={skill.type} style={{width:'20px', height:'20px'}}/>
-            {selectedAction === 0 &&<Typography ml={1}>{skill.getTotalDamage(player.status.status)}</Typography>}
+            {selectedAction === 0 &&<Typography ml={1}>{skill.getTotalDamage(player.status.status)}x{skill.count}</Typography>}
             {selectedAction === 1 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
             {selectedAction === 2 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
             <Typography ml={1} variant="body2" color="textSecondary"> ({skill.curCooldown})</Typography>
@@ -290,21 +290,21 @@ function CombatPage() {
       </List>
       {selectedSkill !== null && selectedAction === 0 && (
         <Box sx={{ mt: 2 }}>
-          <AttackBox skill={player.attacks[selectedSkill]} status={player.status.status} />
+          <AttackBox skill={player.attacks[selectedSkill]} status={player.status.status} sx={{padding:'10px'}}/>
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
       )}
       {selectedSkill !== null && selectedAction === 1 && (
         <Box sx={{ mt: 2 }}>
-          <DefendBox skill={player.defends[selectedSkill]} status={player.status.status}/>
+          <DefendBox skill={player.defends[selectedSkill]} status={player.status.status} sx={{padding:'10px'}}/>
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
       )}
       {selectedSkill !== null && selectedAction === 2 && (
         <Box sx={{ mt: 2 }}>
-          <SmiteBox skill={player.smites[selectedSkill]} status={player.status.status}/>
+          <SmiteBox skill={player.smites[selectedSkill]} status={player.status.status} sx={{padding:'10px'}}/>
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
@@ -324,6 +324,7 @@ function CombatPage() {
           </div>
         )}
       </Box>
+      
       {/* 행동 */ }
       <Box sx={{height:'100px', border:'1px solid'}}>
 

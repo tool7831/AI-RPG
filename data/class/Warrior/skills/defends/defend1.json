@@ -1,0 +1,11 @@
+{
+    "name": "Shield Block",
+    "type": "shield",
+    "defaultValue": 50,
+    "coef": {
+      "defense": 1
+    },
+    "duration": 3,
+    "cooldown": 5,
+    "curCooldown": 0
+  }
