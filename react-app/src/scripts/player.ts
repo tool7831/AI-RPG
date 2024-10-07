@@ -181,3 +181,5 @@ export class Player {
     return new Player(json.name, json.description, json.level, json.exp, json.nextExp, json.statPoints, json.status, json.attacks, json.defends, json.smites, json.inventory);
   }
 }
+
+export default Player;

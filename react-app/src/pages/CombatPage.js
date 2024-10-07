@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatusBox from '../components/statusBox.js';
-import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Backdrop, ListItem } from '@mui/material';
+import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Backdrop, ListItem, Paper } from '@mui/material';
 
 import Enemy from '../scripts/enemy.ts'
-import { Player } from '../scripts/player.ts';
+import Player from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import { SkillIcons } from '../components/icons.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
 import MenuButton from '../components/menuButton.js'
 
+import './animation.css'
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -31,6 +32,8 @@ function CombatPage() {
 
   const [enemyAction, setEnemyAction] = useState(null);
   const [playerAction, setPlayerAction] = useState(null);
+  const [enemyWin, setEnemyWin] = useState(false);
+  const [playerWin, setPlayerWin] = useState(false);
 
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedAction, setSeletedAction] = useState(0);
@@ -109,7 +112,7 @@ function CombatPage() {
     const player_skill = player.doAction(player_action, selectedSkill);
 
     setEnemyAction(e);
-    setPlayerAction({action:player_action, skill:player_skill});
+    setPlayerAction({ action: player_action, skill: player_skill });
 
     console.log('Enemy:', e)
     console.log('Player:', player_action, player_skill)
@@ -117,9 +120,13 @@ function CombatPage() {
       // 둘다 공격
       player.damaged(enemy_skill)
       enemy.damaged(player_skill)
+      setEnemyWin(true)
+      setPlayerWin(true)
     }
     else if (player_action === 0 && enemy_action === 1) {
       // 공격 패?
+      setEnemyWin(true)
+      setPlayerWin(false)
       if (enemy_skill.type === 'shield') {
         enemy.status.addBuff(enemy_skill)
         enemy.damaged(player_skill)
@@ -154,10 +161,14 @@ function CombatPage() {
     }
     else if (player_action === 0 && enemy_action === 2) {
       // 공격 승
+      setEnemyWin(false)
+      setPlayerWin(true)
       enemy.damaged(player_skill)
     }
     else if (player_action === 1 && enemy_action === 0) {
       // 방어 승?
+      setEnemyWin(false)
+      setPlayerWin(true)
       if (player_skill.type === 'shield') {
         player.status.addBuff(player_skill)
         player.damaged(enemy_skill)
@@ -192,6 +203,8 @@ function CombatPage() {
     }
     else if (player_action === 1 && enemy_action === 1) {
       // 무시
+      setEnemyWin(true)
+      setPlayerWin(true)
       if (player_skill.type === 'shield') {
         player.status.addBuff(player_skill)
       }
@@ -201,6 +214,8 @@ function CombatPage() {
     }
     else if (player_action === 1 && enemy_action === 2) {
       // 방어 패
+      setEnemyWin(true)
+      setPlayerWin(false)
       if (enemy_skill.type === 'hp_scailing') {
         player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
       }
@@ -213,10 +228,14 @@ function CombatPage() {
     }
     else if (player_action === 2 && enemy_action === 0) {
       // 강타 패
+      setEnemyWin(true)
+      setPlayerWin(false)
       player.damaged(enemy_skill)
     }
     else if (player_action === 2 && enemy_action === 1) {
       // 강타 숭
+      setEnemyWin(false)
+      setPlayerWin(true)
       if (player_skill.type === 'hp_scailing') {
         enemy.damaged(enemy.status.origin_status.HP * player_skill.value / 100)
       }
@@ -230,6 +249,8 @@ function CombatPage() {
     else if (player_action === 2 && enemy_action === 2) {
       // 스탯 강한 쪽 승
       if (player_skill.value > enemy_skill.value) {
+        setEnemyWin(false)
+        setPlayerWin(true)
         if (player_skill.type === 'hp_scailing') {
           enemy.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
         }
@@ -240,7 +261,9 @@ function CombatPage() {
           enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
         }
       }
-      else if (player_skill < enemy_skill) {
+      else if (player_skill.value < enemy_skill.value) {
+        setEnemyWin(true)
+        setPlayerWin(false)
         if (enemy_skill.type === 'hp_scailing') {
           player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
         }
@@ -256,18 +279,44 @@ function CombatPage() {
       }
     }
     else if (player_action === 4) {
+      setEnemyWin(true)
+      setPlayerWin(false)
       if (enemy_action === 0)
         player.damaged(enemy_skill)
       else if (enemy_action === 1)
         if (enemy_skill.type === 'shield')
           enemy.status.addBuff(enemy_skill)
+        else if (enemy_action === 2) {
+          if (enemy_skill.type === 'hp_scailing') {
+            player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
+          }
+          else if (enemy_skill.type === 'damage') {
+            player.damaged(enemy_skill.value)
+          }
+          else if (enemy_skill.type === 'stun') {
+            player.status.addStatusEffect({ name: enemy_skill.name, type: 'Stun', value: 0, duration: enemy_skill.duration })
+          }
+        }
     }
     else if (enemy_action === 4) {
-      if (player_action === 1)
+      setEnemyWin(false)
+      setPlayerWin(true)
+      if (player_action === 0)
         enemy.damaged(player_skill)
-      else if (player_action === 2)
+      else if (player_action === 1)
         if (player_skill.type === 'shield')
           player.status.addBuff(player_skill)
+        else if (player_action === 2) {
+          if (player_skill.type === 'hp_scailing') {
+            enemy.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
+          }
+          else if (enemy_skill.type === 'damage') {
+            enemy.damaged(player_skill.value)
+          }
+          else if (player_skill.type === 'stun') {
+            enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
+          }
+        }
     }
 
     setRender(render + 1)
@@ -290,31 +339,31 @@ function CombatPage() {
         {selectedSkill === null && skills.map((skill, index) => (
           <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
             <Typography mr={1}>{skill.name}</Typography>
-            <SkillIcons type={skill.type} style={{width:'20px', height:'20px'}}/>
-            {selectedAction === 0 &&<Typography ml={1}>{skill.getTotalDamage(player.status.status)}x{skill.count}</Typography>}
-            {selectedAction === 1 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
-            {selectedAction === 2 &&<Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
+            <SkillIcons type={skill.type} style={{ width: '20px', height: '20px' }} />
+            {selectedAction === 0 && <Typography ml={1}>{skill.getTotalDamage(player.status.status)}x{skill.count}</Typography>}
+            {selectedAction === 1 && <Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
+            {selectedAction === 2 && <Typography ml={1}>{skill.getTotalValue(player.status.status)}</Typography>}
             <Typography ml={1} variant="body2" color="textSecondary"> ({skill.curCooldown})</Typography>
           </ListItemButton>
         ))}
       </List>
       {selectedSkill !== null && selectedAction === 0 && (
         <Box sx={{ mt: 2 }}>
-          <AttackBox skill={player.attacks[selectedSkill]} status={player.status.status} sx={{padding:'10px'}}/>
+          <AttackBox skill={player.attacks[selectedSkill]} status={player.status.status} sx={{ padding: '10px' }} />
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
       )}
       {selectedSkill !== null && selectedAction === 1 && (
         <Box sx={{ mt: 2 }}>
-          <DefendBox skill={player.defends[selectedSkill]} status={player.status.status} sx={{padding:'10px'}}/>
+          <DefendBox skill={player.defends[selectedSkill]} status={player.status.status} sx={{ padding: '10px' }} />
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
       )}
       {selectedSkill !== null && selectedAction === 2 && (
         <Box sx={{ mt: 2 }}>
-          <SmiteBox skill={player.smites[selectedSkill]} status={player.status.status} sx={{padding:'10px'}}/>
+          <SmiteBox skill={player.smites[selectedSkill]} status={player.status.status} sx={{ padding: '10px' }} />
           <Button onClick={handleConfirmAttack} sx={{ mt: 2 }}>Confirm</Button>
           <Button onClick={handleCancel} sx={{ mt: 2, ml: 1 }}>Cancel</Button>
         </Box>
@@ -323,33 +372,69 @@ function CombatPage() {
   );
 
   return (
-    <Container sx={{backgroundColor:'whitesmoke'}}>
-      {/* 적 */ }
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', border: 'solid'}}>
-        <img src='monster_sample.png' width={350} height={350} />
-        {enemy && (
-          <div style={{}}>
-            <StatusBox actor={enemy} />
-            <StatusEffectBar actor={enemy} />
-          </div>
-        )}
+    <Container sx={{ backgroundColor: 'whitesmoke' }}>
+      {/* 적 */}
+      {enemy && (<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', border: 'solid', padding: '10px' }}>
+        <Paper>
+          <img src='monster_sample.png' width={300} height={300} style={{ border: '1px solid' }} />
+          <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy.name}</Typography>
+        </Paper>
+        <div style={{ border: '1px solid #ddd' }}>
+          <StatusBox actor={enemy} />
+          <StatusEffectBar actor={enemy} />
+        </div>
+      </Box>
+      )}
+
+      {/* 행동 */}
+      <Box sx={{ display: 'flex', flexDirection: 'row', height: '100px', border: '1px solid' }}>
+        <Grid container>
+          <Grid item xs={6} sx={{ display: 'flex', border: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
+            <Paper
+              elevation={enemyWin ? 4 : 1}
+              sx={{
+                border: enemyWin ? '2px solid #3f51b5' : '1px solid #ddd',
+                width: '90%', height: '90%',
+                display: 'flex', flexDirection: 'column',
+                justifyContent: 'center', alignItems: 'center',
+              }}
+            >
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography variant='h5' mr={1}>{enemyAction?.skill.name}</Typography>
+                <SkillIcons type={enemyAction?.skill.type} style={{ width: '30px', height: '30px' }} />
+                {enemyAction?.action === 0 && <Typography variant='h5' ml={1}>{enemyAction?.skill.damage}x{enemyAction?.skill.count}</Typography>}
+                {enemyAction?.action === 1 && <Typography variant='h5' ml={1}>{enemyAction?.skill.value}</Typography>}
+                {enemyAction?.action === 2 && <Typography variant='h5' ml={1}>{enemyAction?.skill.value}</Typography>}
+              </Box>
+              <Typography>Action Type: {enemyAction?.action}</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={6} sx={{ display: 'flex', border: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
+          <Paper
+              elevation={playerWin ? 4 : 1}
+              sx={{
+                border: playerWin ? '2px solid #3f51b5' : '1px solid #ddd',
+                width: '90%', height: '90%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
+              }}
+            >
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography variant='h5' mr={1}>{playerAction?.skill.name}</Typography>
+                <SkillIcons type={playerAction?.skill.type} style={{ width: '30px', height: '30px' }} />
+                {playerAction?.action === 0 && <Typography variant='h5' ml={1}>{playerAction?.skill.damage}x{playerAction?.skill.count}</Typography>}
+                {playerAction?.action === 1 && <Typography variant='h5' ml={1}>{playerAction?.skill.value}</Typography>}
+                {playerAction?.action === 2 && <Typography variant='h5' ml={1}>{playerAction?.skill.value}</Typography>}
+              </Box>
+              <Typography>Action Type: {playerAction?.action}</Typography>
+            </Paper>
+          </Grid>
+        </Grid>
       </Box>
 
-      {/* 행동 */ }
-      <Box sx={{display:'flex', flexDirection:'column', height:'100px', border:'1px solid'}}>
-        <Box sx={{border:'1px solid', flexGrow:'1'}}>
-          <Typography>{enemyAction?.action}</Typography>
-        </Box>
-        <Box sx={{border:'1px solid', flexGrow:'1'}}>
-          <Typography>{playerAction?.action}</Typography>
-        </Box>
-      </Box>
-
-      {/* 플레이어 */ }
+      {/* 플레이어 */}
       <Box sx={{ border: 'solid' }}>
         <Grid container spacing={2}>
-          {/* 스킬 */ }
-          <Grid item xs={6} sx={{display: 'flex', flexDirection:'column', justifyContent:'space-between'}}>
+          {/* 스킬 */}
+          <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Tabs value={selectedAction} onChange={handleActionChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
@@ -368,15 +453,15 @@ function CombatPage() {
               <Button variant='contained' onClick={() => { battle(4); setSelectedSkill(null); }}>Skip</Button>
             </Box>
           </Grid>
-          {/* 상태창 */ }
+          {/* 상태창 */}
           <Grid item xs={6}>
             {player && (
-              <Box sx={{ display: 'flex', flexDirection:'row', alignItems: 'center', justifyContent: 'center' }}>
-                <StatusEffectBar actor={player}/>
-                <MenuButton actor={player} onClose={()=>setRender(render+1)}/>
+              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <StatusEffectBar actor={player} />
+                <MenuButton actor={player} onClose={() => setRender(render + 1)} />
               </Box>
-            )} 
-            {player && (<StatusBox actor={player} isPlayer={true}/>)}
+            )}
+            {player && (<StatusBox actor={player} isPlayer={true} />)}
           </Grid>
         </Grid>
       </Box>

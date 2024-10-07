@@ -159,20 +159,21 @@ function PlayerPage() {
     })
       .then(response => response.json())
       .then(data => {
-        navigate("/main", { state: data })
+        navigate("/story", { state: data })
       });
   }
 
   return (
     <Container sx={{ border: 'solid' }}>
       <Grid container>
-        <Grid item xs={6} sx={{ border: '1px solid' }}>
+        <Grid item xs={6} sx={{ padding:'10px' }}>
+          <Paper elevation={4} sx={{padding:'10px', border:'1px solid'}}>
           {/* Player Name and Description */}
           <TextField label="Player Name" fullWidth margin="normal" onChange={(e) => setName(e.target.value)} />
           <TextField label="Player Description" fullWidth margin="normal" multiline rows={4} onChange={(e) => setDescription(e.target.value)} />
 
           {/* Allocate Stats Section */}
-          <Paper sx={{ border: '1px solid #ddd', padding: '10px' }}>
+          <Paper elevation={0} sx={{ border: '1px solid #ddd', padding: '10px' }}>
             <Typography variant="h6" gutterBottom>Allocate Stats</Typography>
             <Typography variant="body1">Remaining Points: {remainingPoints}</Typography>
             {Object.keys(stats).map((stat) => (
@@ -184,16 +185,18 @@ function PlayerPage() {
               </Box>
             ))}
           </Paper>
+          </Paper>
         </Grid>
         {/* Skills Selection */}
-        <Grid item xs={6} sx={{ border: '1px solid', padding: '10px' }}>
-          <Typography variant="h6" gutterBottom>Skills</Typography>
-          <Tabs value={selectedClass} onChange={handleClassChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2 }} >
+        <Grid item xs={6} sx={{padding: '10px' }}>
+          <Paper elevation={4} sx={{border:'1px solid', padding:'10px'}}>
+          <Typography variant="h5" gutterBottom>Skills</Typography>
+          <Tabs value={selectedClass} onChange={handleClassChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2, border:'1px solid #ddd' }} >
             {classes.map((skillClass, index) => (
               <Tab key={index} label={skillClass.class_name} />
             ))}
           </Tabs>
-          <Tabs value={selectedSkillType} onChange={handleSkillChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2 }} >
+          <Tabs value={selectedSkillType} onChange={handleSkillChange} indicatorColor="primary" textColor="primary" variant="fullWidth" sx={{ mb: 2, border:'1px solid #ddd' }} >
             <Tab key={0} label={'Attack'} />
             <Tab key={1} label={'Defense'} />
             <Tab key={2} label={'Smite'} />
@@ -220,7 +223,6 @@ function PlayerPage() {
             {/* Defend Skills */}
             {selectedSkillType === 1 && classes[selectedClass] && classes[selectedClass].defends.map((skill, index) => (
               <Grid item xs={12} key={index}>
-
                 <DefendBox
                   skill={skill}
                   elevation={selectedDefends.includes(index) ? 8 : 1}
@@ -253,6 +255,7 @@ function PlayerPage() {
               </Grid>
             ))}
           </Grid>
+          </Paper>
         </Grid>
       </Grid>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

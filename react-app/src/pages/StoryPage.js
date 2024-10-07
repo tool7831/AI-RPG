@@ -1,16 +1,74 @@
-import { Container, Paper, Typography, Button } from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { Container, Box, Modal } from '@mui/material';
 
+import Player from '../scripts/player.ts';
+import MenuButton from '../components/menuButton.js'
+import StatusBox from '../components/statusBox.js';
+import StoryBox from '../components/storyBox.js';
+import Dice from '../components/rollDice.js';
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  height:300,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  backgroundColor: 'white'
+};
 function StoryPage() {
-  const [story, setStory] = useState({});
-  const [selectedStory, setSelectedStory] = useState();
+  const [story, setStory] = useState();
+  const [choices, setChoices] = useState();
+  const [player, setPlayer] = useState();
+  const [render, setRender] = useState(0);
+  const [diceVisible, setDiceVisible] = useState(false);
+  const [choiceId, setChoiceId] = useState(null);
+  const [prob, setProb] = useState(10);
+  const navigate = useNavigate()
 
-  const navigate = useNavigate();
   useEffect(() => {
-    const data = { session: "12312" }
-    fetch('http://localhost:8000/', {
+    fetch('http://localhost:8000/load_data', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (Object.keys(data).includes('combat')) {
+          console.log("go combat page");
+          navigate('/combat')
+        }
+        else {
+          console.log(data);
+          setStory(data.story)
+          setChoices(data.choices)
+          setPlayer(Player.fromJSON(data.player))
+        }
+      });
+  }, []);
+
+  const handleClose = (diceResult) => {
+    setDiceVisible(false)
+    nextStory(diceResult, choiceId);
+  }
+
+  const nextStory = (diceResult, choiceId) => {
+    if (diceResult >= prob)
+      choices[choiceId].text = 'Success this choice. ' + choices[choiceId].text
+    else 
+      choices[choiceId].text = 'Fail this choice. ' + choices[choiceId].text
+    const data = {
+      story: choices[choiceId],
+      player: player.toDict()
+    };
+    console.log(data)
+    fetch('http://localhost:8000/story_gen', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,49 +77,59 @@ function StoryPage() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
-        setStory(data)
+        if (Object.keys(data).includes('combat')) {
+          navigate('/combat')
+        }
+        else {
+          console.log(data);
+          setPlayer(Player.fromJSON(data.player))
+        }
       });
-  }, [])
-
-  const handleSubmit = () => {
-    const data = {
-      story: {
-        text: story[selectedStory]
-      }
-    };
-    navigate("/player", { state: data })
-    console.log(data)
-  };
-  const handleStoryToggle = (key) => {
-    setSelectedStory(key)
   }
+
+  const handleChoice = (choiceId) => {
+    setChoiceId(choiceId);
+    if (Object.keys(choices[choiceId].status).length !== 0) {
+      setProb(calculateProb(choiceId));
+      setDiceVisible(true);
+    }
+    else {
+      nextStory(20, choiceId);
+    }
+
+  };
+
+  const calculateProb = (choiceId) => {
+    console.log(player.status.status);
+    console.log(choices[choiceId].status);
+    let diff = 0;
+    Object.keys(choices[choiceId].status).forEach((key)=> {
+      diff += player.status.status[key] - choices[choiceId].status[key]
+    })
+    return Math.ceil(20 / (1+ Math.exp(diff/10)))
+  }
+
   return (
     <div className="App">
-      <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h1>Story</h1>
-        <div>
-          {Object.keys(story).map((key) => (
-            <Paper
-              key={key}
-              elevation={selectedStory===key ? 8 : 1}
-              sx={{
-                padding: 2,
-                margin: 2,
-                cursor: 'pointer',
-                border: selectedStory === key ? '2px solid #3f51b5' : '1px solid #ddd',
-                boxShadow: selectedStory === key ? '0 0 10px rgba(63, 81, 181, 0.5)' : 'none',
-              }}
-              onClick={() => handleStoryToggle(key)}
-            >
-              <Typography variant='h5'>{key}</Typography>
-              <Typography>{story[key]}</Typography>
-            </Paper>
-          ))}
-          <Button sx={{margin:2}} variant='contained' onClick={handleSubmit}>Submit</Button>
-        </div>
+      <Container sx={{border: 'solid'}}>
+        <Box sx={{display: 'flex',flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+          <div style={{margin:'10px', border:'1px solid'}}>
+            <StoryBox story={story} choices={choices} handleChoice={handleChoice}/>
+          </div>
+          <div style={{border:'1px solid'}}>
+            <MenuButton actor={player} onClose={()=>setRender(render+1)}/>
+            {player && ( <StatusBox actor={player} isPlayer={true} sx={{minWidth:'600px'}}/>)}
+          </div>
+        </Box>
       </Container>
+
+      <Modal open={diceVisible} >
+        <Box sx={style}>
+          <Dice handleClose={handleClose} prob={prob} />
+        </Box>
+      </Modal>
     </div>
+
   );
 }
 
