@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-# from gen_story import run_thread
+from gen_story import run, create_thread
 import json
 import os
 from glob import glob
@@ -10,7 +10,8 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
-
+user_thread = {}
+test = False
 origins = [
     "http://localhost:3000",  # React 애플리케이션이 실행되는 도메인
 ]
@@ -31,55 +32,104 @@ class Input(BaseModel):
 
 @app.post("/")
 def read_root():
-    filepath = "../data/worldview"
+    filepath = "data/worldview"
     data = {}
     for file in os.listdir(filepath):
         f = open(os.path.join(filepath,file), "r")
         data[file] = f.read()
     print(data)
+    
+    if test:
+        user_thread['user1'] = create_thread()
+        with open(f'data/user1/thread_id', 'w') as f:
+            f.write(user_thread['user1'].id)
+        print('thread create')
     return JSONResponse(data)
 
 @app.post("/first")
 def first(input: Input):
     print(input)
-
-    with open('../data/sample_story.json', 'r') as f:
-        next = json.load(f)
+    print(user_thread)
+    
+    worldView = input.story['text']
+    playerInput = {
+        'name':input.player['name'],
+        'description':input.player['description'],
+        'level': input.player['level'],
+        'status': input.player['status']['status'],
+        }
+    
+    message = [
+        {
+            "type": "text",
+            "text": {"Worldview":worldView}
+        },
+        {
+            "type": "text",
+            "text": {"player":playerInput}
+        }   
+    ]
+    
+    if test:
+        next = run(user_thread['user1'], message)
+    else:
+        with open('data/sample_story.json', 'r') as f:
+            next = json.load(f)
 
     data = dict({"player":input.player}, **next)
-    with open('../data/save.json','w') as f:
+    with open('data/save.json','w') as f:
         json.dump(data,f)
     return JSONResponse({"success":True})
 
 @app.post("/story_gen")
 def story(input: Input):
     print(input)
-    story = input.story
-    player = input.player
-    player['status']['added_status']['strength'] += 1
-    
-    if story['text'] == 'win':
-        with open('../data/sample_story.json', 'r') as f:
-            next = json.load(f)
+    if 'next_type' in input.story:
+        story = {'text': input.story['text'],
+                'next_type': input.story['next_type']}
+        if not test:
+            with open('data/sample_combat.json', 'r') as f:
+                next = json.load(f)
     else:
-        with open('../data/sample_combat.json', 'r') as f:
-            next = json.load(f)
+        story = {'text': input.story['text'],}
+        if not test:
+            with open('data/sample_story.json', 'r') as f:
+                next = json.load(f)
+    playerInput = {
+        'name':input.player['name'],
+        'description':input.player['description'],
+        'level': input.player['level'],
+        'status': input.player['status']['status'],
+        }
+    message = [
+        {
+            "type": "text",
+            "text": story
+        },
+        {
+            "type": "text",
+            "text": {"player":playerInput}
+        }   
+    ]
+    
+    if test:
+        next = run(user_thread['user1'], message)
 
     data = dict({"success":True, "player":input.player}, **next)
-    with open('../data/save.json','w') as f:
+    with open('data/save.json','w') as f:
         json.dump(data,f)
     return JSONResponse(data)
 
 @app.get("/load_data")
 def load():
-    with open('../data/save.json', 'r') as f:
+    with open('data/save.json', 'r') as f:
         data = json.load(f)
     return JSONResponse(data)
 
 @app.get("/skills")
 def skills():
     data = []
-    class_paths = sorted(glob('../data/class/*'))
+    class_paths = sorted(glob('data/class/*'))
     for class_path in class_paths:
         attack_path = glob(os.path.join(class_path, 'skills/attacks/*json'))
         attacks = []

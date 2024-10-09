@@ -5,11 +5,11 @@
     "strength": 5,
     "dexterity": 5,
     "intelligence": 20,
+    "agility": 10,
     "luck": 5,
     "defense": 5,
-    "speed": 10,
-    "concentration": 10,
-    "reaction": 10,
+    "resistance": 10,
+    "toughness": 10,
     "hp_regeneration": 0,
     "mp_regeneration": 1
 }

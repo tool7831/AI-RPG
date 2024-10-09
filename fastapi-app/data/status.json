@@ -7,9 +7,9 @@
   "intelligence": 10,
   "luck": 10,
   "defense": 10,
-  "speed": 10,
-  "concentration": 10,
-  "reaction": 10,
+  "agility": 10,
+  "resistance": 10,
+  "toughness": 10,
   "hp_regeneration": 0,
   "mp_regeneration": 0
 }

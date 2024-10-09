@@ -13,7 +13,7 @@ const initialStats = {
   intelligence: 0,
   luck: 0,
   defense: 0,
-  speed: 0,
+  agility: 0,
   concentration: 0,
   reaction: 0,
   hp_regeneration: 0,
@@ -22,7 +22,11 @@ const initialStats = {
 
 function StatusTab({ actor }) {
 
-  const [stats, setStats] = useState(initialStats);
+  const [stats, setStats] = useState(
+    Object.keys(actor.status.status).reduce((acc, key) => {
+    acc[key] = 0;
+    return acc;
+  }, {}));
   const [remainingPoints, setRemainingPoints] = useState(actor.statPoints);
 
   const handleStatChange = (stat, increment) => {
@@ -31,7 +35,7 @@ function StatusTab({ actor }) {
         setStats({ ...stats, [stat]: stats[stat] + 10 })
         setRemainingPoints(remainingPoints - 1);
       }
-      else if (stat === "hp_regeneration" || stat === "mp_regeneration") {
+      else if (stat === "hp_regeneration") {
         if (remainingPoints >= 10) {
           setStats({ ...stats, [stat]: stats[stat] + 1 });
           setRemainingPoints(remainingPoints - 10);
@@ -47,7 +51,7 @@ function StatusTab({ actor }) {
         setStats({ ...stats, [stat]: stats[stat] - 10 });
         setRemainingPoints(remainingPoints + 1);
       }
-      else if ((stat === "hp_regeneration" || stat === "mp_regeneration")) {
+      else if ((stat === "hp_regeneration")) {
         setStats({ ...stats, [stat]: stats[stat] - 1 });
         setRemainingPoints(remainingPoints + 10);
       }

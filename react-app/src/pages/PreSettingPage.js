@@ -9,8 +9,8 @@ function PreSettingPage() {
 
   const navigate = useNavigate();
   useEffect(() => {
-    const data = { session: "12312" }
-    fetch('http://localhost:8000/', {
+    const data = { user_id: "test" }
+    fetch('http://localhost:8000/worldview', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

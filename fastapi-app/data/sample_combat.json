@@ -1,0 +1,104 @@
+{
+  "combat": {
+    "name": "Enchanted Vine Beast",
+    "description": "A large, animated mass of twisting vines and thorns, imbued with the forest's magic to guard its secrets.",
+    "status": {
+      "hp": 70,
+      "mp": 20,
+      "shield": 10,
+      "strength": 15,
+      "dexterity": 5,
+      "intelligence": 5,
+      "agility": 5,
+      "luck": 3,
+      "defense": 10,
+      "resistance": 10,
+      "toughness": 7,
+      "mp_regeneration": 2,
+      "hp_regeneration": 1
+    },
+    "attacks": [
+      {
+        "name": "Thorn Whiplash",
+        "type": "melee",
+        "defaultDamage": 25,
+        "coef": {
+          "strength": 1.0
+        },
+        "count": 1,
+        "penetration": 10,
+        "accuracy": 80,
+        "cooldown": 3,
+        "statusEffect": {
+          "type": "Bleed",
+          "duration": 3,
+          "defaultValue": 5,
+          "coef": {
+            "intelligence": 0.2
+          },
+          "accuracy": 60
+        },
+        "curCooldown": 0
+      },
+      {
+        "name": "Vine Snare",
+        "type": "magic",
+        "defaultDamage": 15,
+        "coef": {
+          "intelligence": 0.7
+        },
+        "count": 1,
+        "penetration": 5,
+        "accuracy": 75,
+        "cooldown": 4,
+        "statusEffect": {
+          "type": "Paralysis",
+          "duration": 2,
+          "defaultValue": 0.0,
+          "coef": {},
+          "accuracy": 50
+        },
+        "curCooldown": 0
+      }
+    ],
+    "defends": [
+      {
+        "name": "Bramble Shield",
+        "type": "shield",
+        "defaultValue": 20,
+        "coef": {
+          "defense": 1.0
+        },
+        "duration": 3,
+        "cooldown": 5,
+        "curCooldown": 0
+      }
+    ],
+    "smites": [
+      {
+        "name": "Nature's Wrath",
+        "type": "damage",
+        "defaultValue": 40,
+        "coef": {
+          "strength": 0.5,
+          "toughness": 0.4
+        },
+        "duration": 0,
+        "cooldown": 6,
+        "curCooldown": 0
+      }
+    ],
+    "frequency": {
+      "attacks": [
+        40,
+        35
+      ],
+      "defends": [
+        15
+      ],
+      "smites": [
+        10
+      ]
+    }
+  }
+}

@@ -58,6 +58,7 @@ function CombatPage() {
           setRewards(data.rewards)
         } else {
           console.log('go story page');
+          navigate('/story');
         }
       });
   }, []);
@@ -85,7 +86,7 @@ function CombatPage() {
     player.getRewards(rewards);
     const data = {
       player: player.toDict(),
-      story: { text: 'win' }
+      story: { text: 'Player win ' + enemy.name }
     }
     fetch('http://localhost:8000/story_gen', {
       method: 'POST',
@@ -97,7 +98,7 @@ function CombatPage() {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          navigate('/main')
+          navigate('/story')
         }
         else {
           console.log(data.success);

@@ -6,11 +6,11 @@ export interface StatusData {
     strength: number,
     dexterity: number,
     intelligence: number,
+    agility: number,
     luck: number,
     defense: number,
-    speed: number,
-    concentration: number,
-    reaction: number,
+    resistance: number,
+    toughness: number,
     hp_regeneration: number,
     mp_regeneration: number
 };
@@ -280,10 +280,10 @@ export class Status {
             dexterity: 0,
             intelligence: 0,
             luck: 0,
+            agility: 0,
             defense: 0,
-            speed: 0,
-            concentration: 0,
-            reaction: 0,
+            toughness: 0,
+            resistance: 0,
             hp_regeneration: 0,
             mp_regeneration: 0
         })

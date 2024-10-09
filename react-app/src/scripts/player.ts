@@ -57,11 +57,17 @@ export class Player {
   }
 
   getRewards(json): void {
-    this.gainExp(json.exp);
-    this.gold += json.gold;
-    json.items.forEach((item) => {
-      this.addItem(Item.fromJSON(item));
-    }) 
+    if (!json)
+      return
+    if ('exp' in json)
+      this.gainExp(json.exp);
+    if ('gold' in json)
+      this.gold += json.gold;
+    if ('items' in json) {
+      json.items.forEach((item) => {
+        this.addItem(Item.fromJSON(item));
+      }) 
+    }
   }
 
   doAction(action: number, skill_idx: number): Record<string, any> {

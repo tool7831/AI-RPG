@@ -67,7 +67,7 @@ function PlayerPage() {
         setStats({ ...stats, [stat]: stats[stat] + 10 });
         setRemainingPoints(remainingPoints - 1);
       }
-      else if (stat === "hp_regeneration" || stat === "mp_regeneration") {
+      else if (stat === "hp_regeneration") {
         if (remainingPoints >= 10) {
           setStats({ ...stats, [stat]: stats[stat] + 1 });
           setRemainingPoints(remainingPoints - 10);
@@ -83,7 +83,7 @@ function PlayerPage() {
         setStats({ ...stats, [stat]: stats[stat] - 10 });
         setRemainingPoints(remainingPoints + 1);
       }
-      else if ((stat === "hp_regeneration" || stat === "mp_regeneration")) {
+      else if ((stat === "hp_regeneration")) {
         setStats({ ...stats, [stat]: stats[stat] - 1 });
         setRemainingPoints(remainingPoints + 10);
       }
