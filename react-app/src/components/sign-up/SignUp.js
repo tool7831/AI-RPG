@@ -15,7 +15,8 @@ import MuiCard from '@mui/material/Card';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import getSignUpTheme from './theme/getSignUpTheme';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
-import TemplateFrame from './TemplateFrame';
+import { useNavigate } from 'react-router-dom';
+// import TemplateFrame from './TemplateFrame';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -62,6 +63,9 @@ export default function SignUp() {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [signUpErrorMessage, setSignUpErrorMessage] = React.useState('');
+
+  const navigate = useNavigate();
   // This code only runs on the client side, to determine the system color preference
   React.useEffect(() => {
     // Check if there is a preferred mode in localStorage
@@ -77,15 +81,15 @@ export default function SignUp() {
     }
   }, []);
 
-  const toggleColorMode = () => {
-    const newMode = mode === 'dark' ? 'light' : 'dark';
-    setMode(newMode);
-    localStorage.setItem('themeMode', newMode); // Save the selected mode to localStorage
-  };
+  // const toggleColorMode = () => {
+  //   const newMode = mode === 'dark' ? 'light' : 'dark';
+  //   setMode(newMode);
+  //   localStorage.setItem('themeMode', newMode); // Save the selected mode to localStorage
+  // };
 
-  const toggleCustomTheme = () => {
-    setShowCustomTheme((prev) => !prev);
-  };
+  // const toggleCustomTheme = () => {
+  //   setShowCustomTheme((prev) => !prev);
+  // };
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -120,31 +124,56 @@ export default function SignUp() {
       setNameError(false);
       setNameErrorMessage('');
     }
-
+    if(isValid)
+      handleSubmit()
     return isValid;
   };
 
-  const handleSubmit = (event) => {
-    if (nameError || emailError || passwordError) {
-      event.preventDefault();
-      return;
+  const handleSubmit = async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value;
+
+    const data = {
+      email:email,
+      password: password,
+      name: name
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    try {
+      const response = await fetch('http://localhost:8000/sign-up', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        alert('Signup successful. Redirecting to login...');
+        setTimeout(() => {
+          navigate('/');
+        }, 200);
+      }
+      else {
+        // 회원가입 실패 시 오류 메시지 처리
+        const errorData = await response.json();
+        setSignUpErrorMessage(errorData.detail || 'Signup failed. Please try again.');
+        alert(errorData.detail || 'Signup failed. Please try again.');
+      }
+    } catch (signUpErrorMessage) {
+      alert('An error occurred during signup.');
+    }
+
   };
 
   return (
-    <TemplateFrame
-      toggleCustomTheme={toggleCustomTheme}
-      showCustomTheme={showCustomTheme}
-      mode={mode}
-      toggleColorMode={toggleColorMode}
-    >
+    // <TemplateFrame
+    //   toggleCustomTheme={toggleCustomTheme}
+    //   showCustomTheme={showCustomTheme}
+    //   mode={mode}
+    //   toggleColorMode={toggleColorMode}
+    // >
       <ThemeProvider theme={showCustomTheme ? SignUpTheme : defaultTheme}>
         <CssBaseline enableColorScheme />
         <SignUpContainer direction="column" justifyContent="space-between">
@@ -158,8 +187,10 @@ export default function SignUp() {
               Sign up
             </Typography>
             <Box
-              component="form"
-              onSubmit={handleSubmit}
+              // component="form"
+              // method="POST"
+              // action='https://localhost/8000/sign-up'
+              // onSubmit={handleSubmit}
               sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
             >
               <FormControl>
@@ -212,7 +243,7 @@ export default function SignUp() {
                 label="I want to receive updates via email."
               />
               <Button
-                type="submit"
+                // type="submit"
                 fullWidth
                 variant="contained"
                 onClick={validateInputs}
@@ -223,7 +254,7 @@ export default function SignUp() {
                 Already have an account?{' '}
                 <span>
                   <Link
-                    href="/material-ui/getting-started/templates/sign-in/"
+                    href="/"
                     variant="body2"
                     sx={{ alignSelf: 'center' }}
                   >
@@ -256,6 +287,6 @@ export default function SignUp() {
           </Card>
         </SignUpContainer>
       </ThemeProvider>
-    </TemplateFrame>
+    // </TemplateFrame>
   );
 }

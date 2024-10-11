@@ -9,8 +9,8 @@ import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import { SkillIcons } from '../components/icons.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
 import MenuButton from '../components/menuButton.js'
+import { loadData } from '../components/api.js';
 
-import './animation.css'
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -44,12 +44,7 @@ function CombatPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetch('http://localhost:8000/load_data', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    loadData()
       .then(response => response.json())
       .then(data => {
         if (Object.keys(data).includes('combat')) {

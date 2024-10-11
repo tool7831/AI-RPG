@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import CssBaseline from '@mui/material/CssBaseline';
+// import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
@@ -16,7 +16,8 @@ import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 import AppTheme from '../shared-theme/AppTheme';
-import ColorModeSelect from '../shared-theme/ColorModeSelect';
+import { useNavigate } from 'react-router-dom';
+// import ColorModeSelect from '../shared-theme/ColorModeSelect';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -64,7 +65,9 @@ export default function SignIn(props) {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [error, setError] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -74,16 +77,36 @@ export default function SignIn(props) {
     setOpen(false);
   };
 
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
-      return;
+  const handleSubmit = async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const formData = new URLSearchParams();
+    formData.append('username', email);  // OAuth2PasswordRequestForm에서 'username'으로 받음
+    formData.append('password', password);
+
+    try {
+      const response = await fetch('http://localhost:8000/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString(),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.access_token);  // JWT 저장
+        navigate('/home');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.detail || 'Sign-in failed. Please try again.');
+        alert(errorData.detail || 'Sign-in failed. Please try again.');
+      }
+    } catch (error) {
+      alert('An error occurred during sign-in.');
     }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
   };
 
   const validateInputs = () => {
@@ -109,15 +132,17 @@ export default function SignIn(props) {
       setPasswordError(false);
       setPasswordErrorMessage('');
     }
+    if(isValid)
+      handleSubmit();
 
     return isValid;
   };
 
   return (
     <AppTheme {...props}>
-      <CssBaseline enableColorScheme />
+      {/* <CssBaseline enableColorScheme /> */}
       <SignInContainer direction="column" justifyContent="space-between">
-        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+        {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
         <Card variant="outlined">
           <SitemarkIcon />
           <Typography
@@ -128,9 +153,9 @@ export default function SignIn(props) {
             Sign in
           </Typography>
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
+            // component="form"
+            // onSubmit={handleSubmit}
+            // noValidate
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -190,7 +215,7 @@ export default function SignIn(props) {
             />
             <ForgotPassword open={open} handleClose={handleClose} />
             <Button
-              type="submit"
+              // type="submit"
               fullWidth
               variant="contained"
               onClick={validateInputs}
@@ -201,7 +226,7 @@ export default function SignIn(props) {
               Don&apos;t have an account?{' '}
               <span>
                 <Link
-                  href="/material-ui/getting-started/templates/sign-in/"
+                  href="/sign-up"
                   variant="body2"
                   sx={{ alignSelf: 'center' }}
                 >

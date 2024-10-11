@@ -8,6 +8,8 @@ import StatusBox from '../components/statusBox.js';
 import StoryBox from '../components/storyBox.js';
 import Dice from '../components/rollDice.js';
 
+import { fetchWithAuth, loadData } from '../components/api.js';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -32,12 +34,7 @@ function StoryPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetch('http://localhost:8000/load_data', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    loadData()
       .then(response => response.json())
       .then(data => {
         if (Object.keys(data).includes('combat')) {
@@ -68,7 +65,7 @@ function StoryPage() {
       player: player.toDict()
     };
     console.log(data)
-    fetch('http://localhost:8000/story_gen', {
+    fetchWithAuth('http://localhost:8000/story_gen', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

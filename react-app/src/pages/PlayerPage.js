@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox';
 
+import {fetchWithAuth} from '../components/api';
 
 function PlayerPage() {
   const [name, setName] = useState();
@@ -108,7 +109,7 @@ function PlayerPage() {
     setSelectedSkillType(newValue);
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
       story: location.state.story,
       player: {
@@ -150,17 +151,26 @@ function PlayerPage() {
     }
     console.log(data)
 
-    fetch('http://localhost:8000/first', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(data => {
-        navigate("/story", { state: data })
+    try {
+      const response = await fetchWithAuth('http://localhost:8000/first',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data)
+        navigate("/story")
+      } else {
+        // 인증 실패 시 로그인 페이지로 리다이렉트
+
+      }
+    } catch (error) {
+      // navigate('/');
+    }
   }
 
   return (
