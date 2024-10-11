@@ -1,13 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.security import OAuth2PasswordRequestForm
+
 from pydantic import BaseModel
 from gen_story import run, create_thread
-import json
-import os
 from glob import glob
 
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
+import datetime
+import json
+import os
+
+import crud, models, schemas
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine, get_db
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 user_thread = {}
@@ -25,38 +34,74 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Input(BaseModel):
-    story: dict
-    player: dict
+@app.post("/token", response_model=schemas.Token)
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = crud.authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = datetime.timedelta(minutes=crud.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = crud.create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
 
 
-@app.post("/")
+@app.post("/sign-up", response_model=schemas.UserCreate)
+def sign_up(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(db, email=user.email)
+    if db_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+    
+    crud.create_user(db=db, user=user)
+    
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"message": "Signup successful. Please log in."})
+
+
+@app.get("/users/me", response_model=schemas.UserResponse)
+def read_users_me(current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
+    # Fetch the user's associated JSON data from the UserData table
+    user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
+    
+    # Prepare the response
+    current_user_with_data = {
+        "id": current_user.id,
+        "name": current_user.name,
+        "email": current_user.email,
+        "user_data": user_data.json_data if user_data else None  # Return JSON data if available
+    }
+    
+    return JSONResponse(content=current_user_with_data)
+
+
+@app.post("/worldview")
 def read_root():
-    filepath = "data/worldview"
+    filepath = "./data/worldview"
     data = {}
     for file in os.listdir(filepath):
         f = open(os.path.join(filepath,file), "r")
         data[file] = f.read()
-    print(data)
-    
-    if test:
-        user_thread['user1'] = create_thread()
-        with open(f'data/user1/thread_id', 'w') as f:
-            f.write(user_thread['user1'].id)
-        print('thread create')
-    return JSONResponse(data)
+    return JSONResponse(content=data)
 
-@app.post("/first")
-def first(input: Input):
-    print(input)
-    print(user_thread)
+@app.post("/first",  response_model=schemas.UserResponse)
+def first(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     
-    worldView = input.story['text']
+    if not current_user:
+        raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    worldView = user_input.story['text']
     playerInput = {
-        'name':input.player['name'],
-        'description':input.player['description'],
-        'level': input.player['level'],
-        'status': input.player['status']['status'],
+        'name':user_input.player['name'],
+        'description':user_input.player['description'],
+        'level': user_input.player['level'],
+        'status': user_input.player['status']['status'],
         }
     
     message = [
@@ -71,35 +116,42 @@ def first(input: Input):
     ]
     
     if test:
-        next = run(user_thread['user1'], message)
+        user_thread = create_thread()
+        print('thread create')
+        next = run(user_thread, message)
     else:
         with open('data/sample_story.json', 'r') as f:
             next = json.load(f)
 
-    data = dict({"player":input.player}, **next)
-    with open('data/save.json','w') as f:
-        json.dump(data,f)
-    return JSONResponse({"success":True})
+    save = dict({"player":user_input.player}, **next)
+    updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
+        "thread_id": user_thread.id if test else None,
+        "save": save
+    })
+    
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content=save)
 
 @app.post("/story_gen")
-def story(input: Input):
-    print(input)
-    if 'next_type' in input.story:
-        story = {'text': input.story['text'],
-                'next_type': input.story['next_type']}
+def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
+    user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
+    thread_id = user_data.json_data['thread_id']
+
+    if 'next_type' in user_input.story:
+        story = {'text': user_input.story['text'],
+                'next_type': user_input.story['next_type']}
         if not test:
             with open('data/sample_combat.json', 'r') as f:
                 next = json.load(f)
     else:
-        story = {'text': input.story['text'],}
+        story = {'text': user_input.story['text'],}
         if not test:
             with open('data/sample_story.json', 'r') as f:
                 next = json.load(f)
     playerInput = {
-        'name':input.player['name'],
-        'description':input.player['description'],
-        'level': input.player['level'],
-        'status': input.player['status']['status'],
+        'name':user_input.player['name'],
+        'description':user_input.player['description'],
+        'level': user_input.player['level'],
+        'status': user_input.player['status']['status'],
         }
     message = [
         {
@@ -113,18 +165,20 @@ def story(input: Input):
     ]
     
     if test:
-        next = run(user_thread['user1'], message)
+        next = run(thread_id, message)
 
-    data = dict({"success":True, "player":input.player}, **next)
-    with open('data/save.json','w') as f:
-        json.dump(data,f)
-    return JSONResponse(data)
+    save = dict({"player":user_input.player}, **next)
+    updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
+        "thread_id": user_thread.id if test else None,
+        "save": save
+    })
+
+    return JSONResponse(content=save)
 
 @app.get("/load_data")
-def load():
-    with open('data/save.json', 'r') as f:
-        data = json.load(f)
-    return JSONResponse(data)
+def load(current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
+    user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
+    return JSONResponse(content=user_data.json_data['save'])
 
 @app.get("/skills")
 def skills():
@@ -155,7 +209,6 @@ def skills():
             'defends': defends,
             'smites': smites,
         })
-    print(data)
     return JSONResponse(data)
 
 

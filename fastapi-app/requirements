@@ -1,2 +1,7 @@
 fastapi
 openai
+python-jose[cryptography]
+sqlalchemy
+passlib[bcrypt]
+pydantic[email]
+python-multipart
