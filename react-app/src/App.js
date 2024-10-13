@@ -11,8 +11,8 @@ import SignUp from "./components/sign-up/SignUp.js"
 function App() {
   return (
     <div>
-      <ResponsiveAppBar/>
       <Router>
+        <ResponsiveAppBar/>
         <Routes>
           <Route exact path="/" element={<SignIn />} />
           <Route exact path="/sign-up" element={<SignUp/>} />
