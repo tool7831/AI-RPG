@@ -22,6 +22,7 @@ function StoryBox({ story, choices, handleChoice }) {
 
             {/* 상태 값 아이콘 및 수치 표시 */}
             {Object.keys(choice.status).map((key) => (
+              choice.status[key] !== null && 
               <Box key={key} sx={{ display: 'flex', alignItems: 'center' }}>
                 {<StatIcons type={key} />|| <Typography sx={{textTransform:'capitalize'}}>{key}: </Typography>} {/* 아이콘이 있으면 표시 */}
                 <Typography>{choice.status[key]}</Typography>

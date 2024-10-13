@@ -58,49 +58,44 @@ export default class Enemy {
     this.canAction()
     this.status.updateStatusEffects()
     this.status.updateBuffs()
-    while (this.status.isActionAvailable) {
-      let flag = false
-      const action = rand(0, 99)
-      let cumulative = 0;
-      for (let [key, values] of Object.entries(this.frequency)) {
-        if (flag) break;
-        for (let i = 0; i < values.length; i++) {
-          cumulative += values[i];
-          if (action < cumulative) {
-            if (key === 'attacks') {
-              if (!this.attacks[i].isAvailable()) {
-                flag = true;
-                break;
-              }
-              return {
-                action: 0,
-                skill: this.doAttack(i)
-              }
+    // while (this.status.isActionAvailable) {
+    let cumulative = 0;
+    const action = rand(0, 99)
+    for (let [key, values] of Object.entries(this.frequency)) {
+      for (let i = 0; i < values.length; i++) {
+        cumulative += values[i];
+        if (action < cumulative) {
+          if (key === 'attacks') {
+            if (!this.attacks[i].isAvailable()) {
+              continue;
             }
-            else if (key === 'defends') {
-              if (!this.defends[i].isAvailable()) {
-                flag = true;
-                break;
-              }
-              return {
-                action: 1,
-                skill: this.doDefend(i)
-              }
+            return {
+              action: 0,
+              skill: this.doAttack(i)
             }
-            else {
-              if (!this.smites[i].isAvailable()) {
-                flag = true;
-                break;
-              }
-              return {
-                action: 2,
-                skill: this.doSmite(i)
-              }
+          }
+          else if (key === 'defends') {
+            if (!this.defends[i].isAvailable()) {
+              continue;
+            }
+            return {
+              action: 1,
+              skill: this.doDefend(i)
+            }
+          }
+          else {
+            if (!this.smites[i].isAvailable()) {
+              continue;
+            }
+            return {
+              action: 2,
+              skill: this.doSmite(i)
             }
           }
         }
       }
     }
+    // }
     this.endTurn()
     return {
       action: 4,

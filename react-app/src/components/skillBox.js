@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Grid, Box, Container, Paper } from '@mui/material';
+import { Typography, Grid, Box, Paper } from '@mui/material';
 import { StatIcons, StatusEffectIcons, SkillIcons } from './icons';
 
 const iconStyle = {
@@ -44,7 +44,7 @@ export function AttackBox({ skill, status, ...props }) {
               <Typography variant="body1">Value: {status ? `${skill.statusEffect.getTotalValue(status)}` : null}
                 ({skill.statusEffect.defaultValue} + {Object.keys(skill.statusEffect.coef).map((key) => (
                   <>
-                    <StatIcons type={key} /> x {skill.statusEffect.coef[key]}
+                    <StatIcons type={key} key={key} /> x {skill.statusEffect.coef[key]}
                   </>
                 ))})
               </Typography>

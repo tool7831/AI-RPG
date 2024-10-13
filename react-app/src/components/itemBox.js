@@ -4,7 +4,7 @@ import { Item, ItemType } from '../scripts/item.ts';
 const itemStyle = {
   width: 70, height: 70, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid grey', cursor: 'pointer'
 }
-const ItemBox = ({item, handleItemClick, handleExited, isEquipped, addon}) => {
+function ItemBox({item}) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl); // Popover 열림 상태 확인
@@ -16,7 +16,7 @@ const ItemBox = ({item, handleItemClick, handleExited, isEquipped, addon}) => {
 
   return (
     <Box>
-      <Card onClick={(e) => {setAnchorEl(e.currentTarget); handleItemClick(item, e)}} sx={itemStyle}>
+      <Card onClick={(e) => {setAnchorEl(e.currentTarget)}} sx={itemStyle}>
         <CardContent>
           <Typography>{item.name}</Typography>
         </CardContent>
@@ -26,7 +26,6 @@ const ItemBox = ({item, handleItemClick, handleExited, isEquipped, addon}) => {
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        TransitionProps={{ onExit: handleExited }}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
@@ -37,14 +36,13 @@ const ItemBox = ({item, handleItemClick, handleExited, isEquipped, addon}) => {
           <Typography>{item?.description}</Typography>
           <Typography variant='h6'>Effects</Typography>
           {Object.keys(item?.effects).map((stat) =>
-            <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
+             item?.effects[stat] !== null && <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
           )}
           <Typography variant='h6'>Use Restriction</Typography>
           {Object.keys(item?.use_restriction).map((stat) =>
-            <Typography color="textSecondary" key={stat}>{stat}: {item?.use_restriction[stat]}</Typography>
+            item?.use_restriction[stat] !== null && <Typography color="textSecondary" key={stat}>{stat}: {item?.use_restriction[stat]}</Typography>
           )}
           <Button onClick={handleClose}>Cancel</Button>
-          {addon && addon(item, isEquipped)}
         </CardContent>
       </Popover>
     </Box>

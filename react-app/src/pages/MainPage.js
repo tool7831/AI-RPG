@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button, Container } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Button, Container, Paper } from '@mui/material';
 import {fetchWithAuth, loadData} from '../components/api';
 
 function MainPage() {
@@ -47,11 +47,19 @@ function MainPage() {
   }
 
   return (
-    <Container>
-      <div>
-        <Button onClick={handleNewStart}>New Start</Button>
-        <Button disabled={user?.user_data === null} onClick={handleLoad}>Load</Button>
-      </div>
+    <Container sx={{ display: 'flex', justifyContent: 'center', padding: '30px'}}>
+      <Paper
+        elevation={4}
+        sx={{
+          minWidth: '600px',
+          maxWidth: "800px",
+          padding: "20px"
+        }}
+      >
+        <Button variant='contained' fullWidth onClick={handleNewStart} sx={{ marginBottom: '10px' }} >New Start</Button>
+        <Button variant='contained' fullWidth disabled={user?.user_data === null} onClick={handleLoad} sx={{ marginBottom: '10px' }}>Load</Button>
+        <Button variant='contained' fullWidth>Language</Button>
+      </Paper>
     </Container>
   )
 }

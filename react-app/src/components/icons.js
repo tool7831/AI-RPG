@@ -10,9 +10,9 @@ const statIcons = {
   intelligence:'stats/intelligence.png',
   luck: 'stats/luck.png',
   defense: 'stats/defense.png',
-  speed: 'stats/speed.png', 
-  // concentration:
-  // reaction:
+  agility: 'stats/speed.png', 
+  resistance: 'stats/resistance.png', 
+  toughness: 'stats/toughness.png', 
   hp_regeneration: 'stats/hp_regeneration.png',
   // mp_regeneration:
 };

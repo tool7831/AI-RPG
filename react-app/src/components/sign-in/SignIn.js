@@ -65,7 +65,6 @@ export default function SignIn(props) {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [error, setError] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
 
@@ -96,11 +95,10 @@ export default function SignIn(props) {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.access_token);  // JWT 저장
+        localStorage.setItem('access_token', data.access_token);  // JWT 저장
         navigate('/home');
       } else {
         const errorData = await response.json();
-        setError(errorData.detail || 'Sign-in failed. Please try again.');
         alert(errorData.detail || 'Sign-in failed. Please try again.');
       }
     } catch (error) {

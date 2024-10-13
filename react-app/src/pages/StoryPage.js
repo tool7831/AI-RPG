@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Box, Modal } from '@mui/material';
+import { Container, Box, Modal, Button } from '@mui/material';
 
 import Player from '../scripts/player.ts';
 import MenuButton from '../components/menuButton.js'
@@ -9,6 +9,8 @@ import StoryBox from '../components/storyBox.js';
 import Dice from '../components/rollDice.js';
 
 import { fetchWithAuth, loadData } from '../components/api.js';
+import RewardBox from '../components/rewardBox.js';
+import PenaltyBox from '../components/penaltyBox.js';
 
 const style = {
   position: 'absolute',
@@ -33,7 +35,16 @@ function StoryPage() {
   const [prob, setProb] = useState(10);
   const navigate = useNavigate()
 
+  const [openLoading, setOpenLoading] = useState(false);
+
+  const [rewardModal, setRewardModal] = useState(false);
+  const [reward, setReward] = useState();
+
+  const [penaltyModal, setPenaltyModal] = useState(false);
+  const [penalty, setPenalty] = useState();
+  
   useEffect(() => {
+    setOpenLoading(true)
     loadData()
       .then(response => response.json())
       .then(data => {
@@ -43,19 +54,28 @@ function StoryPage() {
         }
         else {
           console.log(data);
+          if(Object.keys(data).includes('rewards')) {
+            setReward(data.rewards);
+            setRewardModal(true);
+          }
+          else if (Object.keys(data).includes('penalty')) {
+            setPenalty(data.penalty);
+            setPenaltyModal(true);
+          }
           setStory(data.story)
           setChoices(data.choices)
           setPlayer(Player.fromJSON(data.player))
         }
       });
-  }, []);
+    setOpenLoading(false)
+  }, [navigate]);
 
   const handleClose = (diceResult) => {
     setDiceVisible(false)
     nextStory(diceResult, choiceId);
   }
 
-  const nextStory = (diceResult, choiceId) => {
+  const nextStory = async (diceResult, choiceId) => {
     if (diceResult >= prob)
       choices[choiceId].text = 'Success this choice. ' + choices[choiceId].text
     else 
@@ -65,23 +85,52 @@ function StoryPage() {
       player: player.toDict()
     };
     console.log(data)
-    fetchWithAuth('http://localhost:8000/story_gen', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(data => {
+
+    setOpenLoading(true)
+    try{
+      const response = await fetchWithAuth('http://localhost:8000/story_gen', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (response.ok) {
+        const data = await response.json();
         if (Object.keys(data).includes('combat')) {
           navigate('/combat')
         }
         else {
+          if(Object.keys(data).includes('rewards')) {
+            setReward(data.rewards);
+            setRewardModal(true);
+          }
+          else if (Object.keys(data).includes('penalty')) {
+            setPenalty(data.penalty);
+            setPenaltyModal(true);
+          }
           console.log(data);
+          setStory(data.story)
+          setChoices(data.choices)
           setPlayer(Player.fromJSON(data.player))
         }
-      });
+      }
+    }
+    catch(error) {
+      alert(error)
+    }
+    setOpenLoading(false)
+  }
+
+  const handleReward = () => {
+    player.getRewards(reward);
+    setRewardModal(false);
+  }
+
+  const handlePenalty = () => {
+    // player.getRewards(reward);
+    setPenaltyModal(false);
   }
 
   const handleChoice = (choiceId) => {
@@ -106,6 +155,12 @@ function StoryPage() {
     return Math.ceil(20 / (1+ Math.exp(diff/10)))
   }
 
+  if (openLoading) {
+    return (
+      <p>Loading ...</p>
+    )
+  }
+
   return (
     <div className="App">
       <Container sx={{border: 'solid'}}>
@@ -123,6 +178,21 @@ function StoryPage() {
       <Modal open={diceVisible} >
         <Box sx={style}>
           <Dice handleClose={handleClose} prob={prob} />
+        </Box>
+      </Modal>
+
+      {/* 보상 창 */}
+      <Modal open={rewardModal}>
+        <Box sx={style}>
+          <RewardBox rewards={reward}/>
+          <Button onClick={()=>handleReward(false)}>close</Button>
+        </Box>
+      </Modal>
+      {/* 패널티 창 */}
+      <Modal open={penaltyModal}>
+        <Box sx={style}>
+          <PenaltyBox penalty={penalty}/>
+          <Button onClick={()=>handlePenalty(false)}>close</Button>
         </Box>
       </Modal>
     </div>

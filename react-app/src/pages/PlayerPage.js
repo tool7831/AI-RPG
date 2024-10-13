@@ -21,6 +21,11 @@ function PlayerPage() {
   const [selectedSmites, setSelectedSmites] = useState([]);
   const [selectedClass, setSelectedClass] = useState(0);
 
+  const [nameError, setNameError] = useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = useState(null);
+  const [descriptionError, setDescriptionError] = useState(false);
+  const [descriptionErrorMessage, setDescriptionErrorMessage] = useState(null);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -173,14 +178,65 @@ function PlayerPage() {
     }
   }
 
+  const handleValid = () => {
+    let isValid = true;
+
+    if(!name) {
+      setNameError(true);
+      setNameErrorMessage('Please enter a name.');
+      isValid = false;
+    }
+    else {
+      setNameError(false);
+      setNameErrorMessage('');
+    }
+      
+    if(!description) {
+      setDescriptionError(true);
+      setDescriptionErrorMessage('Please enter a description.');
+      isValid = false
+    }
+    else {
+      setDescriptionError(false);
+      setDescriptionErrorMessage('');
+    }
+
+    if (isValid)
+      handleSubmit()
+  }
+
   return (
     <Container sx={{ border: 'solid' }}>
       <Grid container>
         <Grid item xs={6} sx={{ padding:'10px' }}>
           <Paper elevation={4} sx={{padding:'10px', border:'1px solid'}}>
           {/* Player Name and Description */}
-          <TextField label="Player Name" fullWidth margin="normal" onChange={(e) => setName(e.target.value)} />
-          <TextField label="Player Description" fullWidth margin="normal" multiline rows={4} onChange={(e) => setDescription(e.target.value)} />
+          <TextField
+            error={nameError}
+            helperText={nameErrorMessage}
+            id="name"
+            type="name"
+            name="name"
+            label="Player Name" 
+            fullWidth 
+            margin="normal"
+            // color={nameError ? 'error' : 'primary'}
+            onChange={(e) => setName(e.target.value)} 
+          />
+          <TextField 
+            error={descriptionError}
+            helperText={descriptionErrorMessage}
+            id="description"
+            type="description"
+            name="description"
+            label="Player Description" 
+            fullWidth 
+            margin="normal" 
+            multiline 
+            rows={4}
+            // color={descriptionError ? 'error' : 'primary'}
+            onChange={(e) => setDescription(e.target.value)} 
+          />
 
           {/* Allocate Stats Section */}
           <Paper elevation={0} sx={{ border: '1px solid #ddd', padding: '10px' }}>
@@ -269,7 +325,7 @@ function PlayerPage() {
         </Grid>
       </Grid>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        <Button variant="contained" color="primary" onClick={handleValid}>
           Submit
         </Button>
       </Box>

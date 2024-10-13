@@ -119,11 +119,19 @@ const Inventory = ({ actor }) => {
     <Container>
       <Button onClick={addItem}>Add</Button>
       <Button onClick={clear}>Clear</Button>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+      <Box 
+        sx={{ 
+          width: '100%', 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          flexDirection: 'column' 
+          }}
+      >
         {/* 장비 슬롯 */}
         <Box sx={{ border: 'solid' }}>
           <Typography variant="h6" align="center" sx={{ border: 'solid' }}>Equipped Items</Typography>
-          <Grid container sx={{ border: 'solid', backgroundColor: 'gray' }}>
+          <Grid container sx={{ height:'50%', border: 'solid', backgroundColor: 'gray', overflowY: 'auto' }}>
             <Grid item xs={12}>
               <Grid container justifyContent="space-evenly">
                 {renderEquipmentSlot('helmet', 'Helmet')}
@@ -149,7 +157,7 @@ const Inventory = ({ actor }) => {
 
         {/* 인벤토리 슬롯 */}
         <Typography variant="h6" align="center" sx={{ border: 'solid' }}>Inventory</Typography>
-        <Grid container sx={{ border: 'solid', height:'300px', overflowY:'auto' }}>
+        <Grid container sx={{ border: 'solid', height:'50%', overflowY:'auto' }}>
         {inventoryWithEmptySlots.map((item, idx) => (
           <Grid item xs={1} key={idx} sx={{ margin: '5px' }}>
             <Card
@@ -194,6 +202,7 @@ const Inventory = ({ actor }) => {
             ))}
             <Typography variant='h6'>Use Restriction</Typography>
             {selectedItem && Object.keys(selectedItem?.use_restriction).map((stat) => (
+              selectedItem?.use_restriction[stat] !== null &&
               <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Typography color="textSecondary" key={stat} sx={{ textTransform: 'capitalize' }}>{stat}: {selectedItem?.use_restriction[stat]}</Typography>
                 {!selectedSlot && (

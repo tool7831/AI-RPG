@@ -9,7 +9,7 @@ import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import { SkillIcons } from '../components/icons.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
 import MenuButton from '../components/menuButton.js'
-import { loadData } from '../components/api.js';
+import { fetchWithAuth, loadData } from '../components/api.js';
 
 
 function rand(min, max) {
@@ -43,20 +43,25 @@ function CombatPage() {
   const [defeatModal, setDefeatModal] = useState(false);
   const navigate = useNavigate()
 
+  const [openLoading, setOpenLoading] = useState(false);
+
   useEffect(() => {
+  setOpenLoading(true);
     loadData()
       .then(response => response.json())
       .then(data => {
         if (Object.keys(data).includes('combat')) {
           setEnemy(Enemy.fromJSON(data.combat));
           setPlayer(Player.fromJSON(data.player));
-          setRewards(data.rewards)
+          setRewards(data.rewards);
+          console.log(data);
         } else {
           console.log('go story page');
           navigate('/story');
         }
       });
-  }, []);
+    setOpenLoading(false);
+  }, [navigate]);
 
   const handleSkillSelect = (skill) => {
     setSelectedSkill(skill);
@@ -76,29 +81,31 @@ function CombatPage() {
     setSelectedSkill(null);
   };
 
-  const handleVictory = () => {
+  const handleVictory = async () => {
     setVictoryModal(!victoryModal);
     player.getRewards(rewards);
     const data = {
       player: player.toDict(),
       story: { text: 'Player win ' + enemy.name }
     }
-    fetch('http://localhost:8000/story_gen', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          navigate('/story')
-        }
-        else {
-          console.log(data.success);
-        }
-      });
+    setOpenLoading(true);
+    try {
+      const response = await fetchWithAuth('http://localhost:8000/story_gen', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (response.ok) {
+        navigate('/story')
+      }
+    }
+    catch (error) {
+      alert(error);
+    }
+    setOpenLoading(false);
   }
 
   const battle = (player_action) => {
@@ -367,6 +374,10 @@ function CombatPage() {
     </Box>
   );
 
+  if (openLoading) {
+    return (<p>Loading ...</p>)
+  }
+
   return (
     <Container sx={{ backgroundColor: 'whitesmoke' }}>
       {/* 적 */}
@@ -428,7 +439,7 @@ function CombatPage() {
 
       {/* 플레이어 */}
       <Box sx={{ border: 'solid' }}>
-        <Grid container spacing={2}>
+        <Grid container>
           {/* 스킬 */}
           <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <Box>
