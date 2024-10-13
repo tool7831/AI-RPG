@@ -18,11 +18,6 @@ def create_thread():
 def retrieve_thread(thread_id):
   return client.beta.threads.retrieve(thread_id)
 
-def show_message(json_object):
-  if 'Story' in json_object:
-    for idx, choice in enumerate(json_object['Choices']):
-      print(f'{idx+1}: {choice["text"]} ({choice["status"]}), Gold:({choice["gold"]}), ({choice["next_type"]})')
-     
 
 def run_thread(thread, user_message, assistant_id=STORY_ID):
   for idx in range(len(user_message)):
@@ -32,8 +27,6 @@ def run_thread(thread, user_message, assistant_id=STORY_ID):
   messages = get_message(thread)
   text = messages.data[0].content[0].text.value
   json_object=json.loads(text)
-
-  show_message(json_object)
   time.sleep(0.5)
   return json_object
 
@@ -47,9 +40,9 @@ def run(thread, message):
     if message[0]['text']['next_type'] == 'story':
       response = run_thread(thread, message, STORY_ID)
     elif message[0]['text']['next_type'] == 'combat':
-      response = run_thread(thread, message, ENEMY_ID)
-      # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
-      # image_url = create_enemy_image(enemy_info)
+      enemy = run_thread(thread, message, ENEMY_ID)
+      enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
+      image_url = create_enemy_image(enemy_info)
       # # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
       # # message = [
       # #   {
@@ -58,29 +51,11 @@ def run(thread, message):
       # #   }
       # # ]
       # # skills = run_thread(thread, message, SKILL_ID)
-      # response = dict({'image':image_url, **enemy})
+      response = dict({'image_url':image_url, **enemy})
     elif message[0]['text']['next_type'] == 'reward':
       response = run_thread(thread, message, REWARD_ID)
-      # choice =  message[0]['text']
-      # message = [
-      #   {
-      #     'type': 'text',
-      #     'text': f'{choice}, Player earn {reward}'
-      #   }
-      # ]
-      # story = run_thread(thread, message, STORY_ID)
-      # response = dict(story,**{'reward':reward})
     elif message[0]['text']['next_type'] == 'penalty':
       response = run_thread(thread, message, PENALTY_ID)
-      # choice =  message[0]['text']
-      # message = [
-      #   {
-      #     'type': 'text',
-      #     'text': f'{choice}, Player get {penalty}'
-      #   }
-      # ]
-      # story = run_thread(thread, message, STORY_ID)
-      # response = dict(story,**penalty)
     else:
       response = 'error'
   else:

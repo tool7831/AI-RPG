@@ -26,6 +26,8 @@ function PlayerPage() {
   const [descriptionError, setDescriptionError] = useState(false);
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState(null);
 
+  const [openLoading, setOpenLoading] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -117,6 +119,7 @@ function PlayerPage() {
   const handleSubmit = async () => {
     const data = {
       story: location.state.story,
+      stage: 0,
       player: {
         name: name,
         description: description,
@@ -156,6 +159,7 @@ function PlayerPage() {
     }
     console.log(data)
 
+    setOpenLoading(true);
     try {
       const response = await fetchWithAuth('http://localhost:8000/first',{
         method: 'POST',
@@ -176,6 +180,7 @@ function PlayerPage() {
     } catch (error) {
       // navigate('/');
     }
+    setOpenLoading(false);
   }
 
   const handleValid = () => {
@@ -203,6 +208,10 @@ function PlayerPage() {
 
     if (isValid)
       handleSubmit()
+  }
+
+  if(openLoading) {
+    return <p>Loading ...</p>
   }
 
   return (

@@ -8,14 +8,15 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '60vw',
-    height: '80vh',
+    width: '1000px',
+    height: '800px',
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
     backgroundColor: 'white',
-    overFlowY: 'auto'
+    overFlowY: 'scroll',
+    display:'block'
 };
 
 function MenuButton({actor, onClose, ...props}) {
@@ -32,8 +33,11 @@ function MenuButton({actor, onClose, ...props}) {
         setSelectedTab(value);
     }
     return (
-        <Box {...props}>
-            <Button variant="contained" sx={{ borderRadius: 2 }} onClick={handleInventoryToggle} >Inventory</Button>
+        <div>
+            <Box {...props}>
+                <Button variant="contained" sx={{ borderRadius: 2 }} onClick={handleInventoryToggle} >Inventory</Button>
+            </Box>
+            
             <Modal open={inventoryVisible}>
                 <div style={style}>
                     <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
@@ -48,7 +52,7 @@ function MenuButton({actor, onClose, ...props}) {
 
                 </div>
             </Modal>
-        </Box>
+        </div>
     )
 }
 

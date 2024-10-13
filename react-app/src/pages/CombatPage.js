@@ -43,14 +43,17 @@ function CombatPage() {
   const [defeatModal, setDefeatModal] = useState(false);
   const navigate = useNavigate()
 
+  const [imageURL, setImageURL] = useState(null);
   const [openLoading, setOpenLoading] = useState(false);
-
+  const [stage, setStage] = useState();
   useEffect(() => {
   setOpenLoading(true);
     loadData()
       .then(response => response.json())
       .then(data => {
         if (Object.keys(data).includes('combat')) {
+          setImageURL(data.image_url);
+          setStage(data.stage);
           setEnemy(Enemy.fromJSON(data.combat));
           setPlayer(Player.fromJSON(data.player));
           setRewards(data.rewards);
@@ -86,6 +89,7 @@ function CombatPage() {
     player.getRewards(rewards);
     const data = {
       player: player.toDict(),
+      stage: stage,
       story: { text: 'Player win ' + enemy.name }
     }
     setOpenLoading(true);
@@ -383,7 +387,7 @@ function CombatPage() {
       {/* 적 */}
       {enemy && (<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', border: 'solid', padding: '10px' }}>
         <Paper>
-          <img src='monster_sample.png' width={300} height={300} style={{ border: '1px solid' }} />
+          <img src={imageURL} alt='Enemy Image not found' width={300} height={300} style={{ border: '1px solid' }} />
           <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy.name}</Typography>
         </Paper>
         <div style={{ border: '1px solid #ddd' }}>

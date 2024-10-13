@@ -2,9 +2,17 @@ import React from 'react';
 import { Container, Typography, Button, Box } from '@mui/material';
 import {StatIcons} from './icons.js'
 
-function StoryBox({ story, choices, handleChoice }) {
+function StoryBox({ story, choices, handleChoice, ...props }) {
   return (
-    <Container maxWidth="sm" sx={{ backgroundColor: 'whitesmoke', padding: 2, borderRadius: 2 }}>
+    <Container 
+      maxWidth="md" 
+      sx={{ 
+        backgroundColor: 'whitesmoke', 
+        padding: 2, 
+        borderRadius: 2 
+      }}
+      {...props}
+    >
       <Box sx={{ backgroundColor: '#f0f0f0', padding: 2, borderRadius: 2, textAlign: 'left', mb: 3 }}>
         <Typography variant="h6" gutterBottom> Story </Typography>
         <Typography variant="body1">{story}</Typography>

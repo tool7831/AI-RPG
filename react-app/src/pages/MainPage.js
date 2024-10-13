@@ -23,7 +23,7 @@ function MainPage() {
         navigate('/');
       }
     };
-
+    
     fetchUser();
   }, [navigate]);
 
@@ -40,6 +40,9 @@ function MainPage() {
           navigate('/story')
         }
       });
+  }
+  const handleLanguage = () => {
+
   }
 
   if (!user) {
@@ -58,7 +61,7 @@ function MainPage() {
       >
         <Button variant='contained' fullWidth onClick={handleNewStart} sx={{ marginBottom: '10px' }} >New Start</Button>
         <Button variant='contained' fullWidth disabled={user?.user_data === null} onClick={handleLoad} sx={{ marginBottom: '10px' }}>Load</Button>
-        <Button variant='contained' fullWidth>Language</Button>
+        <Button variant='contained' fullWidth onClick={handleLanguage}>Language</Button>
       </Paper>
     </Container>
   )

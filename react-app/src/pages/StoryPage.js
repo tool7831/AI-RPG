@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Box, Modal, Button } from '@mui/material';
+import { Container, Box, Modal, Button, Typography } from '@mui/material';
 
 import Player from '../scripts/player.ts';
 import MenuButton from '../components/menuButton.js'
@@ -33,13 +33,13 @@ function StoryPage() {
   const [diceVisible, setDiceVisible] = useState(false);
   const [choiceId, setChoiceId] = useState(null);
   const [prob, setProb] = useState(10);
+  const [stage, setStage] = useState();
   const navigate = useNavigate()
 
   const [openLoading, setOpenLoading] = useState(false);
 
   const [rewardModal, setRewardModal] = useState(false);
   const [reward, setReward] = useState();
-
   const [penaltyModal, setPenaltyModal] = useState(false);
   const [penalty, setPenalty] = useState();
   
@@ -62,6 +62,7 @@ function StoryPage() {
             setPenalty(data.penalty);
             setPenaltyModal(true);
           }
+          setStage(data.stage)
           setStory(data.story)
           setChoices(data.choices)
           setPlayer(Player.fromJSON(data.player))
@@ -82,6 +83,7 @@ function StoryPage() {
       choices[choiceId].text = 'Fail this choice. ' + choices[choiceId].text
     const data = {
       story: choices[choiceId],
+      stage: stage,
       player: player.toDict()
     };
     console.log(data)
@@ -111,6 +113,7 @@ function StoryPage() {
             setPenaltyModal(true);
           }
           console.log(data);
+          setStage(data.stage)
           setStory(data.story)
           setChoices(data.choices)
           setPlayer(Player.fromJSON(data.player))
@@ -150,7 +153,8 @@ function StoryPage() {
     console.log(choices[choiceId].status);
     let diff = 0;
     Object.keys(choices[choiceId].status).forEach((key)=> {
-      diff += player.status.status[key] - choices[choiceId].status[key]
+      if(choices[choiceId].status[key] !== null)
+        diff += player.status.status[key] - choices[choiceId].status[key]
     })
     return Math.ceil(20 / (1+ Math.exp(diff/10)))
   }
@@ -166,6 +170,7 @@ function StoryPage() {
       <Container sx={{border: 'solid'}}>
         <Box sx={{display: 'flex',flexDirection: 'column', alignItems: 'center', width: '100%'}}>
           <div style={{margin:'10px', border:'1px solid'}}>
+            <Typography>{stage}</Typography>
             <StoryBox story={story} choices={choices} handleChoice={handleChoice}/>
           </div>
           <div style={{border:'1px solid'}}>
@@ -175,12 +180,12 @@ function StoryPage() {
         </Box>
       </Container>
 
+      {/* 다이스 창 */}
       <Modal open={diceVisible} >
         <Box sx={style}>
           <Dice handleClose={handleClose} prob={prob} />
         </Box>
       </Modal>
-
       {/* 보상 창 */}
       <Modal open={rewardModal}>
         <Box sx={style}>

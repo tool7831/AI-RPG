@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from gen_story import run, create_thread, retrieve_thread
 from glob import glob
 
+import random
 import datetime
 import json
 import os
@@ -77,7 +78,7 @@ def read_users_me(current_user: schemas.UserResponse = Depends(crud.get_current_
 
 @app.post("/worldview")
 def read_root():
-    filepath = "./data/worldview"
+    filepath = "./data/worldview/kr"
     data = {}
     for file in os.listdir(filepath):
         f = open(os.path.join(filepath,file), "r")
@@ -121,7 +122,7 @@ def first(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
         with open('data/sample_story.json', 'r') as f:
             next = json.load(f)
 
-    save = dict({"player":user_input.player}, **next)
+    save = dict({"stage": user_input.stage + 1,"player":user_input.player}, **next)
     updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
         "thread_id": user_thread.id if test else None,
         "save": save
@@ -135,8 +136,18 @@ def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
     thread_id = user_data.json_data['thread_id']
 
     if 'next_type' in user_input.story:
-        story = {'text': user_input.story['text'],
-                'next_type': user_input.story['next_type']}
+        story = {
+            'stage': user_input.stage,
+            'text': user_input.story['text'],
+            'next_type': user_input.story['next_type']
+        }
+        if user_input.story['next_type'] == 'combat':
+            enemy_lv = random.randint(user_input.player['level'] + story['stage'] - 10, user_input.player['level'] + story['stage'] + 10)
+            if enemy_lv < 1:
+                enemy_lv = 1
+            enemy_type = random.choices(['common', 'elite', 'boss'], [0.9, 0.09, 0.01])
+            story['text'] = f'Make level {enemy_lv} {enemy_type} enemy.' + story['text']
+            print(story['text'])
         if not test:
             with open('data/sample_combat.json', 'r') as f:
                 next = json.load(f)
@@ -166,7 +177,7 @@ def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
         thread = retrieve_thread(thread_id)
         next = run(thread, message)
 
-    save = dict({"player":user_input.player}, **next)
+    save = dict({"stage": user_input.stage + 1,"player":user_input.player}, **next)
     updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
         "thread_id": thread_id if test else None,
         "save": save

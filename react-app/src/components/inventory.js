@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Box, Grid, Typography, Card, CardContent, Button, Container, Popover } from '@mui/material';
 import { Item, ItemType } from '../scripts/item.ts';
 const itemStyle = {
-  width: 70, height: 70, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid grey', cursor: 'pointer'
+  width: 70, 
+  height: 70, 
+  display: 'flex', 
+  justifyContent: 'center', 
+  alignItems: 'center', 
+  border: '1px solid grey', 
+  cursor: 'pointer'
 }
 // 임시 아이템 데이터
 const items = [
@@ -97,7 +103,18 @@ const Inventory = ({ actor }) => {
 
   // 장비 슬롯 렌더링
   const renderEquipmentSlot = (slot, label) => (
-    <Card sx={{ width: 100, height: 100, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', border: '1px solid grey', mb: 2 }} onClick={(e) => handleEquipmentClick(slot, e)}>
+    <Card sx={{ 
+        width: 100, 
+        height: 100, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'flex-start', 
+        alignItems: 'center', 
+        border: '1px solid grey',
+        mb: 2 
+      }} 
+      onClick={(e) => handleEquipmentClick(slot, e)}
+    >
       <Typography>{label}</Typography>
       {equippedItems[slot] ? (
         <Typography>{equippedItems[slot].name}</Typography>
@@ -131,7 +148,10 @@ const Inventory = ({ actor }) => {
         {/* 장비 슬롯 */}
         <Box sx={{ border: 'solid' }}>
           <Typography variant="h6" align="center" sx={{ border: 'solid' }}>Equipped Items</Typography>
-          <Grid container sx={{ height:'50%', border: 'solid', backgroundColor: 'gray', overflowY: 'auto' }}>
+          <Grid container sx={{ 
+            height:'300px',
+            minWidth:'500px', 
+            border: 'solid', backgroundColor: 'gray', overflowY: 'auto' }}>
             <Grid item xs={12}>
               <Grid container justifyContent="space-evenly">
                 {renderEquipmentSlot('helmet', 'Helmet')}
@@ -191,6 +211,7 @@ const Inventory = ({ actor }) => {
             <Typography>{selectedItem?.description}</Typography>
             <Typography variant='h6'>Effects</Typography>
             {selectedItem && Object.keys(selectedItem?.effects).map((stat) => (
+              selectedItem?.effects[stat] !== null &&
               <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Typography color="textSecondary" key={stat} sx={{ textTransform: 'capitalize' }} >{stat}: {selectedItem?.effects[stat]}</Typography>
                 {!selectedSlot && (

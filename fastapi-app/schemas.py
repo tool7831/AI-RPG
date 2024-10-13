@@ -31,4 +31,6 @@ class TokenData(BaseModel):
 
 class UserInput(BaseModel):
     story: dict
+    stage: int
     player: dict
+
