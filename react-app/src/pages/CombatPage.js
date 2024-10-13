@@ -10,6 +10,7 @@ import { SkillIcons } from '../components/icons.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
 import MenuButton from '../components/menuButton.js'
 import { fetchWithAuth, loadData } from '../components/api.js';
+import ItemBox from '../components/itemBox.js';
 
 
 function rand(min, max) {
@@ -86,11 +87,13 @@ function CombatPage() {
 
   const handleVictory = async () => {
     setVictoryModal(!victoryModal);
-    player.getRewards(rewards);
+    rewards.forEach(reward => {
+      player.getRewards(reward);
+    });
     const data = {
       player: player.toDict(),
       stage: stage,
-      story: { text: 'Player win ' + enemy.name }
+      story: { text: 'Player win ' + enemy.name + '. Player earn ' + toString(rewards)}
     }
     setOpenLoading(true);
     try {
@@ -110,6 +113,25 @@ function CombatPage() {
       alert(error);
     }
     setOpenLoading(false);
+  }
+
+  const handleDefeat = () => {
+    setDefeatModal(!defeatModal);
+    try {
+      const response = fetchWithAuth('http://localhost:8000/defeat', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      console.log('defeat')
+      if (response.ok) {
+        navigate('/home')
+      }
+    }
+    catch (error) {
+      alert(error);
+    }
   }
 
   const battle = (player_action) => {
@@ -477,26 +499,52 @@ function CombatPage() {
         </Grid>
       </Box>
 
-      <Modal open={victoryModal} closeAfterTransition slots={{ backdrop: Backdrop }} slotProps={{ backdrop: { timeout: 500, }, }}>
+      
+      {/* 승리 */}
+      <Modal 
+        open={victoryModal} 
+        closeAfterTransition 
+        slots={{ backdrop: Backdrop }} 
+        slotProps={{ backdrop: { timeout: 500, }, }}
+      >
         <Fade in={victoryModal}>
           <Box sx={style}>
             <Typography variant="h6" component="h2">Victory</Typography>
             <ListItem sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography>Exp: {rewards?.exp}</Typography>
-              <Typography>Gold: {rewards?.gold}</Typography>
-              {rewards?.items.map((item) => {
-                return (
-                  <div>
-                    <Typography>{item?.name}</Typography>
-                    {/* <Typography>{item?.description}</Typography>
-                    {item && Object.keys(item?.effects).map((stat) =>
-                      <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
-                    )} */}
-                  </div>
-                )
+              {rewards !== null && rewards.map(reward => {
+                if ('exp' in reward)
+                  return <Typography>Exp: {reward.exp}</Typography>
+                else if ('gold' in reward)
+                  return <Typography>Gold: {reward.gold}</Typography>
+                else if ('items' in reward)
+                  return reward.items.map((item) => {
+                    return (
+                      <div>
+                        <ItemBox item={item} sx={{}}/>
+                      </div>
+                    )
+                  })
               })}
+              
+              
+              {}
             </ListItem>
             <Button sx={{ position: 'absolute', bottom: '0%', right: '0%' }} onClick={handleVictory} >next</Button>
+          </Box>
+        </Fade>
+      </Modal>
+
+      {/* 패배 */}
+      <Modal 
+        open={defeatModal} 
+        closeAfterTransition 
+        slots={{ backdrop: Backdrop }} 
+        slotProps={{ backdrop: { timeout: 500, }, }}
+      >
+        <Fade in={defeatModal}>
+          <Box sx={style}>
+            <Typography variant="h6" component="h2">Defeat</Typography>
+            <Button sx={{ position: 'absolute', bottom: '0%', right: '0%' }} onClick={handleDefeat} >Home</Button>
           </Box>
         </Fade>
       </Modal>

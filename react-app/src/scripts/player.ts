@@ -70,6 +70,22 @@ export class Player {
     }
   }
 
+  getPenalty(json): void {
+    if (!json)
+      return
+    if ('damage' in json)
+      this.status.damaged(json.value)
+    if ('gold' in json)
+      this.gold -= json.gold;
+    if ('stats' in json) {
+      json.stats.forEach((stat) => {
+        if (json.stats[stat] !== null) {
+          this.status.changeOriginValue(stat, json.stats[stat])
+        }
+      }) 
+    }
+  }
+
   doAction(action: number, skill_idx: number): Record<string, any> {
     this.reduceCoolDown(1)
     this.status.updateStatusEffects()

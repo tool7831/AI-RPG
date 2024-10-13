@@ -170,7 +170,7 @@ function StoryPage() {
       <Container sx={{border: 'solid'}}>
         <Box sx={{display: 'flex',flexDirection: 'column', alignItems: 'center', width: '100%'}}>
           <div style={{margin:'10px', border:'1px solid'}}>
-            <Typography>{stage}</Typography>
+            <Typography>Stage {stage}</Typography>
             <StoryBox story={story} choices={choices} handleChoice={handleChoice}/>
           </div>
           <div style={{border:'1px solid'}}>

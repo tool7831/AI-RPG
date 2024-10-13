@@ -14,8 +14,8 @@ const initialStats = {
   luck: 0,
   defense: 0,
   agility: 0,
-  concentration: 0,
-  reaction: 0,
+  resistance: 0,
+  toughness: 0,
   hp_regeneration: 0,
   mp_regeneration: 0,
 };

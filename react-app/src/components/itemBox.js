@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, Card, CardContent, Button, Container, Popover } from '@mui/material';
-import { Item, ItemType } from '../scripts/item.ts';
+import { Box, Typography, Card, CardContent, Button, Popover } from '@mui/material';
 const itemStyle = {
-  width: 70, height: 70, display: 'flex', justifyContent: 'center', alignItems: 'center', border: '1px solid grey', cursor: 'pointer'
+  width: 70, 
+  height: 70, 
+  display: 'flex', 
+  justifyContent: 'center', 
+  alignItems: 'center', 
+  border: '1px solid grey', 
+  cursor: 'pointer'
 }
-function ItemBox({item}) {
+function ItemBox({item, ...props}) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl); // Popover 열림 상태 확인
@@ -16,7 +21,7 @@ function ItemBox({item}) {
 
   return (
     <Box>
-      <Card onClick={(e) => {setAnchorEl(e.currentTarget)}} sx={itemStyle}>
+      <Card onClick={(e) => {setAnchorEl(e.currentTarget)}} sx={itemStyle} {...props}>
         <CardContent>
           <Typography>{item.name}</Typography>
         </CardContent>

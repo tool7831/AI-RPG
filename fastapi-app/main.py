@@ -111,6 +111,10 @@ def first(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
         {
             "type": "text",
             "text": {"player":playerInput}
+        },
+        {
+            "type" :"text",
+            "text": "한국어로 생성."
         }   
     ]
     
@@ -142,10 +146,10 @@ def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
             'next_type': user_input.story['next_type']
         }
         if user_input.story['next_type'] == 'combat':
-            enemy_lv = random.randint(user_input.player['level'] + story['stage'] - 10, user_input.player['level'] + story['stage'] + 10)
+            enemy_lv = random.randint(user_input.player['level'] + story['stage'], user_input.player['level'] + story['stage'] + 10)
             if enemy_lv < 1:
                 enemy_lv = 1
-            enemy_type = random.choices(['common', 'elite', 'boss'], [0.9, 0.09, 0.01])
+            enemy_type = random.choices(['common', 'elite', 'boss'], [0.9, 0.09, 0.01])[0]
             story['text'] = f'Make level {enemy_lv} {enemy_type} enemy.' + story['text']
             print(story['text'])
         if not test:
@@ -189,6 +193,15 @@ def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
 def load(current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
     return JSONResponse(content=user_data.json_data['save'])
+
+@app.get("/defeat")
+def load(current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
+    user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User data not found")
+    db.delete(user_data)
+    db.commit()
+    return JSONResponse(content={"detail": "User data deleted successfully"})
 
 @app.get("/skills")
 def skills():

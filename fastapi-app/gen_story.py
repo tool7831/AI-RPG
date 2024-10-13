@@ -11,6 +11,7 @@ SKILL_ID = 'asst_JSej8B49OeeI7IwOUNp3dpKY'
 ENEMY_ID = 'asst_ppQ8bsiqkd0w3G8N7tn7NUCb'
 PENALTY_ID = 'asst_jjPhkdDYvzUWcto0DGh0x35r'
 REWARD_ID = 'asst_YvLH1ztf6NC7qbLQGnlcUV4c'
+ENEMY_REWARD_ID = 'asst_vwf7NLsucECWPtb4bMcihfff'
 
 def create_thread():
   return client.beta.threads.create()
@@ -41,17 +42,17 @@ def run(thread, message):
       response = run_thread(thread, message, STORY_ID)
     elif message[0]['text']['next_type'] == 'combat':
       enemy = run_thread(thread, message, ENEMY_ID)
-      enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
-      image_url = create_enemy_image(enemy_info)
+      # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
+      # image_url = create_enemy_image(enemy_info)
       # # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
-      # # message = [
-      # #   {
-      # #     'type': 'text',
-      # #     'text': f'Make enemy skills for {enemy_info}'
-      # #   }
-      # # ]
-      # # skills = run_thread(thread, message, SKILL_ID)
-      response = dict({'image_url':image_url, **enemy})
+      message = [
+        {
+          'type': 'text',
+          'text': f'Make rewards for this enemy.'
+        }
+      ]
+      rewards = run_thread(thread, message, ENEMY_REWARD_ID)
+      response = dict({**enemy, **rewards})
     elif message[0]['text']['next_type'] == 'reward':
       response = run_thread(thread, message, REWARD_ID)
     elif message[0]['text']['next_type'] == 'penalty':
