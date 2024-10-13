@@ -2,6 +2,7 @@ from openai import OpenAI
 import os
 import json
 import time
+import requests
 
 client = OpenAI(api_key = os.environ['OPENAI_API_KEY'])
 
@@ -13,6 +14,9 @@ REWARD_ID = 'asst_YvLH1ztf6NC7qbLQGnlcUV4c'
 
 def create_thread():
   return client.beta.threads.create()
+
+def retrieve_thread(thread_id):
+  return client.beta.threads.retrieve(thread_id)
 
 def show_message(json_object):
   if 'Story' in json_object:
@@ -43,41 +47,44 @@ def run(thread, message):
     if message[0]['text']['next_type'] == 'story':
       response = run_thread(thread, message, STORY_ID)
     elif message[0]['text']['next_type'] == 'combat':
-      enemy = run_thread(thread, message, ENEMY_ID)
-      enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
-      message = [
-        {
-          'type': 'text',
-          'text': f'Make enemy skills for {enemy_info}'
-        }
-      ]
-      skills = run_thread(thread, message, SKILL_ID)
-      response = {'combat':dict(enemy['combat'], **skills)}
+      response = run_thread(thread, message, ENEMY_ID)
+      # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
+      # image_url = create_enemy_image(enemy_info)
+      # # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
+      # # message = [
+      # #   {
+      # #     'type': 'text',
+      # #     'text': f'Make enemy skills for {enemy_info}'
+      # #   }
+      # # ]
+      # # skills = run_thread(thread, message, SKILL_ID)
+      # response = dict({'image':image_url, **enemy})
     elif message[0]['text']['next_type'] == 'reward':
-      reward = run_thread(thread, message, REWARD_ID)
-      choice =  message[0]['text']
-      message = [
-        {
-          'type': 'text',
-          'text': f'{choice}, Player earn {reward}'
-        }
-      ]
-      story = run_thread(thread, message, STORY_ID)
-      response = dict(story,**{'reward':reward})
+      response = run_thread(thread, message, REWARD_ID)
+      # choice =  message[0]['text']
+      # message = [
+      #   {
+      #     'type': 'text',
+      #     'text': f'{choice}, Player earn {reward}'
+      #   }
+      # ]
+      # story = run_thread(thread, message, STORY_ID)
+      # response = dict(story,**{'reward':reward})
     elif message[0]['text']['next_type'] == 'penalty':
-      penalty = run_thread(thread, message, PENALTY_ID)
-      choice =  message[0]['text']
-      message = [
-        {
-          'type': 'text',
-          'text': f'{choice}, Player get {penalty}'
-        }
-      ]
-      story = run_thread(thread, message, STORY_ID)
-      response = dict(story,**penalty)
+      response = run_thread(thread, message, PENALTY_ID)
+      # choice =  message[0]['text']
+      # message = [
+      #   {
+      #     'type': 'text',
+      #     'text': f'{choice}, Player get {penalty}'
+      #   }
+      # ]
+      # story = run_thread(thread, message, STORY_ID)
+      # response = dict(story,**penalty)
     else:
       response = 'error'
-      
+  else:
+    response = run_thread(thread, message, STORY_ID)
   return response
 
 
@@ -106,3 +113,14 @@ def wait_run(run, thread):
 
 def get_message(thread):
   return client.beta.threads.messages.list(thread_id=thread.id)
+
+def create_enemy_image(prompt):
+  response = client.images.generate(
+  model="dall-e-3",
+  prompt=prompt,
+  size="1024x1024",
+  quality="standard",
+  n=1,
+  )
+  image_url = response.data[0].url
+  return image_url

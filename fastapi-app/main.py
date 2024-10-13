@@ -4,8 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from pydantic import BaseModel
-from gen_story import run, create_thread
+from gen_story import run, create_thread, retrieve_thread
 from glob import glob
 
 import datetime
@@ -19,8 +18,7 @@ from database import SessionLocal, engine, get_db
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-user_thread = {}
-test = False
+test = True
 origins = [
     "http://localhost:3000",  # React 애플리케이션이 실행되는 도메인
 ]
@@ -165,11 +163,12 @@ def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
     ]
     
     if test:
-        next = run(thread_id, message)
+        thread = retrieve_thread(thread_id)
+        next = run(thread, message)
 
     save = dict({"player":user_input.player}, **next)
     updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
-        "thread_id": user_thread.id if test else None,
+        "thread_id": thread_id if test else None,
         "save": save
     })
 
