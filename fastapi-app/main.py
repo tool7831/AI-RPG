@@ -155,14 +155,10 @@ def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
             enemy_type = random.choices(['common', 'elite', 'boss'], [0.9, 0.09, 0.01])[0]
             story['text'] = f'Make level {enemy_lv} {enemy_type} enemy.' + story['text']
             print(story['text'])
-        if not test:
-            with open('data/sample_combat.json', 'r') as f:
-                next = json.load(f)
+
     else:
         story = {'text': user_input.story['text'],}
-        if not test:
-            with open('data/sample_story.json', 'r') as f:
-                next = json.load(f)
+        
     playerInput = {
         'name':user_input.player['name'],
         'description':user_input.player['description'],
