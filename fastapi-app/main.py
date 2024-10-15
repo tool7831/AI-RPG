@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
 from gen_story import run, create_thread, retrieve_thread
@@ -86,7 +86,7 @@ def read_root():
     return JSONResponse(content=data)
 
 @app.post("/first",  response_model=schemas.UserResponse)
-def first(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
+async def first(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     
     if not current_user:
         raise HTTPException(
@@ -118,21 +118,24 @@ def first(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
         }   
     ]
     
-    if test:
-        user_thread = create_thread()
-        print('thread create')
-        next = run(user_thread, message)
-    else:
-        with open('data/sample_story.json', 'r') as f:
-            next = json.load(f)
 
-    save = dict({"stage": user_input.stage + 1,"player":user_input.player}, **next)
-    updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
-        "thread_id": user_thread.id if test else None,
-        "save": save
-    })
+    user_thread = create_thread()
+    print('thread create')
+
+    async def stream_data():
+        content = ''
+        for chunk in run(user_thread, message):
+            content += chunk
+            print(chunk, flush=True, end='')
+            save = dict({"stage": user_input.stage + 1,"player":user_input.player, "content":content})    
+
+            updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
+                "thread_id": user_thread.id if test else None,
+                "save": save
+            })
+            yield json.dumps(save)
     
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=save)
+    return StreamingResponse(stream_data(),status_code=status.HTTP_201_CREATED)
 
 @app.post("/story_gen")
 def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
