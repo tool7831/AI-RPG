@@ -36,6 +36,11 @@ export enum StatusEffectType {
     Weaken = "Weaken"
 }
 
+enum AttackType {
+    melee = "melee",
+    magic = 'magic'
+}
+
 interface StatusEffect {
     name: string,
     type: StatusEffectType,
@@ -106,16 +111,39 @@ export class Status {
         }
     }
 
-    damaged(value: number): void {
+    damaged(value: number, attackType: AttackType | null): void {
         value = Math.floor(value)
-        const total_damage = value - this.status.defense
-        if (total_damage > 0) {
-            let remain = this.status.shield - total_damage;
-            this.changeAddedValue('shield', -total_damage);
-            if (remain < 0) {
-                this.changeHP(remain);
+        if (attackType == AttackType.melee) {
+            const total_damage = value - this.status.defense
+            if (total_damage > 0) {
+                let remain = this.status.shield - total_damage;
+                this.changeAddedValue('shield', -total_damage);
+                if (remain < 0) {
+                    this.changeHP(remain);
+                }
             }
         }
+        else if (attackType == AttackType.magic) {
+            const total_damage = value - this.status.resistance
+            if (total_damage > 0) {
+                let remain = this.status.shield - total_damage;
+                this.changeAddedValue('shield', -total_damage);
+                if (remain < 0) {
+                    this.changeHP(remain);
+                }
+            }
+        }
+        else {
+            const total_damage = value;
+            if (total_damage > 0) {
+                let remain = this.status.shield - total_damage;
+                this.changeAddedValue('shield', -total_damage);
+                if (remain < 0) {
+                    this.changeHP(remain);
+                }
+            }
+        }
+        
     }
 
     addBuff(buff: Buff) {

@@ -1,32 +1,25 @@
 import { Status, StatusData, StatusDict } from './status.ts';
 import { Attack, Defend, Smite, AttackData, DefendData, SmiteData } from './skill.ts'
 import { Item, Inventory, ItemType, InventoryData } from './item.ts';
+import Actor from './actor.ts';
 
 
 function rand(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export class Player {
-  public name: string;
-  public description: string;
-
-  public level: number;
+export class Player extends Actor {
   public exp: number;
+  public gold: number;
+  public level: number;
   public nextExp: number;
   public statPoints: number;
-  public gold: number;
 
-  public status: Status;
   public inventory: Inventory;
 
-  public attacks: Attack[];
-  public defends: Defend[];
-  public smites: Smite[];
 
   constructor(name: string, description: string, level:number, exp:number, nextExp:number, statPoints:number, status: StatusDict, attacks: AttackData[], defends: DefendData[], smites:SmiteData[], inventory:InventoryData) {
-    this.name = name;
-    this.description = description;
+    super(name, description, attacks, defends, smites)
 
     this.level = level;
     this.exp = exp;
@@ -36,9 +29,6 @@ export class Player {
     this.status = new Status(status.origin_status, status.added_status);
     this.inventory = Inventory.fromJSON(inventory);
 
-    this.attacks = attacks.map(atk => new Attack(atk))
-    this.defends = defends.map(def => new Defend(def))
-    this.smites = smites.map(smi => new Smite(smi))
   }
 
   gainExp(value: number): void {
@@ -74,7 +64,7 @@ export class Player {
     if (!json)
       return
     if ('damage' in json)
-      this.status.damaged(json.value)
+      this.status.damaged(json.value, null)
     if ('gold' in json)
       this.gold -= json.gold;
     if ('stats' in json) {
@@ -97,44 +87,6 @@ export class Player {
     else if (action === 2)
       return this.doSmite(skill_idx)
     return { name: 'skip' }
-  }
-
-  doAttack(idx: number): Record<string, any> {
-    return this.attacks[idx].doAttack(this.status.status);
-  }
-
-  doDefend(idx: number): Record<string, any> {
-    return this.defends[idx].doDefend(this.status.status);
-  }
-
-  doSmite(idx: number): Record<string, any> {
-    return this.smites[idx].doSmite(this.status.status);
-  }
-
-  damaged(skill) {
-    for (let i = 0; i < skill.count; i++) {
-      const attack_rand = rand(0, 99)
-      if (attack_rand < skill.accuracy) {
-        console.log('damage')
-        this.status.damaged(skill.damage)
-        if (skill.statusEffect) {
-          const effect_rand = rand(0, 99)
-          if (effect_rand < skill.statusEffect.accuracy) {
-            const statusEffect = { name: skill.name, type: skill.statusEffect.type, value: skill.statusEffect.value, duration: skill.statusEffect.duration }
-            this.status.addStatusEffect(statusEffect)
-          }
-        }
-      }
-      else {
-        console.log('miss')
-      }
-    }
-  }
-
-  reduceCoolDown(value: number) {
-    this.attacks.forEach((atk) => atk.reduceCooldown(value))
-    this.defends.forEach((def) => def.reduceCooldown(value))
-    this.smites.forEach((smi) => smi.reduceCooldown(value))
   }
 
   equip(idx: number): void {
@@ -177,10 +129,6 @@ export class Player {
 
   removeItem(idx: number): void {
     this.inventory.removeItem(idx);
-  }
-
-  isDead(): boolean {
-    return this.status.isDead()
   }
 
   toDict(): Record<string, any> {
