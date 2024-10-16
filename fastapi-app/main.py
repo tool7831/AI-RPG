@@ -122,20 +122,24 @@ async def first(user_input: schemas.UserInput, current_user: schemas.UserRespons
     user_thread = create_thread()
     print('thread create')
 
-    async def stream_data():
+    def stream_data():
         content = ''
+        yield "{"
+        yield f'"stage": {user_input.stage + 1},'
+        yield f'"player":{json.dumps(user_input.player)},'
+        yield '"content":'
         for chunk in run(user_thread, message):
             content += chunk
             print(chunk, flush=True, end='')
-            save = dict({"stage": user_input.stage + 1,"player":user_input.player, "content":content})    
-
-            updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
-                "thread_id": user_thread.id if test else None,
-                "save": save
-            })
-            yield json.dumps(save)
-    
-    return StreamingResponse(stream_data(),status_code=status.HTTP_201_CREATED)
+            yield chunk
+        yield "}"
+        save = dict({"stage": user_input.stage + 1,"player":user_input.player, "content": json.loads(content)})    
+        updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
+            "thread_id": user_thread.id if test else None,
+            "save": save
+        })
+        
+    return StreamingResponse(stream_data(),status_code=status.HTTP_201_CREATED, media_type='str')
 
 @app.post("/story_gen")
 def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
@@ -176,17 +180,26 @@ def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = De
         }   
     ]
     
-    if test:
-        thread = retrieve_thread(thread_id)
-        next = run(thread, message)
 
-    save = dict({"stage": user_input.stage + 1,"player":user_input.player}, **next)
-    updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
-        "thread_id": thread_id if test else None,
-        "save": save
-    })
+    user_thread = retrieve_thread(thread_id) 
+    def stream_data():
+        content = ''
+        yield "{"
+        yield f'"stage": {user_input.stage + 1},'
+        yield f'"player":{json.dumps(user_input.player)},'
+        yield '"content":'
+        for chunk in run(user_thread, message):
+            content += chunk
+            print(chunk, flush=True, end='')
+            yield chunk
+        yield "}"
+        save = dict({"stage": user_input.stage + 1,"player":user_input.player, "content": json.loads(content)})    
+        updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
+            "thread_id": user_thread.id if test else None,
+            "save": save
+        })
 
-    return JSONResponse(content=save)
+    return StreamingResponse(stream_data(),status_code=status.HTTP_201_CREATED, media_type='str')
 
 @app.get("/load_data")
 def load(current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):

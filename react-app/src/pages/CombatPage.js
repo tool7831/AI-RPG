@@ -27,7 +27,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-function CombatPage() {
+function CombatPage({data, handleFetch}) {
   const [player, setPlayer] = useState();
   const [enemy, setEnemy] = useState();
 
@@ -47,25 +47,19 @@ function CombatPage() {
   const [imageURL, setImageURL] = useState(null);
   const [openLoading, setOpenLoading] = useState(false);
   const [stage, setStage] = useState();
+
   useEffect(() => {
-  setOpenLoading(true);
-    loadData()
-      .then(response => response.json())
-      .then(data => {
-        if (Object.keys(data).includes('combat')) {
-          setImageURL(data.image_url);
-          setStage(data.stage);
-          setEnemy(Enemy.fromJSON(data.combat));
-          setPlayer(Player.fromJSON(data.player));
-          setRewards(data.rewards);
-          console.log(data);
-        } else {
-          console.log('go story page');
-          navigate('/story');
-        }
-      });
-    setOpenLoading(false);
-  }, [navigate]);
+    if (Object.keys(data).includes('content') && typeof data.content === 'object' && data.content !== null) {
+      if (Object.keys(data?.content).includes('combat')) {
+        setImageURL(data?.content?.image_url);
+        setStage(data.stage);
+        setEnemy(Enemy.fromJSON(data?.content?.combat));
+        setPlayer(Player.fromJSON(data.player));
+        setRewards(data?.content?.rewards);
+        console.log(data);
+      } 
+    }
+  }, [data]);
 
   const handleSkillSelect = (skill) => {
     setSelectedSkill(skill);
@@ -95,28 +89,16 @@ function CombatPage() {
       stage: stage,
       story: { text: 'Player win ' + enemy.name + '. Player earn ' + toString(rewards)}
     }
-    setOpenLoading(true);
-    try {
-      const response = await fetchWithAuth('http://localhost:8000/story_gen', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (response.ok) {
-        navigate('/story')
-      }
-    }
-    catch (error) {
-      alert(error);
-    }
-    setOpenLoading(false);
+    handleFetch('http://localhost:8000/story_gen', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
   }
 
   const handleDefeat = () => {
-    setDefeatModal(!defeatModal);
     try {
       const response = fetchWithAuth('http://localhost:8000/defeat', {
         method: 'GET',
@@ -124,14 +106,15 @@ function CombatPage() {
           'Content-Type': 'application/json',
         }
       })
-      console.log('defeat')
       if (response.ok) {
+        console.log('defeat')
         navigate('/home')
       }
     }
     catch (error) {
       alert(error);
     }
+    setDefeatModal(!defeatModal);
   }
 
   const battle = (player_action) => {
@@ -245,11 +228,11 @@ function CombatPage() {
       // 방어 패
       setEnemyWin(true)
       setPlayerWin(false)
-      if (enemy_skill.type === 'hp_scailing') {
-        player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
+      if (enemy_skill.type === 'hp_scaling') {
+        player.status.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
       }
       else if (enemy_skill.type === 'damage') {
-        player.damaged(enemy_skill.value)
+        player.status.damaged(enemy_skill.value)
       }
       else if (enemy_skill.type === 'stun') {
         player.status.addStatusEffect({ name: enemy_skill.name, type: 'Stun', value: 0, duration: enemy_skill.duration })
@@ -265,11 +248,11 @@ function CombatPage() {
       // 강타 숭
       setEnemyWin(false)
       setPlayerWin(true)
-      if (player_skill.type === 'hp_scailing') {
-        enemy.damaged(enemy.status.origin_status.HP * player_skill.value / 100)
+      if (player_skill.type === 'hp_scaling') {
+        enemy.status.damaged(enemy.status.origin_status.HP * player_skill.value / 100)
       }
-      else if (enemy_skill.type === 'damage') {
-        enemy.damaged(player_skill.value)
+      else if (player_skill.type === 'damage') {
+        enemy.status.damaged(player_skill.value)
       }
       else if (player_skill.type === 'stun') {
         enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
@@ -280,11 +263,11 @@ function CombatPage() {
       if (player_skill.value > enemy_skill.value) {
         setEnemyWin(false)
         setPlayerWin(true)
-        if (player_skill.type === 'hp_scailing') {
-          enemy.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
+        if (player_skill.type === 'hp_scaling') {
+          enemy.status.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
         }
-        else if (enemy_skill.type === 'damage') {
-          enemy.damaged(player_skill.value)
+        else if (player_skill.type === 'damage') {
+          enemy.status.damaged(player_skill.value)
         }
         else if (player_skill.type === 'stun') {
           enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
@@ -293,11 +276,11 @@ function CombatPage() {
       else if (player_skill.value < enemy_skill.value) {
         setEnemyWin(true)
         setPlayerWin(false)
-        if (enemy_skill.type === 'hp_scailing') {
-          player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
+        if (enemy_skill.type === 'hp_scaling') {
+          player.status.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
         }
         else if (enemy_skill.type === 'damage') {
-          player.damaged(enemy_skill.value)
+          player.status.damaged(enemy_skill.value)
         }
         else if (enemy_skill.type === 'stun') {
           player.status.addStatusEffect({ name: enemy_skill.name, type: 'Stun', value: 0, duration: enemy_skill.duration })
@@ -310,42 +293,49 @@ function CombatPage() {
     else if (player_action === 4) {
       setEnemyWin(true)
       setPlayerWin(false)
-      if (enemy_action === 0)
+      if (enemy_action === 0) {
         player.damaged(enemy_skill)
-      else if (enemy_action === 1)
+      }
+      else if (enemy_action === 1) {
         if (enemy_skill.type === 'shield')
           enemy.status.addBuff(enemy_skill)
-        else if (enemy_action === 2) {
-          if (enemy_skill.type === 'hp_scailing') {
-            player.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
-          }
-          else if (enemy_skill.type === 'damage') {
-            player.damaged(enemy_skill.value)
-          }
-          else if (enemy_skill.type === 'stun') {
-            player.status.addStatusEffect({ name: enemy_skill.name, type: 'Stun', value: 0, duration: enemy_skill.duration })
-          }
+      }
+      else if (enemy_action === 2) {
+        if (enemy_skill.type === 'hp_scaling') {
+          player.status.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
+          console.log('chec')
         }
+        else if (enemy_skill.type === 'damage') {
+          console.log('chec')
+          player.status.damaged(enemy_skill.value)
+        }
+        else if (enemy_skill.type === 'stun') {
+          player.status.addStatusEffect({ name: enemy_skill.name, type: 'Stun', value: 0, duration: enemy_skill.duration })
+        }
+      }
     }
     else if (enemy_action === 4) {
       setEnemyWin(false)
       setPlayerWin(true)
-      if (player_action === 0)
+      if (player_action === 0) {
         enemy.damaged(player_skill)
-      else if (player_action === 1)
-        if (player_skill.type === 'shield')
+      }
+      else if (player_action === 1) {
+        if (player_skill.type === 'shield') {
           player.status.addBuff(player_skill)
-        else if (player_action === 2) {
-          if (player_skill.type === 'hp_scailing') {
-            enemy.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
-          }
-          else if (enemy_skill.type === 'damage') {
-            enemy.damaged(player_skill.value)
-          }
-          else if (player_skill.type === 'stun') {
-            enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
-          }
         }
+      }
+      else if (player_action === 2) {
+        if (player_skill.type === 'hp_scaling') {
+          enemy.status.damaged(Math.floor(enemy.status.origin_status.HP * player_skill.value / 100))
+        }
+        else if (enemy_skill.type === 'damage') {
+          enemy.status.damaged(player_skill.value)
+        }
+        else if (player_skill.type === 'stun') {
+          enemy.status.addStatusEffect({ name: player_skill.name, type: 'Stun', value: 0, duration: player_skill.duration })
+        }
+      }
     }
 
     setRender(render + 1)

@@ -28,18 +28,12 @@ function MainPage() {
   }, [navigate]);
 
   const handleNewStart = () => {
-    navigate('/select')
+    navigate('/game', {state: {type: 0}});
+    localStorage.setItem('isFirstStart', 'true');
   }
   const handleLoad = () => {
-    loadData()
-      .then(response => response.json())
-      .then(data => {
-        if (Object.keys(data).includes('combat')) {
-          navigate('/combat')
-        } else {
-          navigate('/story')
-        }
-      });
+    navigate('/game', {state: {type: 1}});
+    localStorage.setItem('isFirstStart', 'false');
   }
   const handleLanguage = () => {
 

@@ -25,7 +25,7 @@ const style = {
   p: 4,
   backgroundColor: 'white'
 };
-function StoryPage() {
+function StoryPage({data, handleFetch}) {
   const [story, setStory] = useState();
   const [choices, setChoices] = useState();
   const [player, setPlayer] = useState();
@@ -34,7 +34,7 @@ function StoryPage() {
   const [choiceId, setChoiceId] = useState(null);
   const [prob, setProb] = useState(10);
   const [stage, setStage] = useState();
-  const navigate = useNavigate()
+
 
   const [openLoading, setOpenLoading] = useState(false);
 
@@ -44,32 +44,23 @@ function StoryPage() {
   const [penalty, setPenalty] = useState();
   
   useEffect(() => {
-    setOpenLoading(true)
-    loadData()
-      .then(response => response.json())
-      .then(data => {
-        if (Object.keys(data).includes('combat')) {
-          console.log("go combat page");
-          navigate('/combat')
-        }
-        else {
-          console.log(data);
-          if(Object.keys(data).includes('rewards')) {
-            setReward(data.rewards);
-            setRewardModal(true);
-          }
-          else if (Object.keys(data).includes('penalty')) {
-            setPenalty(data.penalty);
-            setPenaltyModal(true);
-          }
-          setStage(data.stage)
-          setStory(data.story)
-          setChoices(data.choices)
-          setPlayer(Player.fromJSON(data.player))
-        }
-      });
-    setOpenLoading(false)
-  }, [navigate]);
+    console.log(data);
+    if (Object.keys(data).includes('content') && typeof data.content === 'object' && data.content !== null) {
+      if (Object.keys(data.content).includes('rewards')) {
+        setReward(data.content.rewards);
+        setRewardModal(true);
+      } else if (Object.keys(data.content).includes('penalty')) {
+        setPenalty(data.content.penalty);
+        setPenaltyModal(true);
+      }
+    
+      setStage(data.stage);
+      setStory(data.content.story);
+      setChoices(data.content.choices);
+      setPlayer(Player.fromJSON(data.player));
+    }
+    
+  }, [data]);
 
   const handleClose = (diceResult) => {
     setDiceVisible(false)
@@ -87,43 +78,13 @@ function StoryPage() {
       player: player.toDict()
     };
     console.log(data)
-
-    setOpenLoading(true)
-    try{
-      const response = await fetchWithAuth('http://localhost:8000/story_gen', {
+    handleFetch('http://localhost:8000/story_gen', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       })
-
-      if (response.ok) {
-        const data = await response.json();
-        if (Object.keys(data).includes('combat')) {
-          navigate('/combat')
-        }
-        else {
-          if(Object.keys(data).includes('rewards')) {
-            setReward(data.rewards);
-            setRewardModal(true);
-          }
-          else if (Object.keys(data).includes('penalty')) {
-            setPenalty(data.penalty);
-            setPenaltyModal(true);
-          }
-          console.log(data);
-          setStage(data.stage)
-          setStory(data.story)
-          setChoices(data.choices)
-          setPlayer(Player.fromJSON(data.player))
-        }
-      }
-    }
-    catch(error) {
-      alert(error)
-    }
-    setOpenLoading(false)
   }
 
   const handleReward = () => {

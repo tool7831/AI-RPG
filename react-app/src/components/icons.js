@@ -39,7 +39,7 @@ const skillIcons = {
   parry: "skills/parry.png",
   dodge: "skills/dodge.png",
   damage: 'skills/damage.png',
-  hp_scailing: 'skills/hp_scailing.png',
+  hp_scaling: 'skills/hp_scaling.png',
   stun: 'skills/stun.png',
 };
 

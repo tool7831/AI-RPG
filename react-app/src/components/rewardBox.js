@@ -24,7 +24,7 @@ function RewardBox({rewards, ...props}) {
                     )))
                 }
                 else if (key === "items") {
-                    return rewards[key].map((item, idx) => <ItemBox key={idx} item={item}/>) 
+                    return rewards[key].map((item, idx) => <ItemBox key={idx} item={item} sx={{}}/>) 
                 }
              }
             )}

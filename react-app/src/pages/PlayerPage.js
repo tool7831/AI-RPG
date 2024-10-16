@@ -8,7 +8,7 @@ import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox';
 
 import {fetchWithAuth} from '../components/api';
 
-function PlayerPage() {
+function PlayerPage({worldView, handleFetch, ...props}) {
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   const [stats, setStats] = useState({});
@@ -28,8 +28,6 @@ function PlayerPage() {
 
   const [openLoading, setOpenLoading] = useState(false);
 
-  const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:8000/skills', {
@@ -118,7 +116,7 @@ function PlayerPage() {
 
   const handleSubmit = async () => {
     const data = {
-      story: location.state.story,
+      story: worldView,
       stage: 0,
       player: {
         name: name,
@@ -159,43 +157,13 @@ function PlayerPage() {
     }
     console.log(data)
 
-    setOpenLoading(true);
-    try {
-      const response = await fetchWithAuth('http://localhost:8000/first',{
+    handleFetch('http://localhost:8000/first',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        const reader = response.body.getReader();  // 스트림 리더 생성
-        const decoder = new TextDecoder();         // 텍스트 디코더 생성
-    
-        let done = false;
-        let accumulatedData = '';  // 받은 데이터를 누적 저장할 변수
-    
-        while (!done) {
-          const { value, done: readerDone } = await reader.read();  // 스트림 청크 읽기
-          done = readerDone;
-          
-          if (value) {
-            const chunk = decoder.decode(value, { stream: true });  // 청크를 텍스트로 디코딩
-            accumulatedData += chunk;  // 청크를 누적
-            console.log('Received chunk:', chunk);  // 받은 청크 출력
-          }
-        }
-    
-        console.log('Final accumulated data:', accumulatedData);  // 최종 누적 데이터 출력
-      } else {
-        // 인증 실패 시 로그인 페이지로 리다이렉트
-
-      }
-    } catch (error) {
-      // navigate('/');
-    }
-    setOpenLoading(false);
+      })
   }
 
   const handleValid = () => {
@@ -244,7 +212,6 @@ function PlayerPage() {
             label="Player Name" 
             fullWidth 
             margin="normal"
-            // color={nameError ? 'error' : 'primary'}
             onChange={(e) => setName(e.target.value)} 
           />
           <TextField 
@@ -258,7 +225,6 @@ function PlayerPage() {
             margin="normal" 
             multiline 
             rows={4}
-            // color={descriptionError ? 'error' : 'primary'}
             onChange={(e) => setDescription(e.target.value)} 
           />
 

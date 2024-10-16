@@ -27,7 +27,6 @@ def run_thread(thread, user_message, assistant_id=STORY_ID):
   messages = get_message(thread)
   text = messages.data[0].content[0].text.value
   json_object=json.loads(text)
-  time.sleep(0.5)
   return json_object
 
 
@@ -56,7 +55,7 @@ def run(thread, message):
       ]
       rewards = run_thread(thread, message, ENEMY_REWARD_ID)
       response = dict({**enemy, **rewards})
-      return response
+      yield json.dumps(response)
     elif message[0]['text']['next_type'] == 'reward':
       for i in stream_submit_message(message, thread, REWARD_ID):
         if i[0] == 'text':
@@ -116,7 +115,7 @@ def wait_run(run, thread):
       thread_id=thread.id,
       run_id=run.id
     )
-    time.sleep(0.5)
+    time.sleep(0.1)
   return run
 
 def get_message(thread):

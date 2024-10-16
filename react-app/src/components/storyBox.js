@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography, Button, Box } from '@mui/material';
-import {StatIcons} from './icons.js'
+import { StatIcons } from './icons.js';
 
 function StoryBox({ story, choices, handleChoice, ...props }) {
   return (
@@ -17,29 +17,31 @@ function StoryBox({ story, choices, handleChoice, ...props }) {
         <Typography variant="h6" gutterBottom> Story </Typography>
         <Typography variant="body1">{story}</Typography>
       </Box>
-      {choices && choices.map((choice, index) => (
-        <Button
-          key={index}
-          variant="contained"
-          fullWidth
-          sx={{ mb: 2, backgroundColor: '#d3d3d3', color: 'black', textTransform:'none' }}
-          onClick={() => handleChoice(index)}
-        >
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <p>{choice.text}</p>
+      {Array.isArray(choices) && choices.length > 0 && choices.map((choice, index) => (
+        // choice가 유효한지 확인
+        choice && typeof choice === 'object' && (
+          <Button
+            key={index}
+            variant="contained"
+            fullWidth
+            sx={{ mb: 2, backgroundColor: '#d3d3d3', color: 'black', textTransform:'none' }}
+            onClick={() => handleChoice(index)}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+              <p>{choice?.text}</p>
 
-            {/* 상태 값 아이콘 및 수치 표시 */}
-            {Object.keys(choice.status).map((key) => (
-              choice.status[key] !== null && 
-              <Box key={key} sx={{ display: 'flex', alignItems: 'center' }}>
-                {<StatIcons type={key} />|| <Typography sx={{textTransform:'capitalize'}}>{key}: </Typography>} {/* 아이콘이 있으면 표시 */}
-                <Typography>{choice.status[key]}</Typography>
-              </Box>
-            ))}
-          </Box>
-        </Button>
-      ))
-      }
+              {/* 상태 값 아이콘 및 수치 표시 */}
+              {choice.status && typeof choice.status === 'object' && Object.keys(choice.status).map((key) => (
+                choice.status[key] !== null && 
+                <Box key={key} sx={{ display: 'flex', alignItems: 'center' }}>
+                  {<StatIcons type={key} /> ? <StatIcons type={key} /> : <Typography sx={{ textTransform: 'capitalize' }}>{key}: </Typography>}
+                  <Typography>{choice.status[key]}</Typography>
+                </Box>
+              ))}
+            </Box>
+          </Button>
+        )
+      ))}
     </Container >
   );
 }

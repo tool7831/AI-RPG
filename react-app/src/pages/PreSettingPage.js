@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
 import { Container, Paper, Typography, Button } from '@mui/material';
 
 
-function PreSettingPage() {
+function PreSettingPage({handleData}) {
   const [story, setStory] = useState({});
   const [selectedStory, setSelectedStory] = useState();
 
-  const navigate = useNavigate();
   useEffect(() => {
     const data = { user_id: "test" }
     fetch('http://localhost:8000/worldview', {
@@ -30,7 +28,8 @@ function PreSettingPage() {
         text: story[selectedStory]
       }
     };
-    navigate("/player", { state: data })
+    handleData(data.story);
+    // navigate("/player", { state: data })
     console.log(data)
   };
   const handleStoryToggle = (key) => {
