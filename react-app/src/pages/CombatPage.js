@@ -395,18 +395,36 @@ function CombatPage({data, handleFetch}) {
   }
 
   return (
-    <Container sx={{ backgroundColor: 'whitesmoke' }}>
+    <Container sx={{ backgroundColor: 'whitesmoke', minWidth:'1000px'}}>
       {/* 적 */}
-      {enemy && (<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', border: 'solid', padding: '10px' }}>
-        <Paper>
-          <img src={imageURL} alt='Enemy Image not found' width={300} height={300} style={{ border: '1px solid' }} />
-          <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy.name}</Typography>
-        </Paper>
-        <div style={{ border: '1px solid #ddd' }}>
-          <StatusBox actor={enemy} />
-          <StatusEffectBar actor={enemy} />
-        </div>
-      </Box>
+      {enemy && (
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'space-evenly', 
+        border: 'solid', 
+        padding: '10px' 
+        }}
+        >
+          <Grid container>
+            <Grid item xs={6} sx={{ display: 'flex', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
+              <Paper sx={{
+                width:'300px',
+                height: '80%'
+              }}>
+                <img src={imageURL} alt='Enemy Image not found' width={300} height={300} style={{ border: '1px solid' }} />
+                <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy.name}</Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={6}>
+              <Box>
+                <StatusBox actor={enemy} sx={{width:'90%'}}/>
+                <StatusEffectBar actor={enemy} />
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
       )}
 
       {/* 행동 */}
@@ -484,7 +502,7 @@ function CombatPage({data, handleFetch}) {
                 <MenuButton actor={player} onClose={() => setRender(render + 1)} />
               </Box>
             )}
-            {player && (<StatusBox actor={player} isPlayer={true} />)}
+            {player && (<StatusBox actor={player} isPlayer={true} sx={{width:'90%'}}/>)}
           </Grid>
         </Grid>
       </Box>

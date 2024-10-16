@@ -198,7 +198,7 @@ function PlayerPage({worldView, handleFetch, ...props}) {
   }
 
   return (
-    <Container sx={{ border: 'solid' }}>
+    <Container>
       <Grid container>
         <Grid item xs={6} sx={{ padding:'10px' }}>
           <Paper elevation={4} sx={{padding:'10px', border:'1px solid'}}>

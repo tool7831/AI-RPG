@@ -89,7 +89,7 @@ function StatusTab({ actor }) {
           <Button onClick={handleStatConfirm}>Confirm</Button>
         </Grid>
         <Grid item xs={6}>
-          <StatusBox actor={actor} isPlayer={false}/>
+          <StatusBox actor={actor} isPlayer={false} sx={{width:'90%'}}/>
         </Grid>
       </Grid>
     </Container>

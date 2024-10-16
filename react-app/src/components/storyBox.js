@@ -1,16 +1,19 @@
 import React from 'react';
-import { Container, Typography, Button, Box } from '@mui/material';
+import { Paper, Typography, Button, Box } from '@mui/material';
 import { StatIcons } from './icons.js';
 
-function StoryBox({ story, choices, handleChoice, ...props }) {
+function StoryBox({ story, choices, handleChoice, sx ={}, ...props }) {
+
+  const defaultSx = {
+    width: "70%",
+    padding: 2, 
+    borderRadius: 2,
+    border: 'solid 1 #ddd'
+  };
+  const mergedSx = { ...defaultSx, ...sx };
   return (
-    <Container 
-      maxWidth="md" 
-      sx={{ 
-        backgroundColor: 'whitesmoke', 
-        padding: 2, 
-        borderRadius: 2 
-      }}
+    <Paper 
+      sx={mergedSx}
       {...props}
     >
       <Box sx={{ backgroundColor: '#f0f0f0', padding: 2, borderRadius: 2, textAlign: 'left', mb: 3 }}>
@@ -42,7 +45,7 @@ function StoryBox({ story, choices, handleChoice, ...props }) {
           </Button>
         )
       ))}
-    </Container >
+    </Paper >
   );
 }
 

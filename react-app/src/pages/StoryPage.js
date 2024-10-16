@@ -128,16 +128,26 @@ function StoryPage({data, handleFetch}) {
 
   return (
     <div className="App">
-      <Container sx={{border: 'solid'}}>
-        <Box sx={{display: 'flex',flexDirection: 'column', alignItems: 'center', width: '100%'}}>
-          <div style={{margin:'10px', border:'1px solid'}}>
-            <Typography>Stage {stage}</Typography>
-            <StoryBox story={story} choices={choices} handleChoice={handleChoice}/>
-          </div>
-          <div style={{border:'1px solid'}}>
-            <MenuButton actor={player} onClose={()=>setRender(render+1)}/>
-            {player && ( <StatusBox actor={player} isPlayer={true} sx={{minWidth:'600px'}}/>)}
-          </div>
+      <Container sx={{border: 'solid', minWidth:'700px'}}>
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column', 
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
+          <Typography variant='h5'>Stage {stage}</Typography>
+          <StoryBox story={story} choices={choices} handleChoice={handleChoice}/>
+
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'flex-end', 
+            width: '70%',
+            marginTop: '10px' /* Optional spacing */
+          }}>
+            <MenuButton actor={player} onClose={() => setRender(render + 1)} />
+          </Box>
+          {player && ( <StatusBox actor={player} isPlayer={true} sx={{width: "70%"}}/>)}
         </Box>
       </Container>
 

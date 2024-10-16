@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Typography, Grid, LinearProgress, Box, Button, Container, Modal, Tab, Tabs } from '@mui/material';
+import React from 'react';
+import { Typography, Grid, LinearProgress, Box, Paper } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { StatIcons } from './icons';
@@ -24,12 +24,13 @@ function StatusBox({ actor, isPlayer, sx={}, ...props}) {
 
   const defaultSx = {
     padding: 2,
-    backgroundColor: "whitesmoke",
+    border: '1px solid #ddd',
+    width:'100%'
   };
   const mergedSx = { ...defaultSx, ...sx };
 
   return (
-    <Container sx={mergedSx} {...props} >
+    <Paper sx={mergedSx} {...props} >
       <Box display="flex" flexDirection='row' justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h6">Status</Typography>
         {isPlayer && <Typography>Level: {actor.level}</Typography>}
@@ -85,7 +86,7 @@ function StatusBox({ actor, isPlayer, sx={}, ...props}) {
           </Box>
         </Grid>
       </Grid>
-    </Container>
+    </Paper>
   );
 }
 
