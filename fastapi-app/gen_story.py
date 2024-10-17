@@ -3,7 +3,6 @@ from openai.types.beta.assistant_stream_event import ThreadMessageDelta
 import os
 import json
 import time
-import requests
 
 client = OpenAI(api_key = os.environ['OPENAI_API_KEY'])
 
