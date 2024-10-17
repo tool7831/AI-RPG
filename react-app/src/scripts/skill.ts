@@ -3,16 +3,38 @@
 // "Stun", "Paralysis", "Sleep" -> CC
 // "Silence", "Confusion", "Blindness", "Weaken" -> Debuff
 
+export enum StatusEffectType {
+    Burn = "Burn",
+    Poison = "Poison",
+    Bleed = "Bleed",
+    Stun = "Stun",
+    Freeze = "Freeze",
+    Paralysis = "Paralysis",
+    Sleep = "Sleep",
+    Confusion = "Confusion",
+    Blindness = "Blindness",
+    Charm = "Charm",
+    Fear = "Fear",
+    Weaken = "Weaken"
+}
+
 interface StatusEffectData {
-    type: string;
+    type: StatusEffectType;
     duration: number;
     defaultValue: number; 
     coef: Record<string,number>;
     accuracy: number;
 }
 
+export interface FinalStatusEffectData {
+    type: StatusEffectType;
+    duration: number;
+    value: number; 
+    accuracy: number;
+}
+
 class StatusEffect {
-    type: string;
+    type: StatusEffectType;
     duration: number;
     defaultValue: number; 
     coef: Record<string,number>;
@@ -26,7 +48,7 @@ class StatusEffect {
         this.duration = data.duration;
     }
 
-    doAttack(stats: Record<string, any>): Record<string, any> {
+    doAttack(stats: Record<string, any>): FinalStatusEffectData {
         let totalValue = this.defaultValue;
         for (const [key, value] of Object.entries(this.coef)){
             totalValue += stats[key] * value;
@@ -58,10 +80,14 @@ class StatusEffect {
     }
 }
 
+export enum AttackType {
+    melee = "melee",
+    magic = 'magic'
+}
 
 export interface AttackData {
     name: string;
-    type: string;
+    type: AttackType;
     defaultDamage:number;
     coef: Record<string, number>;
     count: number;
@@ -72,9 +98,19 @@ export interface AttackData {
     curCooldown: number;
 }
 
+export interface FinalAttackData {
+    name: string;
+    type: AttackType;
+    damage: number;
+    count: number;
+    penetration: number;
+    accuracy: number;
+    statusEffect: FinalStatusEffectData | null;
+}
+
 export class Attack {
     name: string;
-    type: string;
+    type: AttackType;
     defaultDamage:number;
     coef: Record<string, number>;
     count: number;
@@ -101,7 +137,7 @@ export class Attack {
         this.curCooldown = 0;
     }
 
-    doAttack(stats: Record<string, any>): Record<string, any> {
+    doAttack(stats: Record<string, any>): FinalAttackData {
         let totalDamage = this.defaultDamage;
 
         for (const [key, value] of Object.entries(this.coef)){

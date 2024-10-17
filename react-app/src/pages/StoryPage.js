@@ -33,14 +33,12 @@ function StoryPage({data, handleFetch}) {
   const [prob, setProb] = useState(10);
   const [stage, setStage] = useState();
 
-
   const [rewardModal, setRewardModal] = useState(false);
   const [reward, setReward] = useState();
   const [penaltyModal, setPenaltyModal] = useState(false);
   const [penalty, setPenalty] = useState();
   
   useEffect(() => {
-    console.log(data);
     if (Object.keys(data).includes('content') && typeof data.content === 'object' && data.content !== null) {
       if (Object.keys(data.content).includes('rewards')) {
         setReward(data.content.rewards);
@@ -95,14 +93,13 @@ function StoryPage({data, handleFetch}) {
 
   const handleChoice = (choiceId) => {
     setChoiceId(choiceId);
-    if (Object.keys(choices[choiceId].status).length !== 0) {
+    if (Object.values(choices[choiceId].status).some(value => value !== null)) {
       setProb(calculateProb(choiceId));
       setDiceVisible(true);
     }
     else {
       nextStory(20, choiceId);
     }
-
   };
 
   const calculateProb = (choiceId) => {
@@ -115,7 +112,6 @@ function StoryPage({data, handleFetch}) {
     })
     return Math.ceil(20 / (1+ Math.exp(diff/10)))
   }
-
 
   return (
     <div className="App">
