@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
 import { fetchWithAuth, loadData } from '../components/api';
 
 import PreSettingPage from './PreSettingPage';
@@ -15,8 +14,6 @@ function GamePage() {
   const [data, setData] = useState();
   const [worldView, setWorldView] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
 
 
   useEffect(() => {

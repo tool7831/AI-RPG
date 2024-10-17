@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Paper } from '@mui/material';
-import {fetchWithAuth, loadData} from '../components/api';
+import {fetchWithAuth } from '../components/api';
 
 function MainPage() {
   const [user, setUser] = useState(null);

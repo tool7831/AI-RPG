@@ -54,8 +54,8 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 
 export default function SignUp() {
   const [mode, setMode] = React.useState('light');
-  const [showCustomTheme, setShowCustomTheme] = React.useState(true);
-  const defaultTheme = createTheme({ palette: { mode } });
+  // const [showCustomTheme, setShowCustomTheme] = React.useState(true);
+  // const defaultTheme = createTheme({ palette: { mode } });
   const SignUpTheme = createTheme(getSignUpTheme(mode));
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
@@ -63,7 +63,7 @@ export default function SignUp() {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [signUpErrorMessage, setSignUpErrorMessage] = React.useState('');
+  // const [signUpErrorMessage, setSignUpErrorMessage] = React.useState('');
 
   const navigate = useNavigate();
   // This code only runs on the client side, to determine the system color preference
@@ -158,7 +158,7 @@ export default function SignUp() {
       else {
         // 회원가입 실패 시 오류 메시지 처리
         const errorData = await response.json();
-        setSignUpErrorMessage(errorData.detail || 'Signup failed. Please try again.');
+        // setSignUpErrorMessage(errorData.detail || 'Signup failed. Please try again.');
         alert(errorData.detail || 'Signup failed. Please try again.');
       }
     } catch (signUpErrorMessage) {
@@ -174,7 +174,7 @@ export default function SignUp() {
     //   mode={mode}
     //   toggleColorMode={toggleColorMode}
     // >
-      <ThemeProvider theme={showCustomTheme ? SignUpTheme : defaultTheme}>
+      <ThemeProvider theme={SignUpTheme}>
         <CssBaseline enableColorScheme />
         <SignUpContainer direction="column" justifyContent="space-between">
           <Card variant="outlined">

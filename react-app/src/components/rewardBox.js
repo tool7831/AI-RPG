@@ -13,7 +13,7 @@ function RewardBox({rewards, ...props}) {
                     return <Typography key={key} >{key}: {rewards[key]}</Typography>
                 }
                 else if (key === "stats") {
-                    return (Object.keys(rewards[key]).map((stat)=> (
+                    return (Object.keys(rewards[key]).map((stat) => (
                         rewards[key][stat] !== null &&
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                             <StatIcons key={stat+'icon'} type={key} />
@@ -26,6 +26,7 @@ function RewardBox({rewards, ...props}) {
                 else if (key === "items") {
                     return rewards[key].map((item, idx) => <ItemBox key={idx} item={item} sx={{}}/>) 
                 }
+                return null;
              }
             )}
         </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Container, Box, Modal, Button, Typography } from '@mui/material';
 
 import Player from '../scripts/player.ts';
@@ -8,7 +7,6 @@ import StatusBox from '../components/statusBox.js';
 import StoryBox from '../components/storyBox.js';
 import Dice from '../components/rollDice.js';
 
-import { fetchWithAuth, loadData } from '../components/api.js';
 import RewardBox from '../components/rewardBox.js';
 import PenaltyBox from '../components/penaltyBox.js';
 
@@ -35,8 +33,6 @@ function StoryPage({data, handleFetch}) {
   const [prob, setProb] = useState(10);
   const [stage, setStage] = useState();
 
-
-  const [openLoading, setOpenLoading] = useState(false);
 
   const [rewardModal, setRewardModal] = useState(false);
   const [reward, setReward] = useState();
@@ -120,11 +116,6 @@ function StoryPage({data, handleFetch}) {
     return Math.ceil(20 / (1+ Math.exp(diff/10)))
   }
 
-  if (openLoading) {
-    return (
-      <p>Loading ...</p>
-    )
-  }
 
   return (
     <div className="App">

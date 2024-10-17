@@ -7,9 +7,10 @@ import Enemy from '../scripts/enemy.ts'
 import Player from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import { SkillIcons } from '../components/icons.js';
+import { fetchWithAuth } from '../components/api.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
 import MenuButton from '../components/menuButton.js'
-import { fetchWithAuth, loadData } from '../components/api.js';
+
 import ItemBox from '../components/itemBox.js';
 
 
@@ -45,7 +46,6 @@ function CombatPage({data, handleFetch}) {
   const navigate = useNavigate()
 
   const [imageURL, setImageURL] = useState(null);
-  const [openLoading, setOpenLoading] = useState(false);
   const [stage, setStage] = useState();
 
   useEffect(() => {
@@ -390,10 +390,6 @@ function CombatPage({data, handleFetch}) {
     </Box>
   );
 
-  if (openLoading) {
-    return (<p>Loading ...</p>)
-  }
-
   return (
     <Container sx={{ backgroundColor: 'whitesmoke', minWidth:'1000px'}}>
       {/* 적 */}
@@ -413,7 +409,7 @@ function CombatPage({data, handleFetch}) {
                 width:'300px',
                 height: '80%'
               }}>
-                <img src={imageURL} alt='Enemy Image not found' width={300} height={300} style={{ border: '1px solid' }} />
+                <img src={imageURL} alt='Not found' width={300} height={300} style={{ border: '1px solid' }} />
                 <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy.name}</Typography>
               </Paper>
             </Grid>
@@ -532,6 +528,7 @@ function CombatPage({data, handleFetch}) {
                       </div>
                     )
                   })
+                return null;
               })}
               
               

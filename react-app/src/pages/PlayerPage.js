@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
 
 import { Container, TextField, Typography, Button, Box, Grid, Paper, IconButton, Tabs, Tab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox';
 
-import {fetchWithAuth} from '../components/api';
 
 function PlayerPage({worldView, handleFetch, ...props}) {
   const [name, setName] = useState();
@@ -26,7 +24,6 @@ function PlayerPage({worldView, handleFetch, ...props}) {
   const [descriptionError, setDescriptionError] = useState(false);
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState(null);
 
-  const [openLoading, setOpenLoading] = useState(false);
 
 
   useEffect(() => {
@@ -191,10 +188,6 @@ function PlayerPage({worldView, handleFetch, ...props}) {
 
     if (isValid)
       handleSubmit()
-  }
-
-  if(openLoading) {
-    return <p>Loading ...</p>
   }
 
   return (

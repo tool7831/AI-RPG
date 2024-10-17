@@ -34,6 +34,7 @@ export default class Enemy {
     let adjustedTotal = 0;
     const adjustedObj = {};
     for (let [key, values] of entries) {
+      // eslint-disable-next-line
       adjustedObj[key] = values.map(value => {
         const adjustedValue = Math.round((value / total) * 100);
         adjustedTotal += adjustedValue;
