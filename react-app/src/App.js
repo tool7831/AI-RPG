@@ -8,7 +8,7 @@ import GamePage from "./pages/GamePage.js";
 function App() {
   return (
     <div>
-      <Router>
+      <Router basename="/AI-RPG">
         <ResponsiveAppBar/>
         <Routes>
           <Route exact path="/" element={<SignIn />} />
