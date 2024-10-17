@@ -1,3 +1,4 @@
+import { AttackType, StatusEffectType } from "./skill.ts";
 
 export interface StatusData {
     hp: number,
@@ -19,26 +20,6 @@ export interface StatusDict {
     status: StatusData;
     origin_status: StatusData;
     added_status: StatusData;
-}
-
-export enum StatusEffectType {
-    Burn = "Burn",
-    Poison = "Poison",
-    Bleed = "Bleed",
-    Stun = "Stun",
-    Freeze = "Freeze",
-    Paralysis = "Paralysis",
-    Sleep = "Sleep",
-    Confusion = "Confusion",
-    Blindness = "Blindness",
-    Charm = "Charm",
-    Fear = "Fear",
-    Weaken = "Weaken"
-}
-
-enum AttackType {
-    melee = "melee",
-    magic = 'magic'
 }
 
 interface StatusEffect {
@@ -111,10 +92,19 @@ export class Status {
         }
     }
 
-    damaged(value: number, attackType: AttackType | null): void {
+    changeMP(value: number): void {
         value = Math.floor(value)
-        if (attackType == AttackType.melee) {
-            const total_damage = value - this.status.defense
+        this.added_status.mp += value;
+        let currentStatus = this.status; // 계산된 상태
+        if (this.origin_status.mp < currentStatus.mp) {
+            this.added_status.mp = 0;
+        }
+    }
+
+    damaged(value: number, attackType: AttackType | null = null, penetration: number = 0): void {
+        value = Math.floor(value)
+        if (attackType === AttackType.melee) {
+            const total_damage = value - this.status.defense * (1 - (penetration / 100));
             if (total_damage > 0) {
                 let remain = this.status.shield - total_damage;
                 this.changeAddedValue('shield', -total_damage);
@@ -123,8 +113,8 @@ export class Status {
                 }
             }
         }
-        else if (attackType == AttackType.magic) {
-            const total_damage = value - this.status.resistance
+        else if (attackType === AttackType.magic) {
+            const total_damage = value - this.status.resistance * (1 - (penetration / 100));
             if (total_damage > 0) {
                 let remain = this.status.shield - total_damage;
                 this.changeAddedValue('shield', -total_damage);

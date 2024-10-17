@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StatusBox from '../components/statusBox.js';
 import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Backdrop, ListItem, Paper } from '@mui/material';
-
-import Enemy from '../scripts/enemy.ts'
-import Player from '../scripts/player.ts';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import { SkillIcons } from '../components/icons.js';
+import { fetchWithAuth } from '../components/api.js';
+import StatusBox from '../components/statusBox.js';
 import StatusEffectBar from '../components/statusEffectBar.js';
 import MenuButton from '../components/menuButton.js'
-import { fetchWithAuth, loadData } from '../components/api.js';
 import ItemBox from '../components/itemBox.js';
+import Enemy from '../scripts/enemy.ts'
+import Player from '../scripts/player.ts';
 
 
 function rand(min, max) {
@@ -45,7 +44,6 @@ function CombatPage({data, handleFetch}) {
   const navigate = useNavigate()
 
   const [imageURL, setImageURL] = useState(null);
-  const [openLoading, setOpenLoading] = useState(false);
   const [stage, setStage] = useState();
 
   useEffect(() => {
@@ -297,16 +295,16 @@ function CombatPage({data, handleFetch}) {
         player.damaged(enemy_skill)
       }
       else if (enemy_action === 1) {
-        if (enemy_skill.type === 'shield')
+        if (enemy_skill.type === 'shield') {
+          console.log(enemy_skill)
           enemy.status.addBuff(enemy_skill)
+        }
       }
       else if (enemy_action === 2) {
         if (enemy_skill.type === 'hp_scaling') {
           player.status.damaged(Math.floor(player.status.origin_status.HP * enemy_skill.value / 100))
-          console.log('chec')
         }
         else if (enemy_skill.type === 'damage') {
-          console.log('chec')
           player.status.damaged(enemy_skill.value)
         }
         else if (enemy_skill.type === 'stun') {
@@ -344,19 +342,19 @@ function CombatPage({data, handleFetch}) {
     if (enemy.isDead()) {
       console.log('dead')
       setVictoryModal(true)
+      player.endCombat();
     }
     else if (player.isDead()) {
       console.log('player dead')
       setDefeatModal(true)
     }
-    // Battle logic here
   };
 
   const renderSkills = (skills) => (
     <Box sx={{ border: 'solid', padding: '10px' }}>
       <List>
         {selectedSkill === null && skills.map((skill, index) => (
-          <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0} >
+          <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0 || !player.getActionAvailable()} >
             <Typography mr={1}>{skill.name}</Typography>
             <SkillIcons type={skill.type} style={{ width: '20px', height: '20px' }} />
             {selectedAction === 0 && <Typography ml={1}>{skill.getTotalDamage(player.status.status)}x{skill.count}</Typography>}
@@ -389,10 +387,6 @@ function CombatPage({data, handleFetch}) {
       )}
     </Box>
   );
-
-  if (openLoading) {
-    return (<p>Loading ...</p>)
-  }
 
   return (
     <Container sx={{ backgroundColor: 'whitesmoke', minWidth:'1000px'}}>

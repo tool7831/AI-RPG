@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
 import { fetchWithAuth, loadData } from '../components/api';
 
 import PreSettingPage from './PreSettingPage';
@@ -15,9 +14,6 @@ function GamePage() {
   const [data, setData] = useState();
   const [worldView, setWorldView] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-
 
   useEffect(() => {
     // New start
@@ -29,7 +25,6 @@ function GamePage() {
       loadData()
         .then(response => response.json())
         .then(data => {
-          console.log(data);
           setData(data);
           if (Object.keys(data?.content).includes('combat')) {
             setPage(4);
@@ -70,14 +65,10 @@ function GamePage() {
 
             if (Object.keys(json_data).includes('content') && typeof json_data.content === 'object' && json_data.content !== null) {
               if (Object.keys(json_data.content).includes('combat')) {
-                console.log('combat')
-                console.log(json_data.content)
                 setPage(4);
                 setIsLoading(false);
               }
               else if (Object.keys(json_data.content).includes('story')){
-                console.log('story')
-                console.log(json_data.content)
                 setPage(3);
                 setIsLoading(false);
               }
@@ -94,29 +85,6 @@ function GamePage() {
     setIsLoading(false)
   }
 
-  // const handleSubmit = async (url, options = {},) => {
-  //   setIsLoading(true)
-  //   try{
-  //     const response = await fetchWithAuth(url, options)
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setData(data);
-  //       if (Object.keys(data).includes('combat')) {
-  //         setPage(4);
-  //       }
-  //       else {
-  //         setPage(3);
-  //       }
-  //     }
-  //   }
-  //   catch (error) {
-
-  //   }
-  //   setIsLoading(false)
-  // }
-
-
   const handleWorldView = (worldView) => {
     setWorldView(worldView);
     setPage(2);
@@ -126,7 +94,7 @@ function GamePage() {
     return <p>Loading...</p>
 
   return (
-    <div>
+    <div style={{padding:'10px'}}>
       {page === 1 && <PreSettingPage handleData={handleWorldView} />}
       {page === 2 && <PlayerPage worldView={worldView} handleFetch={handleStreamSubmit} />}
       {page === 3 && <StoryPage data={data} handleFetch={handleStreamSubmit} />}

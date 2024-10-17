@@ -1,5 +1,5 @@
 import Actor from './actor.ts';
-import { Attack, Defend, Smite, AttackData, DefendData, SmiteData } from './skill.ts'
+import { AttackData, DefendData, SmiteData } from './skill.ts'
 import { Status, StatusData } from './status.ts';
 
 function rand(min: number, max: number) {
@@ -45,52 +45,49 @@ export default class Enemy extends Actor {
   }
 
   doAction() {
-    this.reduceCoolDown(1)
+    this.startTurn()
     this.canAction()
-    this.status.updateStatusEffects()
-    this.status.updateBuffs()
-    // while (this.status.isActionAvailable) {
-    let cumulative = 0;
-    const action = rand(0, 99)
-    for (let [key, values] of Object.entries(this.frequency)) {
-      for (let i = 0; i < values.length; i++) {
-        cumulative += values[i];
-        if (action < cumulative) {
-          if (key === 'attacks') {
-            if (!this.attacks[i].isAvailable()) {
-              continue;
+    if (this.getActionAvailable()) {
+      let cumulative = 0;
+      const action = rand(0, 99)
+      for (let [key, values] of Object.entries(this.frequency)) {
+        for (let i = 0; i < values.length; i++) {
+          cumulative += values[i];
+          if (action < cumulative) {
+            if (key === 'attacks') {
+              if (!this.attacks[i].isAvailable()) {
+                continue;
+              }
+              return {
+                action: 0,
+                skill: this.doAttack(i)
+              }
             }
-            return {
-              action: 0,
-              skill: this.doAttack(i)
+            else if (key === 'defends') {
+              if (!this.defends[i].isAvailable()) {
+                continue;
+              }
+              return {
+                action: 1,
+                skill: this.doDefend(i)
+              }
             }
-          }
-          else if (key === 'defends') {
-            if (!this.defends[i].isAvailable()) {
-              continue;
-            }
-            return {
-              action: 1,
-              skill: this.doDefend(i)
-            }
-          }
-          else {
-            if (!this.smites[i].isAvailable()) {
-              continue;
-            }
-            return {
-              action: 2,
-              skill: this.doSmite(i)
+            else {
+              if (!this.smites[i].isAvailable()) {
+                continue;
+              }
+              return {
+                action: 2,
+                skill: this.doSmite(i)
+              }
             }
           }
         }
       }
     }
-    // }
-    this.endTurn()
     return {
       action: 4,
-      skill: {name: 'skip'}
+      skill: { name: 'skip' }
     }
   }
 
@@ -101,8 +98,8 @@ export default class Enemy extends Actor {
       status: this.status.toDict()
     };
   }
-  
-  static fromJSON(json: { name: string; description: string; status: StatusData, attacks: AttackData[], defends: DefendData[], smites: SmiteData[], frequency: Record<string, any>}) {
+
+  static fromJSON(json: { name: string; description: string; status: StatusData, attacks: AttackData[], defends: DefendData[], smites: SmiteData[], frequency: Record<string, any> }) {
     return new Enemy(json.name, json.description, json.status, json.attacks, json.defends, json.smites, json.frequency);
   }
 }

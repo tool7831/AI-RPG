@@ -25,9 +25,9 @@ export function AttackBox({ skill, status, ...props }) {
           <Typography variant="body1">
             Damage {status ? `= ${skill.getTotalDamage(status)}` : null}
             ({skill.defaultDamage} + {Object.keys(skill.coef).map((key, idx) => (
-              <>
-                <StatIcons type={key} key={idx} /> x {skill.coef[key]}
-              </>
+              <span key={'dmg_coef_'+key}>
+                <StatIcons type={key} key={'dmg_coef_'+key} /> x {skill.coef[key]}
+              </span>
             ))}) x {skill.count}
           </Typography>
           <Typography variant="body1">Penetration: {skill.penetration}%</Typography>
@@ -43,9 +43,9 @@ export function AttackBox({ skill, status, ...props }) {
               </Box>
               <Typography variant="body1">Value: {status ? `${skill.statusEffect.getTotalValue(status)}` : null}
                 ({skill.statusEffect.defaultValue} + {Object.keys(skill.statusEffect.coef).map((key) => (
-                  <>
-                    <StatIcons type={key} key={key} /> x {skill.statusEffect.coef[key]}
-                  </>
+                  <span key={'se_coef_'+key}>
+                    <StatIcons type={key} key={'se_coef_'+key} /> x {skill.statusEffect.coef[key]}
+                  </span>
                 ))})
               </Typography>
               <Typography variant="body1">Duration: {skill.statusEffect.duration} Turn</Typography>
@@ -67,9 +67,9 @@ export function DefendBox({ skill, status, ...props }) {
       </Box>
       <Typography variant="body1">Value: {status ? `${skill.getTotalValue(status)}` : null}
         ({skill.defaultValue} + {Object.keys(skill.coef).map((key, idx) => (
-          <>
-            <StatIcons type={key} key={idx} /> x {skill.coef[key]}
-          </>
+          <span key={'def_coef_'+key}>
+            <StatIcons type={key} key={'def_coef_'+key} /> x {skill.coef[key]}
+          </span>
         ))})
       </Typography>
       <Typography variant="body1">Duration: {skill.duration}</Typography>
@@ -87,9 +87,9 @@ export function SmiteBox({ skill, status, ...props }) {
       </Box>
       <Typography variant="body1">Value: {status ? `${skill.getTotalValue(status)}` : null}
         ({skill.defaultValue} + {Object.keys(skill.coef).map((key, idx) => (
-          <>
-            <StatIcons type={key} key={idx}  /> x {skill.coef[key]}
-          </>
+          <span key={'dmg_coef_'+key}>
+            <StatIcons type={key} key={'smi_coef_'+key}  /> x {skill.coef[key]}
+          </span>
         ))})
       </Typography>
       <Typography variant="body1">Duration: {skill.duration}</Typography>

@@ -1,12 +1,7 @@
 import { Status, StatusData, StatusDict } from './status.ts';
-import { Attack, Defend, Smite, AttackData, DefendData, SmiteData } from './skill.ts'
+import { AttackData, DefendData, SmiteData } from './skill.ts'
 import { Item, Inventory, ItemType, InventoryData } from './item.ts';
 import Actor from './actor.ts';
-
-
-function rand(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 export class Player extends Actor {
   public exp: number;
@@ -77,16 +72,17 @@ export class Player extends Actor {
   }
 
   doAction(action: number, skill_idx: number): Record<string, any> {
-    this.reduceCoolDown(1)
-    this.status.updateStatusEffects()
-    this.status.updateBuffs()
-    if (action === 0)
-      return this.doAttack(skill_idx)
-    else if (action === 1)
-      return this.doDefend(skill_idx)
-    else if (action === 2)
-      return this.doSmite(skill_idx)
-    return { name: 'skip' }
+    this.startTurn();
+    if (this.getActionAvailable()) {
+      if (action === 0)
+        return this.doAttack(skill_idx)
+      else if (action === 1)
+        return this.doDefend(skill_idx)
+      else if (action === 2)
+        return this.doSmite(skill_idx)
+      return { name: 'skip' }
+    }
+    return {name: 'skip'}
   }
 
   equip(idx: number): void {
@@ -129,6 +125,11 @@ export class Player extends Actor {
 
   removeItem(idx: number): void {
     this.inventory.removeItem(idx);
+  }
+
+  endCombat(): void {
+    this.status.changeAddedValue('shield', -this.status.added_status.shield);
+    this.status.curStatusEffects = [];
   }
 
   toDict(): Record<string, any> {
