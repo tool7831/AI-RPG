@@ -14,7 +14,7 @@ export function fetchWithAuth(url, options = {}) {
   }
 
 export function loadData() {
-    return fetchWithAuth('http://localhost:8000/load_data', {
+    return fetchWithAuth(process.env.REACT_APP_FAST_API_URL + '/load_data', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
