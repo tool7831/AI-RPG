@@ -10,7 +10,7 @@ function MainPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetchWithAuth('http://localhost:8000/users/me');
+        const response = await fetchWithAuth(process.env.REACT_APP_FAST_API_URL + '/users/me');
         if (response.ok) {
           const data = await response.json();
           setUser(data);

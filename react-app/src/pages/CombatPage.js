@@ -87,7 +87,7 @@ function CombatPage({data, handleFetch}) {
       stage: stage,
       story: { text: 'Player win ' + enemy.name + '. Player earn ' + toString(rewards)}
     }
-    handleFetch('http://localhost:8000/story_gen', {
+    handleFetch(process.env.REACT_APP_FAST_API_URL + '/story_gen', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ function CombatPage({data, handleFetch}) {
 
   const handleDefeat = () => {
     try {
-      const response = fetchWithAuth('http://localhost:8000/defeat', {
+      const response = fetchWithAuth(process.env.REACT_APP_FAST_API_URL + '/defeat', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

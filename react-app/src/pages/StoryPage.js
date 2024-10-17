@@ -72,7 +72,8 @@ function StoryPage({data, handleFetch}) {
       player: player.toDict()
     };
     console.log(data)
-    handleFetch('http://localhost:8000/story_gen', {
+    
+    handleFetch(process.env.REACT_APP_FAST_API_URL + '/story_gen', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

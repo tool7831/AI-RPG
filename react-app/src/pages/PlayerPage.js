@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import { Container, TextField, Typography, Button, Box, Grid, Paper, IconButton, Tabs, Tab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -27,7 +26,7 @@ function PlayerPage({worldView, handleFetch, ...props}) {
 
 
   useEffect(() => {
-    fetch('http://localhost:8000/skills', {
+    fetch(process.env.FAST_API_URL + '/skills', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -154,7 +153,7 @@ function PlayerPage({worldView, handleFetch, ...props}) {
     }
     console.log(data)
 
-    handleFetch('http://localhost:8000/first',{
+    handleFetch(process.env.REACT_APP_FAST_API_URL + '/first',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -286,10 +285,8 @@ function PlayerPage({worldView, handleFetch, ...props}) {
               </Grid>
             ))}
 
-            {/* <Grid item xs={12} mt={4}><Typography variant="h6">Smite Skills</Typography></Grid> */}
             {selectedSkillType === 2 && classes[selectedClass] && classes[selectedClass].smites.map((skill, index) => (
               <Grid item xs={12} key={index}>
-
                 <SmiteBox
                   skill={skill}
                   elevation={selectedSmites.includes(index) ? 8 : 1}
