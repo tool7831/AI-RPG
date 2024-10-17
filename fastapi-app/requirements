@@ -5,4 +5,4 @@ sqlalchemy
 passlib[bcrypt]
 pydantic[email]
 python-multipart
-hypercorn
+uvicorn
