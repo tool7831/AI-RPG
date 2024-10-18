@@ -39,7 +39,7 @@ function StatusBox({ actor, isPlayer, sx={}, ...props}) {
         <Grid item xs={6}>
           {Object.keys(actor.status.status).map((key, index) => (
             index >= 3 && index < 8 && (
-              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Box key={index} sx={{ display: 'flex', flexDirection: 'row' }}>
                 <StatIcons type={key} />
                 <Typography variant="body2" key={key} sx={{ marginLeft: '10px' }}>
                   {capitalize(key)}: {actor.status.status[key]} ({formatStat(actor.status.added_status[key])})
@@ -51,7 +51,7 @@ function StatusBox({ actor, isPlayer, sx={}, ...props}) {
         <Grid item xs={6}>
           {Object.keys(actor.status.status).map((key, index) => (
             index >= 8 && (
-              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Box key={index} sx={{ display: 'flex', flexDirection: 'row' }}>
                 <StatIcons type={key} />
                 <Typography variant="body2" key={key} sx={{ marginLeft: '10px' }}>
                   {capitalize(key)}: {actor.status.status[key]} ({formatStat(actor.status.added_status[key])})
