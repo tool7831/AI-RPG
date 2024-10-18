@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Backdrop, ListItem, Paper } from '@mui/material';
+import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Backdrop, ListItem, Paper, LinearProgress } from '@mui/material';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
 import { SkillIcons } from '../components/icons.js';
 import { fetchWithAuth } from '../components/api.js';
@@ -26,7 +26,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-function CombatPage({data, handleFetch}) {
+function CombatPage({data, handleFetch, streamDone}) {
   const [player, setPlayer] = useState();
   const [enemy, setEnemy] = useState();
 
@@ -46,18 +46,29 @@ function CombatPage({data, handleFetch}) {
   const [imageURL, setImageURL] = useState(null);
   const [stage, setStage] = useState();
 
+
   useEffect(() => {
     if (Object.keys(data).includes('content') && typeof data.content === 'object' && data.content !== null) {
-      if (Object.keys(data?.content).includes('combat')) {
-        setImageURL(data?.content?.image_url);
-        setStage(data.stage);
-        setEnemy(Enemy.fromJSON(data?.content?.combat));
-        setPlayer(Player.fromJSON(data.player));
-        setRewards(data?.content?.rewards);
-        console.log(data);
-      } 
+      setImageURL(data?.content?.image_url);
+      setStage(data.stage);
+      if (Object.keys(data?.content).includes('combat') && typeof data.content.combat === 'object' && data.content.combat !== null) {
+        if (Object.keys(data?.content?.combat).includes('combat') && typeof data.content.combat.combat === 'object' && data.content.combat.combat !== null) {
+          if (!streamDone) {
+            setEnemy(data?.content?.combat?.combat);
+          }
+          else {
+            setEnemy(Enemy.fromJSON(data?.content?.combat?.combat));
+            setPlayer(Player.fromJSON(data.player));
+          }
+        }
+      }
+      if (Object.keys(data?.content).includes('rewards') && typeof data.content.rewards === 'object' && data.content.rewards !== null) {
+        if (Object.keys(data?.content?.rewards).includes('rewards') && typeof data.content.rewards.rewards === 'object' && data.content.rewards.rewards !== null) {
+          setRewards(data?.content?.rewards?.rewards);
+        }
+      }
     }
-  }, [data]);
+  }, [data, streamDone]);
 
   const handleSkillSelect = (skill) => {
     setSelectedSkill(skill);
@@ -351,10 +362,17 @@ function CombatPage({data, handleFetch}) {
   };
 
   const renderSkills = (skills) => (
-    <Box sx={{ border: 'solid', padding: '10px' }}>
+    <Box sx={{ padding: '10px' }}>
       <List>
         {selectedSkill === null && skills.map((skill, index) => (
-          <ListItemButton key={index} onClick={() => handleSkillSelect(index)} disabled={skill.curCooldown !== 0 || !player.getActionAvailable()} >
+          <ListItemButton 
+            key={index} 
+            onClick={() => handleSkillSelect(index)} 
+            disabled={skill.curCooldown !== 0 || !player.getActionAvailable()} 
+            sx={{
+              borderBottom:'1px solid'
+            }}
+          >
             <Typography mr={1}>{skill.name}</Typography>
             <SkillIcons type={skill.type} style={{ width: '20px', height: '20px' }} />
             {selectedAction === 0 && <Typography ml={1}>{skill.getTotalDamage(player.status.status)}x{skill.count}</Typography>}
@@ -389,7 +407,7 @@ function CombatPage({data, handleFetch}) {
   );
 
   return (
-    <Container sx={{ backgroundColor: 'whitesmoke', minWidth:'1000px'}}>
+    <Container sx={{ minWidth:'1000px'}}>
       {/* 적 */}
       {enemy && (
       <Box sx={{ 
@@ -397,7 +415,8 @@ function CombatPage({data, handleFetch}) {
         flexDirection: 'row', 
         alignItems: 'center', 
         justifyContent: 'space-evenly', 
-        border: 'solid', 
+        border: '1px solid #ddd',
+        backgroundColor: 'whitesmoke', 
         padding: '10px' 
         }}
         >
@@ -407,24 +426,25 @@ function CombatPage({data, handleFetch}) {
                 width:'300px',
                 height: '80%'
               }}>
-                <img src={imageURL} alt='Not found' width={300} height={300} style={{ border: '1px solid' }} />
-                <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy.name}</Typography>
+                {/* <img src={imageURL} alt='Not found' width={300} height={300} style={{ border: '1px solid' }} /> */}
+                <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy?.name}</Typography>
+                <Typography variant='body2'>{enemy?.description}</Typography>
               </Paper>
             </Grid>
             <Grid item xs={6}>
               <Box>
-                <StatusBox actor={enemy} sx={{width:'90%'}}/>
+                <StatusBox actor={enemy} sx={{width:'90%'}} streamDone={streamDone}/>
                 <StatusEffectBar actor={enemy} />
               </Box>
             </Grid>
           </Grid>
         </Box>
       )}
-
+      {!streamDone && <LinearProgress/>}
       {/* 행동 */}
-      <Box sx={{ display: 'flex', flexDirection: 'row', height: '100px', border: '1px solid' }}>
+      {streamDone && <Box sx={{ display: 'flex', flexDirection: 'row', height: '100px', border: '1px solid #ddd', backgroundColor:'whitesmoke' }}>
         <Grid container>
-          <Grid item xs={6} sx={{ display: 'flex', border: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
+          <Grid item xs={6} sx={{ display: 'flex', borderTop: '1px solid', borderBottom: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
             <Paper
               elevation={enemyWin ? 4 : 1}
               sx={{
@@ -444,7 +464,7 @@ function CombatPage({data, handleFetch}) {
               <Typography>Action Type: {enemyAction?.action}</Typography>
             </Paper>
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', border: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
+          <Grid item xs={6} sx={{ display: 'flex', borderTop: '1px solid', borderBottom: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
           <Paper
               elevation={playerWin ? 4 : 1}
               sx={{
@@ -463,10 +483,10 @@ function CombatPage({data, handleFetch}) {
             </Paper>
           </Grid>
         </Grid>
-      </Box>
+      </Box>}
 
       {/* 플레이어 */}
-      <Box sx={{ border: 'solid' }}>
+      {streamDone && <Box sx={{ border: '1px solid #ddd', backgroundColor:'whitesmoke' }}>
         <Grid container>
           {/* 스킬 */}
           <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -499,7 +519,7 @@ function CombatPage({data, handleFetch}) {
             {player && (<StatusBox actor={player} isPlayer={true} sx={{width:'90%'}}/>)}
           </Grid>
         </Grid>
-      </Box>
+      </Box>}
 
       
       {/* 승리 */}

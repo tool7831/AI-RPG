@@ -14,6 +14,7 @@ function GamePage() {
   const [data, setData] = useState();
   const [worldView, setWorldView] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [streamDone, setStreamDone] = useState(true);
 
   useEffect(() => {
     // New start
@@ -55,6 +56,7 @@ function GamePage() {
         while (!done) {
           const { value, done: readerDone } = await reader.read();  // 스트림 청크 읽기
           done = readerDone;
+          setStreamDone(done);
 
           if (value) {
             const chunk = decoder.decode(value, { stream: true });  // 청크를 텍스트로 디코딩
@@ -97,8 +99,8 @@ function GamePage() {
     <div style={{padding:'10px'}}>
       {page === 1 && <PreSettingPage handleData={handleWorldView} />}
       {page === 2 && <PlayerPage worldView={worldView} handleFetch={handleStreamSubmit} />}
-      {page === 3 && <StoryPage data={data} handleFetch={handleStreamSubmit} />}
-      {page === 4 && <CombatPage data={data} handleFetch={handleStreamSubmit} />}
+      {page === 3 && <StoryPage data={data} handleFetch={handleStreamSubmit} streamDone={streamDone}/>}
+      {page === 4 && <CombatPage data={data} handleFetch={handleStreamSubmit} streamDone={streamDone} />}
     </div>
   )
 }

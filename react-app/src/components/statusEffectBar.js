@@ -24,7 +24,7 @@ function StatusEffectBar({ actor }) {
   return (
     <Container>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', height: '80px' }}>
-        {actor.status.curStatusEffects.map((statusEffect) => (
+        {actor?.status?.curStatusEffects && actor.status.curStatusEffects.map((statusEffect) => (
           <div key={statusEffect} onClick={(e) => handleItemClick(statusEffect, e)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid' }}>
             <StatusEffectIcons type={statusEffect.type}/>
             <Typography>{statusEffect.duration}</Typography>
