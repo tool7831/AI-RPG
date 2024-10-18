@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Box, Button, Typography, List, Grid, ListItemButton, Tabs, Tab, Fade, Modal, Backdrop, ListItem, Paper, LinearProgress } from '@mui/material';
 import { AttackBox, DefendBox, SmiteBox } from '../components/skillBox.js';
@@ -46,6 +46,13 @@ function CombatPage({data, handleFetch, streamDone}) {
   const [imageURL, setImageURL] = useState(null);
   const [stage, setStage] = useState();
 
+  const [logs, setLogs] = useState([]);
+  const logBoxRef = useRef(null);
+
+  const addLog = (message) => {
+    const newLogs = Array.isArray(message) ? message : [message];
+    setLogs((prevLogs) => [...prevLogs, ...newLogs]);
+  }
 
   useEffect(() => {
     if (Object.keys(data).includes('content') && typeof data.content === 'object' && data.content !== null) {
@@ -69,6 +76,13 @@ function CombatPage({data, handleFetch, streamDone}) {
       }
     }
   }, [data, streamDone]);
+
+  useEffect(() => {
+    // 로그가 추가될 때마다 스크롤을 맨 아래로 이동
+    if (logBoxRef.current) {
+      logBoxRef.current.scrollTop = logBoxRef.current.scrollHeight;
+    }
+  }, [logs]);
 
   const handleSkillSelect = (skill) => {
     setSelectedSkill(skill);
@@ -143,8 +157,8 @@ function CombatPage({data, handleFetch, streamDone}) {
     console.log('Player:', player_action, player_skill)
     if (player_action === 0 && enemy_action === 0) {
       // 둘다 공격
-      player.damaged(enemy_skill)
-      enemy.damaged(player_skill)
+      addLog(player.damaged(enemy_skill))
+      addLog(enemy.damaged(player_skill))
       setEnemyWin(true)
       setPlayerWin(true)
     }
@@ -154,61 +168,63 @@ function CombatPage({data, handleFetch, streamDone}) {
       setPlayerWin(false)
       if (enemy_skill.type === 'shield') {
         enemy.status.addBuff(enemy_skill)
-        enemy.damaged(player_skill)
+        addLog('Enemy: shield')
+        addLog(enemy.damaged(player_skill))
       }
       else if (enemy_skill.type === 'parry') {
         for (let i = 0; i < player_skill.count; i++) {
           const parry_rand = rand(0, 99)
           const parry = { ...player_skill, 'count': 1 }
           if (enemy_skill.value < parry_rand) {
-            console.log("parry_success")
-            player.damaged(parry)
+            addLog("Enemy: parry_success");
+            addLog(player.damaged(parry));
           }
           else {
-            console.log("parry_fail")
-            enemy.damaged(parry)
+            addLog("Enemy: parry_fail");
+            addLog(enemy.damaged(parry));
           }
         }
       }
       else if (enemy_skill.type === 'dodge') {
         for (let i = 0; i < player_skill.count; i++) {
-          const dodge_rand = rand(0, 99)
-          const dodge = { ...player_skill, 'count': 1 }
+          const dodge_rand = rand(0, 99);
+          const dodge = { ...player_skill, 'count': 1 };
           if (enemy_skill.value >= dodge_rand) {
-            console.log('dodge_fail')
-            enemy.damaged(dodge)
+            addLog('Enemy: dodge_fail');
+            addLog(enemy.damaged(dodge));
           }
           else {
-            console.log('dodge_success')
+            addLog('Enemy: dodge_success');
           }
         }
       }
     }
     else if (player_action === 0 && enemy_action === 2) {
       // 공격 승
-      setEnemyWin(false)
-      setPlayerWin(true)
-      enemy.damaged(player_skill)
+      setEnemyWin(false);
+      setPlayerWin(true);
+      addLog(enemy.damaged(player_skill));
     }
     else if (player_action === 1 && enemy_action === 0) {
       // 방어 승?
-      setEnemyWin(false)
-      setPlayerWin(true)
+      setEnemyWin(false);
+      setPlayerWin(true);
       if (player_skill.type === 'shield') {
-        player.status.addBuff(player_skill)
-        player.damaged(enemy_skill)
+        addLog('Player: shield')
+        player.status.addBuff(player_skill);
+        addLog(player.damaged(enemy_skill));
       }
       else if (player_skill.type === 'parry') {
         for (let i = 0; i < enemy_skill.count; i++) {
-          const parry_rand = rand(0, 99)
-          const attack = { ...enemy_skill, 'count': 1 }
+          const parry_rand = rand(0, 99);
+          const attack = { ...enemy_skill, 'count': 1 };
           if (player_skill.value < parry_rand) {
-            console.log("parry_success")
-            enemy.damaged(attack)
+            addLog("Player: parry_success");
+            addLog(enemy.damaged(attack));
           }
           else {
-            console.log("parry_fail")
-            player.damaged(attack)
+            addLog("Player: parry_fail");
+            addLog(player.damaged(attack));
           }
         }
       }
@@ -217,11 +233,11 @@ function CombatPage({data, handleFetch, streamDone}) {
           const dodge_rand = rand(0, 99)
           const attack = { ...enemy_skill, 'count': 1 }
           if (player_skill.value >= dodge_rand) {
-            console.log('dodge_fail')
-            player.damaged(attack)
+            addLog('Player: dodge_fail');
+            addLog(player.damaged(attack));
           }
           else {
-            console.log('dodge_success')
+            addLog('Player: dodge_success');
           }
         }
       }
@@ -231,9 +247,11 @@ function CombatPage({data, handleFetch, streamDone}) {
       setEnemyWin(true)
       setPlayerWin(true)
       if (player_skill.type === 'shield') {
+        addLog('Player: shield')
         player.status.addBuff(player_skill)
       }
       if (enemy_skill.type === 'shield') {
+        addLog('Enemy: shield')
         enemy.status.addBuff(enemy_skill)
       }
     }
@@ -255,7 +273,7 @@ function CombatPage({data, handleFetch, streamDone}) {
       // 강타 패
       setEnemyWin(true)
       setPlayerWin(false)
-      player.damaged(enemy_skill)
+      addLog(player.damaged(enemy_skill))
     }
     else if (player_action === 2 && enemy_action === 1) {
       // 강타 숭
@@ -307,7 +325,7 @@ function CombatPage({data, handleFetch, streamDone}) {
       setEnemyWin(true)
       setPlayerWin(false)
       if (enemy_action === 0) {
-        player.damaged(enemy_skill)
+        addLog(player.damaged(enemy_skill))
       }
       else if (enemy_action === 1) {
         if (enemy_skill.type === 'shield') {
@@ -331,7 +349,7 @@ function CombatPage({data, handleFetch, streamDone}) {
       setEnemyWin(false)
       setPlayerWin(true)
       if (player_action === 0) {
-        enemy.damaged(player_skill)
+        addLog(enemy.damaged(player_skill))
       }
       else if (player_action === 1) {
         if (player_skill.type === 'shield') {
@@ -425,15 +443,30 @@ function CombatPage({data, handleFetch, streamDone}) {
         }}
         >
           <Grid container>
-            <Grid item xs={6} sx={{ display: 'flex', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
+            <Grid item xs={6} sx={{ display: 'flex', flexDirection:'column', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
               <Paper sx={{
                 width:'300px',
-                height: '80%'
+                height: '60%',
+                overflowY: 'auto'
               }}>
                 {/* <img src={imageURL} alt='Not found' width={300} height={300} style={{ border: '1px solid' }} /> */}
                 <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy?.name}</Typography>
                 <Typography variant='body2'>{enemy?.description}</Typography>
               </Paper>
+              <Box 
+                ref={logBoxRef}
+                sx={{
+                  backgroundColor:'white',
+                  border:'1px solid',
+                  width:'280px',
+                  height:'30%',
+                  marginTop: '10px',
+                  overflowY: 'auto',
+                  padding:'10px'
+                }}>
+                <Typography>Log</Typography>
+                {logs.map((log)=><Typography variant='body2'>{log}</Typography>)}
+              </Box>
             </Grid>
             <Grid item xs={6}>
               <Box>
