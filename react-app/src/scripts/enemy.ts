@@ -42,6 +42,7 @@ export default class Enemy extends Actor {
         }
       }
     }
+    console.log(adjustedObj);
     return adjustedObj;
   }
 
@@ -49,39 +50,55 @@ export default class Enemy extends Actor {
     this.startTurn()
     this.canAction()
     if (this.getActionAvailable()) {
-      let cumulative = 0;
-      const action = rand(0, 99)
-      for (let [key, values] of Object.entries(this.frequency)) {
-        for (let i = 0; i < values.length; i++) {
-          cumulative += values[i];
-          if (action < cumulative) {
-            if (key === 'attacks') {
-              if (!this.attacks[i].isAvailable()) {
-                continue;
-              }
-              return {
-                action: 0,
-                skill: this.doAttack(i)
-              }
-            }
-            else if (key === 'defends') {
-              if (!this.defends[i].isAvailable()) {
-                continue;
-              }
-              return {
-                action: 1,
-                skill: this.doDefend(i)
-              }
-            }
-            else {
-              if (!this.smites[i].isAvailable()) {
-                continue;
-              }
-              return {
-                action: 2,
-                skill: this.doSmite(i)
-              }
-            }
+      // 사용 가능한 행동을 저장할 배열
+      const availableActions: Record<string, any>[] = [];
+    
+      // 사용 가능한 공격 스킬 추가
+      for (let i = 0; i < this.attacks.length; i++) {
+        if (this.attacks[i].isAvailable()) {
+          availableActions.push({
+            action: 0, // attack
+            skill: this.doAttack(i),
+            weight: this.frequency.attacks[i] || 0 // 가중치
+          });
+        }
+      }
+    
+      // 사용 가능한 방어 스킬 추가
+      for (let i = 0; i < this.defends.length; i++) {
+        if (this.defends[i].isAvailable()) {
+          availableActions.push({
+            action: 1, // defend
+            skill: this.doDefend(i),
+            weight: this.frequency.defends[i] || 0 // 가중치
+          });
+        }
+      }
+    
+      // 사용 가능한 스미트 스킬 추가
+      for (let i = 0; i < this.smites.length; i++) {
+        if (this.smites[i].isAvailable()) {
+          availableActions.push({
+            action: 2, // smite
+            skill: this.doSmite(i),
+            weight: this.frequency.smites[i] || 0 // 가중치
+          });
+        }
+      }
+    
+      // 가중치에 따라 랜덤으로 선택
+      if (availableActions.length > 0) {
+        const totalWeight = availableActions.reduce((sum, action) => sum + action.weight, 0);
+        const randValue = rand(0, totalWeight - 1);
+        let cumulative = 0;
+    
+        for (const action of availableActions) {
+          cumulative += action.weight;
+          if (randValue < cumulative) {
+            return {
+              action: action.action,
+              skill: action.skill
+            };
           }
         }
       }
