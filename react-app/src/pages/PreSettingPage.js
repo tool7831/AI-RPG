@@ -21,8 +21,8 @@ function PreSettingPage({handleData}) {
       .then(data => {
         console.log(data)
         setStory(data)
+        setIsLoading(false);
       });
-    setIsLoading(false);
   }, [])
 
   const handleSubmit = () => {

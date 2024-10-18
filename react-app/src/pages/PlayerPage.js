@@ -37,8 +37,8 @@ function PlayerPage({worldView, handleFetch, ...props}) {
       .then(data => {
         setClasses(data);
         setStats(data[0].stats)
+        setIsLoading(false);
       });
-    setIsLoading(false);
   }, [])
 
   const handleAttackToggle = (skillId) => {
