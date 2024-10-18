@@ -5,10 +5,12 @@ import { Container, Paper, Typography, Button } from '@mui/material';
 function PreSettingPage({handleData}) {
   const [story, setStory] = useState({});
   const [selectedStory, setSelectedStory] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const data = { user_id: "test" }
-    fetch('http://localhost:8000/worldview', {
+    setIsLoading(true);
+    fetch(process.env.REACT_APP_FAST_API_URL + '/worldview', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,6 +22,7 @@ function PreSettingPage({handleData}) {
         console.log(data)
         setStory(data)
       });
+    setIsLoading(false);
   }, [])
 
   const handleSubmit = () => {
@@ -35,6 +38,11 @@ function PreSettingPage({handleData}) {
   const handleStoryToggle = (key) => {
     setSelectedStory(key)
   }
+
+  if(isLoading) {
+    return <p>Loading ... </p>
+  }
+
   return (
     <div className="App">
       <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

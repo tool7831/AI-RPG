@@ -22,11 +22,12 @@ function PlayerPage({worldView, handleFetch, ...props}) {
   const [nameErrorMessage, setNameErrorMessage] = useState(null);
   const [descriptionError, setDescriptionError] = useState(false);
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
-    fetch(process.env.FAST_API_URL + '/skills', {
+    setIsLoading(true);
+    fetch(process.env.REACT_APP_FAST_API_URL + '/skills', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -37,6 +38,7 @@ function PlayerPage({worldView, handleFetch, ...props}) {
         setClasses(data);
         setStats(data[0].stats)
       });
+    setIsLoading(false);
   }, [])
 
   const handleAttackToggle = (skillId) => {
@@ -187,6 +189,10 @@ function PlayerPage({worldView, handleFetch, ...props}) {
 
     if (isValid)
       handleSubmit()
+  }
+
+  if(isLoading) {
+    return <p>Loading ... </p>
   }
 
   return (
