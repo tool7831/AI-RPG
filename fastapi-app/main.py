@@ -139,7 +139,7 @@ async def first(user_input: schemas.UserInput, current_user: schemas.UserRespons
     return StreamingResponse(stream_data(),status_code=status.HTTP_201_CREATED, media_type='str')
 
 @app.post("/story_gen")
-def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
+async def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
     thread_id = user_data.json_data['thread_id']
 
@@ -204,7 +204,7 @@ def load(current_user: schemas.UserResponse = Depends(crud.get_current_user), db
     return JSONResponse(content=user_data.json_data['save'])
 
 @app.get("/defeat")
-def load(current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
+def defeat(current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
     if not user_data:
         raise HTTPException(status_code=404, detail="User data not found")
