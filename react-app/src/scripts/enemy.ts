@@ -58,7 +58,7 @@ export default class Enemy extends Actor {
         if (this.attacks[i].isAvailable()) {
           availableActions.push({
             action: 0, // attack
-            skill: this.doAttack(i),
+            skill: i,
             weight: this.frequency.attacks[i] || 0 // 가중치
           });
         }
@@ -69,7 +69,7 @@ export default class Enemy extends Actor {
         if (this.defends[i].isAvailable()) {
           availableActions.push({
             action: 1, // defend
-            skill: this.doDefend(i),
+            skill: i,
             weight: this.frequency.defends[i] || 0 // 가중치
           });
         }
@@ -80,7 +80,7 @@ export default class Enemy extends Actor {
         if (this.smites[i].isAvailable()) {
           availableActions.push({
             action: 2, // smite
-            skill: this.doSmite(i),
+            skill: i,
             weight: this.frequency.smites[i] || 0 // 가중치
           });
         }
@@ -95,10 +95,24 @@ export default class Enemy extends Actor {
         for (const action of availableActions) {
           cumulative += action.weight;
           if (randValue < cumulative) {
-            return {
-              action: action.action,
-              skill: action.skill
-            };
+            if (action.action === 0) {
+              return {
+                action: action.action,
+                skill: this.doAttack(action.skill)
+              };
+            }
+            else if (action.action === 1) {
+              return {
+                action: action.action,
+                skill: this.doDefend(action.skill)
+              };
+            }
+            else if (action.action === 2) {
+              return {
+                action: action.action,
+                skill: this.doSmite(action.skill)
+              };
+            }
           }
         }
       }
