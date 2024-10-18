@@ -116,14 +116,18 @@ function CombatPage({data, handleFetch, streamDone}) {
         }
       })
       if (response.ok) {
-        console.log('defeat')
-        navigate('/home')
+        console.log('defeat');
+        setDefeatModal(!defeatModal);
+        navigate('/home');
+      }
+      else {
+        navigate('/home');
       }
     }
     catch (error) {
       alert(error);
+      
     }
-    setDefeatModal(!defeatModal);
   }
 
   const battle = (player_action) => {
@@ -563,6 +567,7 @@ function CombatPage({data, handleFetch, streamDone}) {
         closeAfterTransition 
         slots={{ backdrop: Backdrop }} 
         slotProps={{ backdrop: { timeout: 500, }, }}
+        disableEnforceFocus
       >
         <Fade in={defeatModal}>
           <Box sx={style}>
