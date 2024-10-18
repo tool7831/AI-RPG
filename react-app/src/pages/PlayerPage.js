@@ -36,7 +36,10 @@ function PlayerPage({worldView, handleFetch, ...props}) {
       .then(response => response.json())
       .then(data => {
         setClasses(data);
-        setStats(data[0].stats)
+        setStats(data[0].stats);
+        setSelectedAttacks(data[0].attacks.map((_,index)=>index));
+        setSelectedDefends(data[0].defends.map((_,index)=>index));
+        setSelectedSmites(data[0].smites.map((_,index)=>index));
         setIsLoading(false);
       });
   }, [])
@@ -100,9 +103,9 @@ function PlayerPage({worldView, handleFetch, ...props}) {
 
   const handleClassChange = (event, newValue) => {
     setSelectedClass(newValue);
-    setSelectedAttacks([]);
-    setSelectedDefends([]);
-    setSelectedSmites([]);
+    setSelectedAttacks(classes[newValue].attacks.map((_,index)=>index));
+    setSelectedDefends(classes[newValue].defends.map((_,index)=>index));
+    setSelectedSmites(classes[newValue].smites.map((_,index)=>index));
     setSelectedSkillType(0);
     setStats(classes[newValue].stats)
     setRemainingPoints(0);
