@@ -4,12 +4,12 @@ import { Item, Inventory, ItemType, InventoryData } from './item.ts';
 import Actor from './actor.ts';
 
 export class Player extends Actor {
+  static className: string = 'Player';
   public exp: number;
   public gold: number;
   public level: number;
   public nextExp: number;
   public statPoints: number;
-
   public inventory: Inventory;
 
 

@@ -8,6 +8,7 @@ function rand(min: number, max: number) {
 
 export default class Enemy extends Actor {
   private frequency: Record<string, any>;
+  static className: string = 'Enemy';
 
   constructor(name: string, description: string, statusData: StatusData, attacks: AttackData[], defends: DefendData[], smites: SmiteData[], frequency: Record<string, any>) {
     super(name, description, attacks, defends, smites);

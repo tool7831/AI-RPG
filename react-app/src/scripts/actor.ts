@@ -6,6 +6,7 @@ function rand(min: number, max: number) {
 }
 
 export default class Actor {
+  static className: string = 'Actor';
   public name: string;
   public description: string;
   public status: Status;
@@ -38,7 +39,7 @@ export default class Actor {
     for (let i = 0; i < skill.count; i++) {
       const attack_rand = rand(0, 99)
       if (attack_rand < skill.accuracy) {
-        returnMessage.push(this.constructor.name + ': damaged');
+        returnMessage.push((this.constructor as typeof Actor).className + ': damaged');
         this.status.damaged(skill.damage, skill.type, skill.penetration)
         if (skill.statusEffect) {
           const effect_rand = rand(0, 99);
@@ -49,7 +50,7 @@ export default class Actor {
         }
       }
       else {
-        returnMessage.push(this.constructor.name + ': miss');
+        returnMessage.push((this.constructor as typeof Actor).className + ': miss');
       }
     }
     return returnMessage
