@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/AI-RPG/static/css/main.30963333.css",
-    "main.js": "/AI-RPG/static/js/main.2e6e5e64.js",
+    "main.js": "/AI-RPG/static/js/main.1d7c5e9f.js",
     "static/js/453.cfd59cba.chunk.js": "/AI-RPG/static/js/453.cfd59cba.chunk.js",
     "index.html": "/AI-RPG/index.html",
     "main.30963333.css.map": "/AI-RPG/static/css/main.30963333.css.map",
-    "main.2e6e5e64.js.map": "/AI-RPG/static/js/main.2e6e5e64.js.map",
+    "main.1d7c5e9f.js.map": "/AI-RPG/static/js/main.1d7c5e9f.js.map",
     "453.cfd59cba.chunk.js.map": "/AI-RPG/static/js/453.cfd59cba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.30963333.css",
-    "static/js/main.2e6e5e64.js"
+    "static/js/main.1d7c5e9f.js"
   ]
 }
