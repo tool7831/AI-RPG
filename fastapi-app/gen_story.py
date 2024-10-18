@@ -65,7 +65,7 @@ def run(thread, message):
             yield i[1].value
     else:
       response = 'error'
-      return response
+      yield response
   else:
     for i in stream_submit_message(message, thread, STORY_ID):
         if i[0] == 'text':

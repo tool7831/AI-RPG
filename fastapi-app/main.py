@@ -20,14 +20,11 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 test = True
-origins = [
-    "http://localhost:3000",  # React 애플리케이션이 실행되는 도메인
-]
 
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # 여기에 React 애플리케이션의 URL을 명시할 수 있습니다.
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
