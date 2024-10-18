@@ -23,7 +23,7 @@ const style = {
   p: 4,
   backgroundColor: 'white'
 };
-function StoryPage({data, handleFetch}) {
+function StoryPage({data, handleFetch, streamDone}) {
   const [story, setStory] = useState();
   const [choices, setChoices] = useState();
   const [player, setPlayer] = useState();
@@ -125,7 +125,7 @@ function StoryPage({data, handleFetch}) {
           }}
         >
           <Typography variant='h5'>Stage {stage}</Typography>
-          <StoryBox story={story} choices={choices} handleChoice={handleChoice}/>
+          <StoryBox story={story} choices={choices} handleChoice={handleChoice} streamDone={streamDone}/>
 
           <Box sx={{ 
             display: 'flex', 

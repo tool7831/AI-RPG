@@ -2,7 +2,7 @@ import React from 'react';
 import { Paper, Typography, Button, Box } from '@mui/material';
 import { StatIcons } from './icons.js';
 
-function StoryBox({ story, choices, handleChoice, sx ={}, ...props }) {
+function StoryBox({ story, choices, handleChoice, streamDone, sx ={}, ...props }) {
 
   const defaultSx = {
     width: "70%",
@@ -27,6 +27,7 @@ function StoryBox({ story, choices, handleChoice, sx ={}, ...props }) {
             key={index}
             variant="contained"
             fullWidth
+            disabled={!streamDone}
             sx={{ mb: 2, backgroundColor: '#d3d3d3', color: 'black', textTransform:'none' }}
             onClick={() => handleChoice(index)}
           >

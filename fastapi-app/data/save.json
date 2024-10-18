@@ -1,676 +1,196 @@
 {
-    "name": "enemy_schema",
-    "strict": true,
-    "schema": {
-        "type": "object",
-        "properties": {
-            "combat": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "The name of the enemy."
+    {
+        "combat": {
+            "name": "Night Maw Wraith",
+            "description": "어두운 에너지로 감싸인 이 생명체는 과거의 이상한 마법으로 재탄생한 고대 생물입니다. 은하의 심연에서 태어난 이들은 매우 민첩하며, 당신의 정신을 혼란스럽게 할 수 있는 능력을 가지고 있습니다.",
+            "status": {
+                "hp": 300,
+                "mp": 100,
+                "shield": 0,
+                "strength": 20,
+                "dexterity": 15,
+                "intelligence": 12,
+                "agility": 18,
+                "luck": 10,
+                "defense": 15,
+                "resistance": 12,
+                "toughness": 10,
+                "mp_regeneration": 5,
+                "hp_regeneration": 2
+            },
+            "attacks": [
+                {
+                    "name": "Shadow Slash",
+                    "type": "melee",
+                    "defaultDamage": 30,
+                    "coef": {
+                        "hp": null,
+                        "mp": null,
+                        "strength": 1.5,
+                        "dexterity": 1,
+                        "intelligence": null,
+                        "luck": null,
+                        "defense": null,
+                        "agility": null,
+                        "resistance": null,
+                        "toughness": null
                     },
-                    "description": {
-                        "type": "string",
-                        "description": "A description providing context about the enemy."
-                    },
-                    "status": {
-                        "type": "object",
-                        "properties": {
-                            "hp": {
-                                "type": "number",
-                                "description": "Hit points of the enemy."
-                            },
-                            "mp": {
-                                "type": "number",
-                                "description": "Mana points of the enemy."
-                            },
-                            "shield": {
-                                "type": "number",
-                                "description": "Shield points for additional defense."
-                            },
-                            "strength": {
-                                "type": "number",
-                                "description": "Physical strength of the enemy."
-                            },
-                            "dexterity": {
-                                "type": "number",
-                                "description": "Dexterity which affects attack accuracy."
-                            },
-                            "intelligence": {
-                                "type": "number",
-                                "description": "Intelligence influencing magic power."
-                            },
-                            "agility": {
-                                "type": "number",
-                                "description": "Agility of the enemy affecting speed."
-                            },
-                            "luck": {
-                                "type": "number",
-                                "description": "Luck influencing critical hit chances and item drops."
-                            },
-                            "defense": {
-                                "type": "number",
-                                "description": "Defense points reducing incoming damage."
-                            },
-                            "resistance": {
-                                "type": "number",
-                                "description": "Resistance to magic and elemental attacks."
-                            },
-                            "toughness": {
-                                "type": "number",
-                                "description": "Toughness affecting damage absorption."
-                            },
-                            "mp_regeneration": {
-                                "type": "number",
-                                "description": "Mana regeneration rate per turn."
-                            },
-                            "hp_regeneration": {
-                                "type": "number",
-                                "description": "Health regeneration rate per turn."
-                            }
-                        },
-                        "required": [
-                            "hp",
-                            "mp",
-                            "shield",
-                            "strength",
-                            "dexterity",
-                            "intelligence",
-                            "agility",
-                            "luck",
-                            "defense",
-                            "resistance",
-                            "toughness",
-                            "mp_regeneration",
-                            "hp_regeneration"
-                        ],
-                        "additionalProperties": false
-                    },
-                    "attacks": {
-                        "type": "array",
-                        "description": "List of attack skills",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "The name of the attack skill."
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "melee",
-                                        "magic"
-                                    ],
-                                    "description": "The type of the attack."
-                                },
-                                "defaultDamage": {
-                                    "type": "integer",
-                                    "description": "The default damage of the attack."
-                                },
-                                "coef": {
-                                    "type": "object",
-                                    "description": "Coefficients based on character status.",
-                                    "properties": {
-                                        "hp": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "mp": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "strength": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "dexterity": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "intelligence": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "luck": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "defense": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "agility": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "resistance": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "toughness": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "hp",
-                                        "mp",
-                                        "strength",
-                                        "dexterity",
-                                        "intelligence",
-                                        "luck",
-                                        "defense",
-                                        "agility",
-                                        "resistance",
-                                        "toughness"
-                                    ]
-                                },
-                                "count": {
-                                    "type": "integer",
-                                    "description": "Number of attacks on the skill"
-                                },
-                                "penetration": {
-                                    "type": "integer",
-                                    "description": "Penetration percentage of the attack."
-                                },
-                                "accuracy": {
-                                    "type": "integer",
-                                    "description": "Accuracy percentage of the attack."
-                                },
-                                "cooldown": {
-                                    "type": "integer",
-                                    "description": "Cooldown duration of the attack."
-                                },
-                                "statusEffect": {
-                                    "anyOf": [
-                                        {
-                                            "type": "object",
-                                            "description": "Optional status effect associated with the attack.",
-                                            "properties": {
-                                                "type": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "Bleed",
-                                                        "Poison",
-                                                        "Burn",
-                                                        "Stun",
-                                                        "Freeze",
-                                                        "Paralysis",
-                                                        "Sleep",
-                                                        "Confusion",
-                                                        "Blindness",
-                                                        "Charm",
-                                                        "Fear",
-                                                        "Weaken"
-                                                    ]
-                                                },
-                                                "duration": {
-                                                    "type": "integer",
-                                                    "description": "Duration of the status effect."
-                                                },
-                                                "defaultValue": {
-                                                    "anyOf": [
-                                                        {
-                                                            "type": "integer"
-                                                        },
-                                                        {
-                                                            "type": "number"
-                                                        }
-                                                    ],
-                                                    "description": "Default value for the status effect."
-                                                },
-                                                "coef": {
-                                                    "type": "object",
-                                                    "description": "Coefficients for the status effect based on character status.",
-                                                    "properties": {
-                                                        "hp": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "mp": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "strength": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "dexterity": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "intelligence": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "luck": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "defense": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "agility": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "resistance": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "toughness": {
-                                                            "type": [
-                                                                "number",
-                                                                "null"
-                                                            ]
-                                                        }
-                                                    },
-                                                    "additionalProperties": false,
-                                                    "required": [
-                                                        "hp",
-                                                        "mp",
-                                                        "strength",
-                                                        "dexterity",
-                                                        "intelligence",
-                                                        "luck",
-                                                        "defense",
-                                                        "agility",
-                                                        "resistance",
-                                                        "toughness"
-                                                    ]
-                                                },
-                                                "accuracy": {
-                                                    "type": "integer",
-                                                    "description": "Accuracy percentage of the status effect."
-                                                }
-                                            },
-                                            "additionalProperties": false,
-                                            "required": [
-                                                "type",
-                                                "duration",
-                                                "defaultValue",
-                                                "coef",
-                                                "accuracy"
-                                            ]
-                                        },
-                                        {
-                                            "type": "null",
-                                            "description": "No status effect"
-                                        }
-                                    ]
-                                },
-                                "curCooldown": {
-                                    "type": "integer",
-                                    "description": "Current cooldown time for the skill."
-                                }
-                            },
-                            "required": [
-                                "name",
-                                "type",
-                                "defaultDamage",
-                                "coef",
-                                "count",
-                                "penetration",
-                                "accuracy",
-                                "cooldown",
-                                "statusEffect",
-                                "curCooldown"
-                            ],
-                            "additionalProperties": false
-                        }
-                    },
-                    "defends": {
-                        "type": "array",
-                        "description": "List of defense skills.",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "The name of the defense skill."
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "shield",
-                                        "parry",
-                                        "dodge"
-                                    ],
-                                    "description": "The type of defense."
-                                },
-                                "defaultValue": {
-                                    "type": "integer",
-                                    "description": "The default value of defense."
-                                },
-                                "coef": {
-                                    "type": "object",
-                                    "description": "Coefficients based on status.",
-                                    "properties": {
-                                        "hp": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "mp": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "strength": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "dexterity": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "intelligence": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "luck": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "defense": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "agility": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "resistance": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "toughness": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "hp",
-                                        "mp",
-                                        "strength",
-                                        "dexterity",
-                                        "intelligence",
-                                        "luck",
-                                        "defense",
-                                        "agility",
-                                        "resistance",
-                                        "toughness"
-                                    ]
-                                },
-                                "duration": {
-                                    "type": "integer",
-                                    "description": "The duration of the defense skill effect."
-                                },
-                                "cooldown": {
-                                    "type": "integer",
-                                    "description": "Cooldown duration of the defense skill."
-                                },
-                                "curCooldown": {
-                                    "type": "integer",
-                                    "description": "Current cooldown time for the skill."
-                                }
-                            },
-                            "required": [
-                                "name",
-                                "type",
-                                "defaultValue",
-                                "coef",
-                                "duration",
-                                "cooldown",
-                                "curCooldown"
-                            ],
-                            "additionalProperties": false
-                        }
-                    },
-                    "smites": {
-                        "type": "array",
-                        "description": "List of smite skills.",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "The name of the smite skill."
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "enum": [
-                                        "hp_scaling",
-                                        "damage",
-                                        "stun"
-                                    ],
-                                    "description": "The type of smite effect."
-                                },
-                                "defaultValue": {
-                                    "anyOf": [
-                                        {
-                                            "type": "integer"
-                                        },
-                                        {
-                                            "type": "number"
-                                        }
-                                    ],
-                                    "description": "Default value for the smite skill."
-                                },
-                                "coef": {
-                                    "type": "object",
-                                    "description": "Coefficients based on status.",
-                                    "properties": {
-                                        "hp": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "mp": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "strength": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "dexterity": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "intelligence": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "luck": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "defense": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "agility": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "resistance": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        },
-                                        "toughness": {
-                                            "type": [
-                                                "number",
-                                                "null"
-                                            ]
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "hp",
-                                        "mp",
-                                        "strength",
-                                        "dexterity",
-                                        "intelligence",
-                                        "luck",
-                                        "defense",
-                                        "agility",
-                                        "resistance",
-                                        "toughness"
-                                    ]
-                                },
-                                "duration": {
-                                    "type": "integer",
-                                    "description": "Only applicable for stun type, duration of the effect."
-                                },
-                                "cooldown": {
-                                    "type": "integer",
-                                    "description": "Cooldown duration of the smite skill."
-                                },
-                                "curCooldown": {
-                                    "type": "integer",
-                                    "description": "Current cooldown time for the skill."
-                                }
-                            },
-                            "required": [
-                                "name",
-                                "type",
-                                "defaultValue",
-                                "coef",
-                                "duration",
-                                "cooldown",
-                                "curCooldown"
-                            ],
-                            "additionalProperties": false
-                        }
-                    },
-                    "frequency": {
-                        "type": "object",
-                        "properties": {
-                            "attacks": {
-                                "type": "array",
-                                "description": "Usage frequency percentages for attack skills.",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            },
-                            "defends": {
-                                "type": "array",
-                                "description": "Usage frequency percentages for defense skills.",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            },
-                            "smites": {
-                                "type": "array",
-                                "description": "Usage frequency percentages for smite skills.",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            }
-                        },
-                        "required": [
-                            "attacks",
-                            "defends",
-                            "smites"
-                        ],
-                        "additionalProperties": false
-                    }
+                    "count": 1,
+                    "penetration": 100,
+                    "accuracy": 95,
+                    "cooldown": 2,
+                    "statusEffect": null,
+                    "curCooldown": 0
                 },
-                "required": [
-                    "name",
-                    "description",
-                    "status",
-                    "attacks",
-                    "defends",
-                    "smites",
-                    "frequency"
+                {
+                    "name": "Void Grasp",
+                    "type": "magic",
+                    "defaultDamage": 40,
+                    "coef": {
+                        "hp": null,
+                        "mp": null,
+                        "strength": null,
+                        "dexterity": null,
+                        "intelligence": 1.7,
+                        "luck": null,
+                        "defense": null,
+                        "agility": null,
+                        "resistance": null,
+                        "toughness": null
+                    },
+                    "count": 1,
+                    "penetration": 100,
+                    "accuracy": 90,
+                    "cooldown": 3,
+                    "statusEffect": {
+                        "type": "Confusion",
+                        "duration": 2,
+                        "defaultValue": 0,
+                        "coef": {
+                            "hp": null,
+                            "mp": null,
+                            "strength": null,
+                            "dexterity": null,
+                            "intelligence": null,
+                            "luck": null,
+                            "defense": null,
+                            "agility": null,
+                            "resistance": null,
+                            "toughness": null
+                        },
+                        "accuracy": 80
+                    },
+                    "curCooldown": 0
+                }
+            ],
+            "defends": [
+                {
+                    "name": "Shadow Veil",
+                    "type": "shield",
+                    "defaultValue": 20,
+                    "coef": {
+                        "hp": null,
+                        "mp": null,
+                        "strength": null,
+                        "dexterity": null,
+                        "intelligence": null,
+                        "luck": null,
+                        "defense": 5,
+                        "agility": null,
+                        "resistance": null,
+                        "toughness": null
+                    },
+                    "duration": 2,
+                    "cooldown": 5,
+                    "curCooldown": 0
+                },
+                {
+                    "name": "Evasive Maneuver",
+                    "type": "dodge",
+                    "defaultValue": 15,
+                    "coef": {
+                        "hp": null,
+                        "mp": null,
+                        "strength": null,
+                        "dexterity": 1.5,
+                        "intelligence": null,
+                        "luck": null,
+                        "defense": null,
+                        "agility": 3,
+                        "resistance": null,
+                        "toughness": null
+                    },
+                    "duration": 1,
+                    "cooldown": 4,
+                    "curCooldown": 0
+                }
+            ],
+            "smites": [
+                {
+                    "name": "Wraith's Call",
+                    "type": "damage",
+                    "defaultValue": 50,
+                    "coef": {
+                        "hp": null,
+                        "mp": null,
+                        "strength": null,
+                        "dexterity": null,
+                        "intelligence": 2,
+                        "luck": null,
+                        "defense": null,
+                        "agility": null,
+                        "resistance": null,
+                        "toughness": null
+                    },
+                    "duration": 1,
+                    "cooldown": 5,
+                    "curCooldown": 0
+                },
+                {
+                    "name": "Paralyze Strike",
+                    "type": "stun",
+                    "defaultValue": 0,
+                    "coef": {
+                        "hp": null,
+                        "mp": null,
+                        "strength": null,
+                        "dexterity": null,
+                        "intelligence": null,
+                        "luck": null,
+                        "defense": null,
+                        "agility": null,
+                        "resistance": null,
+                        "toughness": null
+                    },
+                    "duration": 3,
+                    "cooldown": 6,
+                    "curCooldown": 0
+                }
+            ],
+            "frequency": {
+                "attacks": [
+                    70,
+                    30
                 ],
-                "additionalProperties": false
+                "defends": [
+                    60,
+                    40
+                ],
+                "smites": [
+                    40,
+                    60
+                ]
             }
-        },
-        "required": [
-            "combat"
-        ],
-        "additionalProperties": false
+        }
+    },
+    {
+        "rewards": [
+            {
+                "exp": 150
+            },
+            {
+                "gold": 75
+            }
+        ]
     }
 }
