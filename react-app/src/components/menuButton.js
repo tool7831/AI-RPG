@@ -35,7 +35,13 @@ function MenuButton({actor, onClose, ...props}) {
     return (
         <div>
             <Box {...props}>
-                <Button variant="contained" sx={{ borderRadius: 2 }} onClick={handleInventoryToggle} >Inventory</Button>
+                <Button 
+                    variant="contained" 
+                    sx={{ borderRadius: 2 }} 
+                    onClick={handleInventoryToggle} 
+                >
+                    Inventory
+                </Button>
             </Box>
             
             <Modal open={inventoryVisible}>

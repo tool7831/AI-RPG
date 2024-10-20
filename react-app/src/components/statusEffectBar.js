@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Typography, Box, Container, Popover} from '@mui/material';
 import { StatusEffectIcons } from './icons';
 
-function StatusEffectBar({ actor }) {
+function StatusEffectBar({ actor, ...props }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIcon, setSelectedIcon] = useState(null);
 
@@ -22,7 +22,7 @@ function StatusEffectBar({ actor }) {
     }, 200)
   };
   return (
-    <Container>
+    <Container {...props}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', height: '80px' }}>
         {actor?.status?.curStatusEffects && actor.status.curStatusEffects.map((statusEffect) => (
           <div key={statusEffect} onClick={(e) => handleItemClick(statusEffect, e)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid' }}>

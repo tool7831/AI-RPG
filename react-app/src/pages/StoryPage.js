@@ -116,7 +116,7 @@ function StoryPage({data, handleFetch, streamDone}) {
 
   return (
     <div className="App">
-      <Container sx={{border: 'solid', minWidth:'700px'}}>
+      <Container sx={{ minWidth:'700px'}}>
         <Box sx={{
             display: 'flex',
             flexDirection: 'column', 

@@ -65,7 +65,7 @@ function PreSettingPage({handleData}) {
               <Typography>{story[key]}</Typography>
             </Paper>
           ))}
-          <Button sx={{margin:2}} variant='contained' onClick={handleSubmit}>Submit</Button>
+          <Button sx={{margin:2}} variant='contained' onClick={handleSubmit} disabled={!selectedStory}>Submit</Button>
         </div>
       </Container>
     </div>

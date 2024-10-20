@@ -26,7 +26,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-function CombatPage({data, handleFetch, streamDone}) {
+function CombatPage({ data, handleFetch, streamDone }) {
   const [player, setPlayer] = useState();
   const [enemy, setEnemy] = useState();
 
@@ -110,7 +110,7 @@ function CombatPage({data, handleFetch, streamDone}) {
     const data = {
       player: player.toDict(),
       stage: stage,
-      story: { text: 'Player win ' + enemy.name + '. Player earn ' + toString(rewards)}
+      story: { text: 'Player win ' + enemy.name + '. Player earn ' + toString(rewards) }
     }
     handleFetch(process.env.REACT_APP_FAST_API_URL + '/story_gen', {
       method: 'POST',
@@ -140,7 +140,7 @@ function CombatPage({data, handleFetch, streamDone}) {
     }
     catch (error) {
       alert(error);
-      
+
     }
   }
 
@@ -387,12 +387,12 @@ function CombatPage({data, handleFetch, streamDone}) {
     <Box sx={{ padding: '10px' }}>
       <List>
         {selectedSkill === null && skills.map((skill, index) => (
-          <ListItemButton 
-            key={index} 
-            onClick={() => handleSkillSelect(index)} 
-            disabled={skill.curCooldown !== 0 || !player.getActionAvailable()} 
+          <ListItemButton
+            key={index}
+            onClick={() => handleSkillSelect(index)}
+            disabled={skill.curCooldown !== 0 || !player.getActionAvailable()}
             sx={{
-              borderBottom:'1px solid'
+              borderBottom: '1px solid'
             }}
           >
             <Typography mr={1}>{skill.name}</Typography>
@@ -429,104 +429,157 @@ function CombatPage({data, handleFetch, streamDone}) {
   );
 
   return (
-    <Container sx={{ minWidth:'1000px'}}>
+    <Container
+      sx={{
+        border: '2px solid',
+        minWidth: '1000px',
+        backgroundColor: 'whitesmoke',
+        borderRadius: '10px'
+      }}
+    >
       {/* 적 */}
       {enemy && (
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        justifyContent: 'space-evenly', 
-        border: '1px solid #ddd',
-        backgroundColor: 'whitesmoke', 
-        padding: '10px' 
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+          padding: '10px'
         }}
         >
           <Grid container>
-            <Grid item xs={6} sx={{ display: 'flex', flexDirection:'column', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
-              <Paper sx={{
-                width:'300px',
-                height: '60%',
-                overflowY: 'auto'
-              }}>
+            <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  width: '300px',
+                  height: '60%',
+                  overflowY: 'auto',
+                  border: '1px solid #ddd'
+                }}>
                 {/* <img src={imageURL} alt='Not found' width={300} height={300} style={{ border: '1px solid' }} /> */}
                 <Typography variant='h5' sx={{ textAlign: 'center' }}>{enemy?.name}</Typography>
                 <Typography variant='body2'>{enemy?.description}</Typography>
               </Paper>
-              <Box 
+              <Box
                 ref={logBoxRef}
                 sx={{
-                  backgroundColor:'white',
-                  border:'1px solid',
-                  width:'280px',
-                  height:'30%',
+                  backgroundColor: 'white',
+                  border: '1px solid',
+                  width: '280px',
+                  height: '30%',
                   marginTop: '10px',
                   overflowY: 'auto',
-                  padding:'10px'
+                  padding: '10px'
                 }}>
                 <Typography>Log</Typography>
-                {logs.map((log)=><Typography variant='body2'>{log}</Typography>)}
+                {logs.map((log) => <Typography variant='body2'>{log}</Typography>)}
               </Box>
             </Grid>
             <Grid item xs={6}>
               <Box>
-                <StatusBox actor={enemy} sx={{width:'90%'}} streamDone={streamDone}/>
+                <StatusBox
+                  actor={enemy}
+                  sx={{ width: '90%' }}
+                  streamDone={streamDone}
+                  elevation={0}
+                />
                 <StatusEffectBar actor={enemy} />
               </Box>
             </Grid>
           </Grid>
         </Box>
       )}
-      {!streamDone && <LinearProgress/>}
+      {!streamDone && <LinearProgress />}
       {/* 행동 */}
-      {streamDone && <Box sx={{ display: 'flex', flexDirection: 'row', height: '100px', border: '1px solid #ddd', backgroundColor:'whitesmoke' }}>
-        <Grid container>
-          <Grid item xs={6} sx={{ display: 'flex', borderTop: '1px solid', borderBottom: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
-            <Paper
-              elevation={enemyWin ? 4 : 1}
+      {streamDone &&
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            height: '100px',
+          }}
+        >
+          <Grid container>
+            <Grid item xs={6}
               sx={{
-                border: enemyWin ? '2px solid #3f51b5' : '1px solid #ddd',
-                width: '90%', height: '90%',
-                display: 'flex', flexDirection: 'column',
-                justifyContent: 'center', alignItems: 'center',
+                display: 'flex',
+                flexGrow: '1',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }
+              }>
+              <Paper
+                elevation={enemyWin ? 4 : 1}
+                sx={{
+                  border: enemyWin ? '2px solid #3f51b5' : '1px solid #ddd',
+                  width: '90%', height: '90%',
+                  display: 'flex', flexDirection: 'column',
+                  justifyContent: 'center', alignItems: 'center',
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Typography variant='h5' mr={1}>{enemyAction?.skill.name}</Typography>
+                  <SkillIcons type={enemyAction?.skill.type} style={{ width: '30px', height: '30px' }} />
+                  {enemyAction?.action === 0 && <Typography variant='h5' ml={1}>{enemyAction?.skill.damage}x{enemyAction?.skill.count}</Typography>}
+                  {enemyAction?.action === 1 && <Typography variant='h5' ml={1}>{enemyAction?.skill.value}</Typography>}
+                  {enemyAction?.action === 2 && <Typography variant='h5' ml={1}>{enemyAction?.skill.value}</Typography>}
+                </Box>
+                <Typography>Action Type: {enemyAction?.action}</Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={6}
+              sx={{
+                display: 'flex',
+                borderTop: '2px solid',
+                borderLeft: '2px solid',
+                borderRight: '2px solid',
+                borderTopLeftRadius: '10px',
+                borderTopRightRadius: '10px',
+                flexGrow: '1',
+                justifyContent: 'center',
+                alignItems: 'center'
               }}
             >
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Typography variant='h5' mr={1}>{enemyAction?.skill.name}</Typography>
-                <SkillIcons type={enemyAction?.skill.type} style={{ width: '30px', height: '30px' }} />
-                {enemyAction?.action === 0 && <Typography variant='h5' ml={1}>{enemyAction?.skill.damage}x{enemyAction?.skill.count}</Typography>}
-                {enemyAction?.action === 1 && <Typography variant='h5' ml={1}>{enemyAction?.skill.value}</Typography>}
-                {enemyAction?.action === 2 && <Typography variant='h5' ml={1}>{enemyAction?.skill.value}</Typography>}
-              </Box>
-              <Typography>Action Type: {enemyAction?.action}</Typography>
-            </Paper>
+              <Paper
+                elevation={playerWin ? 4 : 1}
+                sx={{
+                  border: playerWin ? '2px solid #3f51b5' : '1px solid #ddd',
+                  width: '90%', height: '90%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Typography variant='h5' mr={1}>{playerAction?.skill.name}</Typography>
+                  <SkillIcons type={playerAction?.skill.type} style={{ width: '30px', height: '30px' }} />
+                  {playerAction?.action === 0 && <Typography variant='h5' ml={1}>{playerAction?.skill.damage}x{playerAction?.skill.count}</Typography>}
+                  {playerAction?.action === 1 && <Typography variant='h5' ml={1}>{playerAction?.skill.value}</Typography>}
+                  {playerAction?.action === 2 && <Typography variant='h5' ml={1}>{playerAction?.skill.value}</Typography>}
+                </Box>
+                <Typography>Action Type: {playerAction?.action}</Typography>
+              </Paper>
+            </Grid>
           </Grid>
-          <Grid item xs={6} sx={{ display: 'flex', borderTop: '1px solid', borderBottom: '1px solid', flexGrow: '1', justifyContent: 'center', alignItems: 'center' }}>
-          <Paper
-              elevation={playerWin ? 4 : 1}
-              sx={{
-                border: playerWin ? '2px solid #3f51b5' : '1px solid #ddd',
-                width: '90%', height: '90%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
-              }}
-            >
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Typography variant='h5' mr={1}>{playerAction?.skill.name}</Typography>
-                <SkillIcons type={playerAction?.skill.type} style={{ width: '30px', height: '30px' }} />
-                {playerAction?.action === 0 && <Typography variant='h5' ml={1}>{playerAction?.skill.damage}x{playerAction?.skill.count}</Typography>}
-                {playerAction?.action === 1 && <Typography variant='h5' ml={1}>{playerAction?.skill.value}</Typography>}
-                {playerAction?.action === 2 && <Typography variant='h5' ml={1}>{playerAction?.skill.value}</Typography>}
-              </Box>
-              <Typography>Action Type: {playerAction?.action}</Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>}
+        </Box>}
 
       {/* 플레이어 */}
-      {streamDone && <Box sx={{ border: '1px solid #ddd', backgroundColor:'whitesmoke' }}>
+      {streamDone && 
+      <Box 
+        sx={{ 
+          backgroundColor: 'whitesmoke' 
+        }}
+      >
         <Grid container>
           {/* 스킬 */}
-          <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Grid item xs={6} 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              justifyContent: 'space-between', 
+              borderLeft: '2px solid',
+              borderTop: '2px solid',
+              borderTopLeftRadius: '10px', 
+            }
+          }>
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Tabs value={selectedAction} onChange={handleActionChange} indicatorColor="primary" textColor="primary" variant="fullWidth">
@@ -546,24 +599,27 @@ function CombatPage({data, handleFetch, streamDone}) {
             </Box>
           </Grid>
           {/* 상태창 */}
-          <Grid item xs={6}>
+          <Grid item xs={6} sx={{borderRight:'2px solid'}}> 
             {player && (
-              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <StatusEffectBar actor={player} />
-                <MenuButton actor={player} onClose={() => setRender(render + 1)} />
+              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', width:'95%'}}>
+                <StatusEffectBar actor={player}/>
+                <Box sx={{display:'flex', alignItems: 'flex-end', justifyContent: 'flex-end', height:'80px'}}>
+                  <MenuButton actor={player} onClose={() => setRender(render + 1)} />
+                </Box>
+                
               </Box>
             )}
-            {player && (<StatusBox actor={player} isPlayer={true} sx={{width:'90%'}}/>)}
+            {player && (<StatusBox actor={player} isPlayer={true} sx={{ width: '90%' }} />)}
           </Grid>
         </Grid>
       </Box>}
 
-      
+
       {/* 승리 */}
-      <Modal 
-        open={victoryModal} 
-        closeAfterTransition 
-        slots={{ backdrop: Backdrop }} 
+      <Modal
+        open={victoryModal}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
         slotProps={{ backdrop: { timeout: 500, }, }}
       >
         <Fade in={victoryModal}>
@@ -579,15 +635,15 @@ function CombatPage({data, handleFetch, streamDone}) {
                   return reward.items.map((item) => {
                     return (
                       <div>
-                        <ItemBox item={item} sx={{}}/>
+                        <ItemBox item={item} sx={{}} />
                       </div>
                     )
                   })
                 return null;
               })}
-              
-              
-              {}
+
+
+              { }
             </ListItem>
             <Button sx={{ position: 'absolute', bottom: '0%', right: '0%' }} onClick={handleVictory} >next</Button>
           </Box>
@@ -595,10 +651,10 @@ function CombatPage({data, handleFetch, streamDone}) {
       </Modal>
 
       {/* 패배 */}
-      <Modal 
-        open={defeatModal} 
-        closeAfterTransition 
-        slots={{ backdrop: Backdrop }} 
+      <Modal
+        open={defeatModal}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
         slotProps={{ backdrop: { timeout: 500, }, }}
         disableEnforceFocus
       >
