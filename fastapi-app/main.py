@@ -77,9 +77,12 @@ def read_users_me(current_user: schemas.UserResponse = Depends(crud.get_current_
 def read_root():
     filepath = "./data/worldview/kr"
     data = {}
-    for file in os.listdir(filepath):
-        f = open(os.path.join(filepath,file), "r")
-        data[file] = f.read()
+    for folder in os.listdir(filepath):
+        for file in os.listdir(os.path.join(filepath,folder)):
+            f = open(os.path.join(filepath,folder,file), "r")
+            if not folder in data:
+                data[folder] = {}
+            data[folder][file] = f.read()
     return JSONResponse(content=data)
 
 @app.post("/first",  response_model=schemas.UserResponse)
@@ -103,7 +106,11 @@ async def first(user_input: schemas.UserInput, current_user: schemas.UserRespons
     message = [
         {
             "type": "text",
-            "text": {"Worldview":worldView}
+            "text": {"Worldview summary":worldView['summary']}
+        },
+        {
+            "type": "text",
+            "text": {"Info":worldView['0']}
         },
         {
             "type": "text",
@@ -130,13 +137,13 @@ async def first(user_input: schemas.UserInput, current_user: schemas.UserRespons
             print(chunk, flush=True, end='')
             yield chunk
         yield "}"
-        save = dict({"stage": user_input.stage + 1,"player":user_input.player, "content": json.loads(content)})    
+        save = dict({"worldview": worldView,"stage": user_input.stage + 1,"player":user_input.player, "content": json.loads(content)})    
         updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
             "thread_id": user_thread.id if test else None,
             "save": save
         })
         
-    return StreamingResponse(stream_data(),status_code=status.HTTP_201_CREATED, media_type='str')
+    return StreamingResponse(stream_data(), status_code=status.HTTP_201_CREATED, media_type='str')
 
 @app.post("/story_gen")
 async def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
@@ -145,6 +152,7 @@ async def story(user_input: schemas.UserInput, current_user: schemas.UserRespons
 
     if 'next_type' in user_input.story:
         story = {
+            'world_info': user_data.json_data['save']['worldview'][str(user_input.stage // 25)],
             'stage': user_input.stage,
             'text': user_input.story['text'],
             'next_type': user_input.story['next_type']
@@ -190,7 +198,7 @@ async def story(user_input: schemas.UserInput, current_user: schemas.UserRespons
             print(chunk, flush=True, end='')
             yield chunk
         yield "}"
-        save = dict({"stage": user_input.stage + 1,"player":user_input.player, "content": json.loads(content)})    
+        save = dict({"worldview": user_data.json_data['save']['worldview'], "stage": user_input.stage + 1,"player":user_input.player, "content": json.loads(content)})    
         updated_user_data = crud.add_or_update_user_data(db, current_user.id, {
             "thread_id": user_thread.id if test else None,
             "save": save

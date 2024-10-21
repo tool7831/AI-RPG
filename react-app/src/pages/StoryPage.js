@@ -62,10 +62,21 @@ function StoryPage({data, handleFetch, streamDone}) {
   }
 
   const nextStory = async (diceResult, choiceId) => {
-    if (diceResult >= prob)
-      choices[choiceId].text = 'Success this choice. ' + choices[choiceId].text
-    else 
-      choices[choiceId].text = 'Fail this choice. ' + choices[choiceId].text
+    if (diceResult >= prob) {
+      choices[choiceId].text = 'Success this choice. ' + choices[choiceId].text;
+      choices[choiceId].next_type = choices[choiceId].next_type.success;
+
+    }
+    else {
+      choices[choiceId].text = 'Fail this choice. ' + choices[choiceId].text;
+      if (choices[choiceId].next_type.success === 'combat') {
+        choices[choiceId].next_type = choices[choiceId].next_type.success;
+      }
+      else {
+        choices[choiceId].next_type = choices[choiceId].next_type.failure;
+      }
+    }
+      
     const data = {
       story: choices[choiceId],
       stage: stage,
@@ -88,7 +99,7 @@ function StoryPage({data, handleFetch, streamDone}) {
   }
 
   const handlePenalty = () => {
-    // player.getRewards(reward);
+    player.getPenalty(penalty);
     setPenaltyModal(false);
   }
 

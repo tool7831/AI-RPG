@@ -6,12 +6,13 @@ import time
 
 client = OpenAI(api_key = os.environ['OPENAI_API_KEY'])
 
-STORY_ID = 'asst_QJULNvgbgB8cU1YgY5JzLAyr'
+STORY_ID = 'asst_U10YtSOIBjoZDxkHHeQ2reC2'
 SKILL_ID = 'asst_JSej8B49OeeI7IwOUNp3dpKY'
 ENEMY_ID = 'asst_ppQ8bsiqkd0w3G8N7tn7NUCb'
-PENALTY_ID = 'asst_jjPhkdDYvzUWcto0DGh0x35r'
-REWARD_ID = 'asst_YvLH1ztf6NC7qbLQGnlcUV4c'
+PENALTY_ID = 'asst_eamrmZCoV6BkSWd02GMogvYO'
+REWARD_ID = 'asst_buxdXTPCyyxeqHbG0Yjgw1gg'
 ENEMY_REWARD_ID = 'asst_vwf7NLsucECWPtb4bMcihfff'
+
 
 def create_thread():
   return client.beta.threads.create()
