@@ -101,10 +101,10 @@ export class Status {
         }
     }
 
-    damaged(value: number, attackType: AttackType | null = null, penetration: number = 0): void {
+    damaged(value: number, attackType: AttackType | null = null, penetration: number = 0): number {
         value = Math.floor(value)
         if (attackType === AttackType.melee) {
-            const total_damage = value - this.status.defense * (1 - (penetration / 100));
+            const total_damage = Math.floor(value - this.status.defense * (1 - (penetration / 100)));
             if (total_damage > 0) {
                 let remain = this.status.shield - total_damage;
                 this.changeAddedValue('shield', -total_damage);
@@ -112,9 +112,10 @@ export class Status {
                     this.changeHP(remain);
                 }
             }
+            return total_damage;
         }
         else if (attackType === AttackType.magic) {
-            const total_damage = value - this.status.resistance * (1 - (penetration / 100));
+            const total_damage = Math.floor(value - this.status.resistance * (1 - (penetration / 100)));
             if (total_damage > 0) {
                 let remain = this.status.shield - total_damage;
                 this.changeAddedValue('shield', -total_damage);
@@ -122,9 +123,10 @@ export class Status {
                     this.changeHP(remain);
                 }
             }
+            return total_damage;
         }
         else {
-            const total_damage = value;
+            const total_damage = Math.floor(value);
             if (total_damage > 0) {
                 let remain = this.status.shield - total_damage;
                 this.changeAddedValue('shield', -total_damage);
@@ -132,8 +134,9 @@ export class Status {
                     this.changeHP(remain);
                 }
             }
+            return total_damage;
         }
-        
+        return 0;
     }
 
     addBuff(buff: Buff) {
@@ -166,9 +169,9 @@ export class Status {
             switch (effect.type) {
                 case StatusEffectType.Burn:
                     // Burn: 매 턴마다 피해를 입음
-                    this.changeHP(-effect.value)
+                    this.changeHP(-effect.value);
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
@@ -176,7 +179,7 @@ export class Status {
                     // Poison: 일정 시간 동안 피해를 입음
                     this.changeHP(-effect.value)
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
@@ -184,24 +187,24 @@ export class Status {
                     // Bleed: 시간이 지날수록 점진적인 피해
                     this.changeHP(-effect.value)
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Freeze:
                     // Freeze: 행동 불가, 매 턴마다 피해
                     this.changeHP(-effect.value);
-                    this.isActionAvailable = false
+                    this.isActionAvailable = false;
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Stun:
                     // Stun: 일정 시간 동안 행동 불가
-                    this.isActionAvailable = false
+                    this.isActionAvailable = false;
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
@@ -209,52 +212,52 @@ export class Status {
                     // Paralysis: 일정 확률로 행동 불가
                     const paralysis = rand(0, 99)
                     if (paralysis < effect.value)
-                        this.isActionAvailable = false
+                        this.isActionAvailable = false;
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Sleep:
                     // Sleep: 행동 불가, 공격을 받으면 깨어남
-                    this.isActionAvailable = false
+                    this.isActionAvailable = false;
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Fear:
                     // Fear: 행동을 못 함
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Confusion:
                     // Confusion: 일정 확률로 자해 또는 적에게 공격
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Blindness:
                     // Blindness: 적중률 감소
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Charm:
                     // Charm: 방어력 감소
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 
                 case StatusEffectType.Weaken:
                     // Weaken: 공격력 감소
                     if (effect.duration <= 0) {
-                        return false
+                        return false;
                     }
                     break;
 

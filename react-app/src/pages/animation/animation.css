@@ -1,0 +1,15 @@
+/* Animation.css */
+@keyframes randomBounce {
+    0% { transform: translate(0, 0); opacity: 1; }
+    50% { transform: translate(30px, -50px); opacity: 0.8; }
+    100% { transform: translate(-20px, 60px); opacity: 0; }
+  }
+  
+.damage-number {
+position: absolute; /* 적 위치에 덮어쓰기 */
+color: red;
+font-size: 24px;
+opacity: 1;
+transition: transform 1s ease-out, opacity 1s ease-out;
+}
+  

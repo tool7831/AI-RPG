@@ -35,12 +35,12 @@ export default class Actor {
   }
 
   damaged(skill: FinalAttackData) {
-    let returnMessage: string[] = []
+    let damageArray : any = []
+
     for (let i = 0; i < skill.count; i++) {
       const attack_rand = rand(0, 99)
       if (attack_rand < skill.accuracy) {
-        returnMessage.push((this.constructor as typeof Actor).className + ': damaged');
-        this.status.damaged(skill.damage, skill.type, skill.penetration)
+        damageArray.push(this.status.damaged(skill.damage, skill.type, skill.penetration));
         if (skill.statusEffect) {
           const effect_rand = rand(0, 99);
           if (effect_rand < skill.statusEffect.accuracy) {
@@ -50,10 +50,10 @@ export default class Actor {
         }
       }
       else {
-        returnMessage.push((this.constructor as typeof Actor).className + ': miss');
+        damageArray.push('miss');
       }
     }
-    return returnMessage
+    return damageArray
   }
 
 
@@ -63,9 +63,9 @@ export default class Actor {
     const smi = this.smites.filter((smi) => smi.isAvailable());
     console.log(atk, def, smi)
     const len = atk.length + def.length + smi.length
-    if (len === 0)
-      this.status.isActionAvailable = false
-  
+    if (len === 0) {
+      this.status.isActionAvailable = false;
+    }
   }
 
   endTurn(): void {

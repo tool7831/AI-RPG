@@ -1,5 +1,5 @@
 import { Status, StatusData, StatusDict } from './status.ts';
-import { AttackData, DefendData, SmiteData } from './skill.ts'
+import { Attack, AttackData, AttackType, Defend, DefendData, Smite, SmiteData } from './skill.ts'
 import { Item, Inventory, ItemType, InventoryData } from './item.ts';
 import Actor from './actor.ts';
 
@@ -41,34 +41,48 @@ export class Player extends Actor {
     }
   }
 
-  getRewards(json): void {
-    if (!json)
-      return
-    if ('exp' in json)
-      this.gainExp(json.exp);
-    if ('gold' in json)
-      this.gold += json.gold;
-    if ('items' in json) {
-      json.items.forEach((item) => {
-        this.addItem(Item.fromJSON(item));
-      }) 
-    }
-  }
+  getRewards(rewards): void {
 
-  getPenalty(json): void {
-    if (!json)
-      return
-    if ('damage' in json)
-      this.status.damaged(json.value, null)
-    if ('gold' in json)
-      this.gold -= json.gold;
-    if ('stats' in json) {
-      json.stats.forEach((stat) => {
-        if (json.stats[stat] !== null) {
-          this.status.changeOriginValue(stat, json.stats[stat])
+    if ('stats' in rewards) {
+      Object.keys(rewards.stats).forEach((stat) => {
+        if (rewards.stats[stat] !== null) {
+          this.status.changeOriginValue(stat as keyof StatusData, rewards.stats[stat])
         }
       }) 
     }
+    if ('exp' in rewards)
+      this.gainExp(rewards.exp);
+    if ('gold' in rewards)
+      this.gold += rewards.gold;
+    if ('items' in rewards) {
+      rewards.items.forEach((item) => {
+        this.addItem(Item.fromJSON(item));
+      }) 
+    }
+
+  }
+
+  getPenalty(penalty): void {
+    console.log("get penalty")
+    penalty.forEach((json) => {
+      console.log(json);
+      if (json.type === 'damage') {
+        console.log(json);
+        this.status.changeHP(-json.value);
+      }
+        
+      if (json.type === 'gold') {
+        this.gold -= json.gold;
+      }
+        
+      if (json.type === 'stats') {
+        Object.keys(json.value).forEach((stat) => {
+          if (json.value[stat] !== null) {
+            this.status.changeOriginValue(stat as keyof StatusData, json.value[stat])
+          }
+        }) 
+      }
+    })
   }
 
   doAction(action: number, skill_idx: number): Record<string, any> {
@@ -125,6 +139,58 @@ export class Player extends Actor {
 
   removeItem(idx: number): void {
     this.inventory.removeItem(idx);
+  }
+
+  addAttackSkill(skill: AttackData): number {
+    if(this.attacks.length < 4) {
+      this.attacks.push(new Attack(skill));
+      return 1;
+    }
+    return 0;
+  }
+
+  addDefendSkill(skill: DefendData): number {
+    if(this.defends.length < 4) {
+      this.defends.push(new Defend(skill));
+      return 1;
+    }
+    return 0;
+  }
+
+  addSmiteSKill(skill: SmiteData): number {
+    if(this.smites.length < 4) {
+      this.smites.push(new Smite(skill));
+      return 1;
+    }
+    return 0;
+  }
+  addSkill(actionType: number, skill: any): number {
+    if (actionType === 0) {
+      return this.addAttackSkill(skill);
+    }
+    else if (actionType === 1) {
+      return this.addDefendSkill(skill);
+    }
+    else if (actionType === 2) {
+      return this.addSmiteSKill(skill);
+    }
+    return 0;
+  }
+
+  removeSkill(skillType: number, idx: number): number {
+    if(skillType === 0) {
+      this.attacks.splice(idx, 1);
+      return 1;
+    }
+    else if (skillType === 1){
+      this.defends.splice(idx, 1);
+      return 1;
+    }
+    else if (skillType === 2) {
+      this.smites.splice(idx, 1);
+      return 1;
+    }
+    return 0;
   }
 
   endCombat(): void {

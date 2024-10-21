@@ -149,7 +149,7 @@ export class Attack {
         return {
             name: this.name,
             type: this.type,
-            damage: totalDamage,
+            damage:  Math.floor(totalDamage),
             count: this.count,
             penetration: this.penetration,
             accuracy: this.accuracy,
@@ -163,7 +163,7 @@ export class Attack {
         for (const [key, value] of Object.entries(this.coef)){
             totalDamage += stats[key] * value;
         }
-        return totalDamage;
+        return Math.floor(totalDamage);
     }
 
     isAvailable(): boolean {
@@ -229,7 +229,7 @@ export class Defend {
         return {
             name: this.name,
             type: this.type,
-            value: totalValue,
+            value:  Math.floor(totalValue),
             duration: this.duration,
         };
     }
@@ -302,7 +302,7 @@ export class Smite {
         return {
             name: this.name,
             type: this.type,
-            value: totalValue,
+            value:  Math.floor(totalValue),
             duration: this.duration,
         };
     }
