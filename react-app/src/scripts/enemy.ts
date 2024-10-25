@@ -97,18 +97,21 @@ export default class Enemy extends Actor {
           cumulative += action.weight;
           if (randValue < cumulative) {
             if (action.action === 0) {
+              this.endTurn()
               return {
                 action: action.action,
                 skill: this.doAttack(action.skill)
               };
             }
             else if (action.action === 1) {
+              this.endTurn()
               return {
                 action: action.action,
                 skill: this.doDefend(action.skill)
               };
             }
             else if (action.action === 2) {
+              this.endTurn()
               return {
                 action: action.action,
                 skill: this.doSmite(action.skill)
@@ -118,6 +121,7 @@ export default class Enemy extends Actor {
         }
       }
     }
+    this.endTurn()
     return {
       action: 4,
       skill: { name: 'skip' }

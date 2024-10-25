@@ -88,14 +88,22 @@ export class Player extends Actor {
   doAction(action: number, skill_idx: number): Record<string, any> {
     this.startTurn();
     if (this.getActionAvailable()) {
-      if (action === 0)
+      if (action === 0) {
+        this.endTurn()
         return this.doAttack(skill_idx)
-      else if (action === 1)
+      }
+      else if (action === 1){
+        this.endTurn()
         return this.doDefend(skill_idx)
-      else if (action === 2)
+      }
+      else if (action === 2) {
+        this.endTurn()
         return this.doSmite(skill_idx)
+      }
+      this.endTurn()
       return { name: 'skip' }
     }
+    this.endTurn()
     return {name: 'skip'}
   }
 

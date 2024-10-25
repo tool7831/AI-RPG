@@ -69,15 +69,15 @@ export default class Actor {
   }
 
   endTurn(): void {
-
+    this.status.isActionAvailable = true
+    this.status.changeHP(this.status.status.hp_regeneration);
+    this.status.changeMP(this.status.status.mp_regeneration);
+    this.status.updateEndStatusEffects();
   }
 
   startTurn(): void {
-    this.status.isActionAvailable = true
     this.reduceCoolDown(1);
-    this.status.changeHP(this.status.status.hp_regeneration);
-    this.status.changeMP(this.status.status.mp_regeneration);
-    this.status.updateStatusEffects();
+    this.status.updateStartStatusEffects();
     this.status.updateBuffs();
   }
 

@@ -163,7 +163,7 @@ export class Status {
         }
     }
 
-    updateStatusEffects() {
+    updateStartStatusEffects() {
         this.curStatusEffects = this.curStatusEffects.filter(effect => {
             effect.duration -= 1;
             switch (effect.type) {
@@ -190,6 +190,46 @@ export class Status {
                         return false;
                     }
                     break;
+
+                case StatusEffectType.Confusion:
+                    // Confusion: 일정 확률로 자해 또는 적에게 공격
+                    if (effect.duration <= 0) {
+                        return false;
+                    }
+                    break;
+
+                case StatusEffectType.Blindness:
+                    // Blindness: 적중률 감소
+                    if (effect.duration <= 0) {
+                        return false;
+                    }
+                    break;
+
+                case StatusEffectType.Charm:
+                    // Charm: 방어력 감소
+                    if (effect.duration <= 0) {
+                        return false;
+                    }
+                    break;
+
+                case StatusEffectType.Weaken:
+                    // Weaken: 공격력 감소
+                    if (effect.duration <= 0) {
+                        return false;
+                    }
+                    break;
+
+                default:
+                    console.log('알 수 없는 상태 효과: ', effect.type);
+                    break;
+            }
+            return true;
+        });
+    }
+    updateEndStatusEffects() {
+        this.curStatusEffects = this.curStatusEffects.filter(effect => {
+            effect.duration -= 1;
+            switch (effect.type) {
 
                 case StatusEffectType.Freeze:
                     // Freeze: 행동 불가, 매 턴마다 피해
@@ -228,34 +268,6 @@ export class Status {
 
                 case StatusEffectType.Fear:
                     // Fear: 행동을 못 함
-                    if (effect.duration <= 0) {
-                        return false;
-                    }
-                    break;
-
-                case StatusEffectType.Confusion:
-                    // Confusion: 일정 확률로 자해 또는 적에게 공격
-                    if (effect.duration <= 0) {
-                        return false;
-                    }
-                    break;
-
-                case StatusEffectType.Blindness:
-                    // Blindness: 적중률 감소
-                    if (effect.duration <= 0) {
-                        return false;
-                    }
-                    break;
-
-                case StatusEffectType.Charm:
-                    // Charm: 방어력 감소
-                    if (effect.duration <= 0) {
-                        return false;
-                    }
-                    break;
-
-                case StatusEffectType.Weaken:
-                    // Weaken: 공격력 감소
                     if (effect.duration <= 0) {
                         return false;
                     }
