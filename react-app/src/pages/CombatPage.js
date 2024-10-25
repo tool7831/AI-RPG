@@ -97,6 +97,7 @@ function CombatPage({ data, handleFetch, streamDone }) {
   }
 
   useEffect(() => {
+    console.log(data)
     if (Object.keys(data).includes('content') && typeof data.content === 'object' && data.content !== null) {
       setImageURL(data?.content?.image_url);
       setStage(data.stage);
@@ -114,6 +115,7 @@ function CombatPage({ data, handleFetch, streamDone }) {
       if (Object.keys(data?.content).includes('rewards') && typeof data.content.rewards === 'object' && data.content.rewards !== null) {
         if (Object.keys(data?.content?.rewards).includes('rewards') && typeof data.content.rewards.rewards === 'object' && data.content.rewards.rewards !== null) {
           setRewards(data?.content?.rewards?.rewards);
+
         }
       }
     }
@@ -179,7 +181,7 @@ function CombatPage({ data, handleFetch, streamDone }) {
     const data = {
       player: player.toDict(),
       stage: stage,
-      story: { text: 'Player win ' + enemy.name + '. Player earn ' + toString(rewards) }
+      story: { text: 'Player win ' + enemy.name }
     }
     handleFetch(process.env.REACT_APP_FAST_API_URL + '/story_gen', {
       method: 'POST',
@@ -229,12 +231,16 @@ function CombatPage({ data, handleFetch, streamDone }) {
       if (player.status.status.agility < enemy.status.status.agility) {
         await takeDamage('Player', player.damaged(enemy_skill));
         await wait(300);
-        await takeDamage('Enemy', enemy.damaged(player_skill));
+        if (!player.isDead()) {
+          await takeDamage('Enemy', enemy.damaged(player_skill));
+        }
       }
       else {
         await takeDamage('Enemy', enemy.damaged(player_skill));
         await wait(300);
-        await takeDamage('Player', player.damaged(enemy_skill));
+        if(!enemy.isDead()) {
+          await takeDamage('Player', player.damaged(enemy_skill));
+        }
       }
       setEnemyWin(true);
       setPlayerWin(true);
@@ -246,6 +252,7 @@ function CombatPage({ data, handleFetch, streamDone }) {
       if (enemy_skill.type === 'shield') {
         enemy.status.addBuff(enemy_skill);
         addLog('Enemy: shield');
+        player_skill.damage /= 2;
         await takeDamage('Enemy', enemy.damaged(player_skill));
       }
       else if (enemy_skill.type === 'parry') {
@@ -289,6 +296,7 @@ function CombatPage({ data, handleFetch, streamDone }) {
       if (player_skill.type === 'shield') {
         addLog('Player: shield')
         player.status.addBuff(player_skill);
+        enemy_skill.damage /= 2;
         await takeDamage('Player', player.damaged(enemy_skill));
       }
       else if (player_skill.type === 'parry') {
@@ -551,7 +559,7 @@ function CombatPage({ data, handleFetch, streamDone }) {
                 sx={{
                   position: 'relative',
                   width: '300px',
-                  height: '60%',
+                  height: '200px',
                   overflowY: 'auto',
                   border: '1px solid #ddd'
                 }}>
@@ -568,7 +576,7 @@ function CombatPage({ data, handleFetch, streamDone }) {
                   backgroundColor: 'white',
                   border: '1px solid',
                   width: '280px',
-                  height: '30%',
+                  height: '100px',
                   marginTop: '10px',
                   overflowY: 'auto',
                   padding: '10px'

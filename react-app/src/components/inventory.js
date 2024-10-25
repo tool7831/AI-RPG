@@ -122,20 +122,20 @@ const Inventory = ({ actor }) => {
     </Card>
   );
 
-  const addItem = () => {
-    items.forEach((item) => actor.inventory.addItem(Item.fromJSON(item)))
-    setInventoryItems(actor.inventory.items)
-    setRender(render + 1)
-  }
-  const clear = () => {
-    actor.inventory.items = []
-    setInventoryItems(actor.inventory.items)
-    setEquippedItems(actor.inventory.equipments)
-  }
+  // const addItem = () => {
+  //   items.forEach((item) => actor.inventory.addItem(Item.fromJSON(item)))
+  //   setInventoryItems(actor.inventory.items)
+  //   setRender(render + 1)
+  // }
+  // const clear = () => {
+  //   actor.inventory.items = []
+  //   setInventoryItems(actor.inventory.items)
+  //   setEquippedItems(actor.inventory.equipments)
+  // }
   return (
     <Container>
-      <Button onClick={addItem}>Add</Button>
-      <Button onClick={clear}>Clear</Button>
+      {/* <Button onClick={addItem}>Add</Button>
+      <Button onClick={clear}>Clear</Button> */}
       <Box 
         sx={{ 
           width: '100%', 
@@ -146,13 +146,13 @@ const Inventory = ({ actor }) => {
           }}
       >
         {/* 장비 슬롯 */}
-        <Box sx={{ border: 'solid' }}>
-          <Typography variant="h6" align="center" sx={{ border: 'solid' }}>Equipped Items</Typography>
+        <Box>
+          <Typography variant="h6" align="center">Equipped Items</Typography>
           <Grid container sx={{ 
             height:'300px',
             minWidth:'500px', 
-            border: 'solid', backgroundColor: 'gray', overflowY: 'auto' }}>
-            <Grid item xs={12}>
+            border: '1px solid', backgroundColor: '#ddd', overflowY: 'auto' }}>
+            <Grid item xs={12} sx={{padding:'20px'}}>
               <Grid container justifyContent="space-evenly">
                 {renderEquipmentSlot('helmet', 'Helmet')}
                 {renderEquipmentSlot('armor', 'Armor')}
@@ -176,8 +176,7 @@ const Inventory = ({ actor }) => {
         </Box>
 
         {/* 인벤토리 슬롯 */}
-        <Typography variant="h6" align="center" sx={{ border: 'solid' }}>Inventory</Typography>
-        <Grid container sx={{ border: 'solid', height:'50%', overflowY:'auto' }}>
+        <Grid container sx={{ border: '1px solid', height:'50%', overflowY:'auto' , marginTop:'10px', display:'flex', justifyContent:'center', alignItems:'center'}}>
         {inventoryWithEmptySlots.map((item, idx) => (
           <Grid item xs={1} key={idx} sx={{ margin: '5px' }}>
             <Card

@@ -86,7 +86,7 @@ function StatusTab({ actor }) {
               <IconButton onClick={() => handleStatChange(stat, true)} disabled={remainingPoints <= 0}> <AddIcon /> </IconButton>
             </Box>
           ))}
-          <Button onClick={handleStatConfirm}>Confirm</Button>
+          <Button onClick={handleStatConfirm} variant='contained'>Confirm</Button>
         </Grid>
         <Grid item xs={6}>
           <StatusBox actor={actor} isPlayer={false} sx={{width:'90%'}}/>

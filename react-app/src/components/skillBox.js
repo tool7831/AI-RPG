@@ -43,10 +43,10 @@ export function AttackBox({ skill, status, ...props }) {
                 <StatusEffectIcons type={skill.statusEffect.type} style={{ width: '30px', height: '30px' }} />
               </Box>
               <Typography variant="body1">Value: {status ? `${skill.statusEffect.getTotalValue(status)}` : null}
-                ({skill.statusEffect.defaultValue} + {Object.keys(skill.statusEffect.coef).map((key) => (
-                  <span key={'se_coef_'+key}>
-                    <StatIcons type={key} key={'se_coef_'+key} /> x {skill.statusEffect.coef[key]}
-                  </span>
+                ({skill.statusEffect.defaultValue} {Object.keys(skill.statusEffect.coef).map((key) => (
+                  (skill.statusEffect.coef[key] !== null && <span key={'se_coef_'+key}>
+                    + <StatIcons type={key} key={'se_coef_'+key} /> x {skill.statusEffect.coef[key]}
+                  </span>)
                 ))})
               </Typography>
               <Typography variant="body1">Duration: {skill.statusEffect.duration} Turn</Typography>

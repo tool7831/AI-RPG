@@ -24,6 +24,14 @@ function PreSettingPage({handleData}) {
         console.log(data)
         setStory(data)
         setIsLoading(false);
+        Object.keys(data).forEach(((key)=> {
+          for(let i = 0; i < 4; i++){
+            if (!data[key].hasOwnProperty(i)) {
+              data[key][i] = '';  
+            }
+          }
+        }))
+
       });
   }, [])
 
@@ -47,6 +55,16 @@ function PreSettingPage({handleData}) {
 
   const handleTabChange = (event, value) => {
     setSelectedTab(value)
+  }
+
+  const handleChange = (e) => {
+    const updatedStory = { ...story };
+
+    if (!updatedStory[selectedStory].hasOwnProperty(selectedTab)) {
+      updatedStory[selectedStory][selectedTab] = '';  
+    }
+    updatedStory[selectedStory][selectedTab] = e.target.value;
+    setStory(updatedStory);
   }
 
   if(isLoading) {
@@ -95,6 +113,7 @@ function PreSettingPage({handleData}) {
                 row={20}
                 defaultValue={"Story"}
                 value={story[selectedStory][selectedTab]}
+                onChange={(e)=>handleChange(e)}
               />
             </Box>
             <Button sx={{ margin: 2 }} variant='contained' onClick={handleCancel} >Cancel</Button>

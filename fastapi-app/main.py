@@ -100,17 +100,17 @@ async def first(user_input: schemas.UserInput, current_user: schemas.UserRespons
         'name':user_input.player['name'],
         'description':user_input.player['description'],
         'level': user_input.player['level'],
-        'status': user_input.player['status']['status'],
+        # 'status': user_input.player['status']['status'],
         }
     
     message = [
         {
             "type": "text",
-            "text": {"Worldview summary":worldView['summary']}
+            "text": {"Entire Worldview":worldView['summary']}
         },
         {
             "type": "text",
-            "text": {"Info":worldView['0']}
+            "text": {"Stage info":worldView['0']}
         },
         {
             "type": "text",
@@ -125,6 +125,7 @@ async def first(user_input: schemas.UserInput, current_user: schemas.UserRespons
 
     user_thread = create_thread()
     print('thread create')
+    print(message)
 
     def stream_data():
         content = ''
@@ -149,7 +150,7 @@ async def first(user_input: schemas.UserInput, current_user: schemas.UserRespons
 async def story(user_input: schemas.UserInput, current_user: schemas.UserResponse = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     user_data = db.query(models.UserData).filter(models.UserData.user_id == current_user.id).first()
     thread_id = user_data.json_data['thread_id']
-
+    reward = None
     if 'next_type' in user_input.story:
         story = {
             'world_info': user_data.json_data['save']['worldview'][str(user_input.stage // 25)],
@@ -162,17 +163,29 @@ async def story(user_input: schemas.UserInput, current_user: schemas.UserRespons
             if enemy_lv < 1:
                 enemy_lv = 1
             enemy_type = random.choices(['common', 'elite', 'boss'], [0.9, 0.09, 0.01])[0]
+            if user_input.stage == 24:
+                enemy_type = 'boss'
             story['text'] = f'Make level {enemy_lv} {enemy_type} enemy.' + story['text']
+            if enemy_type == 'common':
+                reward = {"rewards":[{"exp": random.randint(enemy_lv*10, enemy_lv * 30)}]}
+            if enemy_type == 'elite':
+                reward = {"rewards":[{"exp": random.randint(enemy_lv*30, enemy_lv * 50)}]}
+            if enemy_type == 'boss':
+                reward = {"rewards":[{"exp": random.randint(enemy_lv*50, enemy_lv * 100)}]}
             print(story['text'])
 
     else:
-        story = {'text': user_input.story['text'],}
+        story = {
+            'world_info': user_data.json_data['save']['worldview'][str(user_input.stage // 25)],
+            'stage': user_input.stage,
+            'text': user_input.story['text'],
+        }
         
     playerInput = {
         'name':user_input.player['name'],
         'description':user_input.player['description'],
         'level': user_input.player['level'],
-        'status': user_input.player['status']['status'],
+        # 'status': user_input.player['status']['status'],
         }
     message = [
         {
@@ -185,7 +198,7 @@ async def story(user_input: schemas.UserInput, current_user: schemas.UserRespons
         }   
     ]
     
-
+    print(message)
     user_thread = retrieve_thread(thread_id) 
     def stream_data():
         content = ''
@@ -197,6 +210,11 @@ async def story(user_input: schemas.UserInput, current_user: schemas.UserRespons
             content += chunk
             print(chunk, flush=True, end='')
             yield chunk
+        if reward is not None:
+            content += json.dumps(reward)
+            content += '}'
+            yield json.dumps(reward)
+            yield '}'
         yield "}"
         save = dict({"worldview": user_data.json_data['save']['worldview'], "stage": user_input.stage + 1,"player":user_input.player, "content": json.loads(content)})    
         updated_user_data = crud.add_or_update_user_data(db, current_user.id, {

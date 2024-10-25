@@ -52,20 +52,20 @@ def run(thread, message):
       # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
       # image_url = create_enemy_image(enemy_info)
       # # enemy_info = str({'name':enemy['combat']['name'], 'description': enemy['combat']['description']})
-      message = [
-        {
-          'type': 'text',
-          'text': f'Make rewards for this enemy.'
-        }
-      ]
-      # rewards = run_thread(thread, message, ENEMY_REWARD_ID)
-      # response = dict({**enemy, **rewards})
+      # message = [
+      #   {
+      #     'type': 'text',
+      #     'text': f'Make rewards for this enemy.'
+      #   }
+      # ]
+      # # rewards = run_thread(thread, message, ENEMY_REWARD_ID)
+      # # response = dict({**enemy, **rewards})
       yield ","
       yield '"rewards":'
-      for i in stream_submit_message(message, thread, ENEMY_REWARD_ID):
-        if i[0] == 'text':
-            yield i[1].value
-      yield "}"
+      # for i in stream_submit_message(message, thread, ENEMY_REWARD_ID):
+      #   if i[0] == 'text':
+      #       yield i[1].value
+      # yield "}"
     elif message[0]['text']['next_type'] == 'reward':
       for i in stream_submit_message(message, thread, REWARD_ID):
         if i[0] == 'text':
