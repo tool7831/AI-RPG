@@ -106,6 +106,7 @@ function PreSettingPage({handleData}) {
                 <Tab value={1} label='26~50'/>
                 <Tab value={2} label='51~75'/>
                 <Tab value={3} label='76~100'/>
+                <Tab value={'summary'} label='summary'/>
               </Tabs>
               <TextField
                 fullWidth
@@ -114,6 +115,7 @@ function PreSettingPage({handleData}) {
                 defaultValue={"Story"}
                 value={story[selectedStory][selectedTab]}
                 onChange={(e)=>handleChange(e)}
+                sx={{backgroundColor:'white'}}
               />
             </Box>
             <Button sx={{ margin: 2 }} variant='contained' onClick={handleCancel} >Cancel</Button>

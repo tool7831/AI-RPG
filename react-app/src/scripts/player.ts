@@ -110,12 +110,15 @@ export class Player extends Actor {
   equip(idx: number): void {
     let flag = true;
     const item = this.inventory.items[idx]
-    for (const [key, value] of Object.entries(item.use_restriction)) {
-      if (this.status.origin_status[key] < value) {
-        flag = false;
-        break;
+    if (typeof item.use_restriction === 'object') {
+      for (const [key, value] of Object.entries(item.use_restriction)) {
+        if (this.status.origin_status[key] < value) {
+          flag = false;
+          break;
+        }
       }
     }
+
 
     if (flag) {
       const data = this.inventory.equip(idx);

@@ -40,11 +40,11 @@ function ItemBox({item, ...props}) {
           <Typography variant="h5">{item?.name}</Typography>
           <Typography>{item?.description}</Typography>
           <Typography variant='h6'>Effects</Typography>
-          {Object.keys(item?.effects).map((stat) =>
+          {typeof item?.effects ==='object' && Object.keys(item?.effects).map((stat) =>
              item?.effects[stat] !== null && <Typography color="textSecondary" key={stat}>{stat}: {item?.effects[stat]}</Typography>
           )}
           <Typography variant='h6'>Use Restriction</Typography>
-          {Object.keys(item?.use_restriction).map((stat) =>
+          {typeof item?.use_restriction ==='object' && Object.keys(item?.use_restriction).map((stat) =>
             item?.use_restriction[stat] !== null && <Typography color="textSecondary" key={stat}>{stat}: {item?.use_restriction[stat]}</Typography>
           )}
           <Button onClick={handleClose}>Cancel</Button>

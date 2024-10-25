@@ -8,7 +8,7 @@ const itemStyle = {
   justifyContent: 'center', 
   alignItems: 'center', 
   border: '1px solid grey', 
-  cursor: 'pointer'
+  cursor: 'pointer',
 }
 // 임시 아이템 데이터
 const items = [
@@ -74,6 +74,7 @@ const Inventory = ({ actor }) => {
 
     setEquippedItems(actor.inventory.equipments)
     handleClose();
+    setRender(render+1);
   };
 
   // 장비 해제 핸들러
@@ -85,6 +86,7 @@ const Inventory = ({ actor }) => {
     }
     setEquippedItems(actor.inventory.equipments)
     handleClose();
+    setRender(render+1);
   };
 
   // 장비 슬롯 클릭 핸들러
@@ -184,7 +186,7 @@ const Inventory = ({ actor }) => {
               sx={{ ...itemStyle, backgroundColor: item ? 'white' : '#f0f0f0' }} // 아이템 없을 때 색 변경
             >
               <CardContent>
-                <Typography>
+                <Typography sx={{fontSize:'12px'}}>
                   {item ? item.name : ''}
                 </Typography>
               </CardContent>
@@ -209,7 +211,7 @@ const Inventory = ({ actor }) => {
             <Typography variant="h5">{selectedItem?.name}</Typography>
             <Typography>{selectedItem?.description}</Typography>
             <Typography variant='h6'>Effects</Typography>
-            {selectedItem && Object.keys(selectedItem?.effects).map((stat) => (
+            {selectedItem && typeof selectedItem?.effects === 'object' && Object.keys(selectedItem?.effects).map((stat) => (
               selectedItem?.effects[stat] !== null &&
               <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Typography color="textSecondary" key={stat} sx={{ textTransform: 'capitalize' }} >{stat}: {selectedItem?.effects[stat]}</Typography>
@@ -221,7 +223,7 @@ const Inventory = ({ actor }) => {
               </Box>
             ))}
             <Typography variant='h6'>Use Restriction</Typography>
-            {selectedItem && Object.keys(selectedItem?.use_restriction).map((stat) => (
+            {selectedItem && typeof selectedItem?.use_restriction === 'object' && Object.keys(selectedItem?.use_restriction).map((stat) => (
               selectedItem?.use_restriction[stat] !== null &&
               <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Typography color="textSecondary" key={stat} sx={{ textTransform: 'capitalize' }}>{stat}: {selectedItem?.use_restriction[stat]}</Typography>
