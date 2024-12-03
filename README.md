@@ -2,6 +2,7 @@
 생성형 AI를 활용한 텍스트 기반 RPG 게임.
 
 ## 사용 모델
+GPT4o-mini
 
 ## Game Rule
 
